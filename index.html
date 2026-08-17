@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-<html lang="ru" class="light scroll-smooth">
+<html lang="ru" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Chisinau Vibe | Premium Guide</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -16,32 +15,33 @@
                     animation: {
                         'float': 'float 6s ease-in-out infinite',
                         'fade-in-up': 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-                        'blob': 'blob 10s ease-in-out infinite',
-                        'glow': 'glowPulse 2.5s ease-in-out infinite',
+                        'blob': 'blob 7s infinite',
+                        'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'glow': 'glowPulse 2s infinite',
                     },
                     keyframes: {
                         float: {
                             '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-12px)' },
+                            '50%': { transform: 'translateY(-15px)' },
                         },
                         fadeInUp: {
-                            '0%': { opacity: '0', transform: 'translateY(20px) scale(0.97)' },
+                            '0%': { opacity: '0', transform: 'translateY(30px) scale(0.95)' },
                             '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
                         },
                         blob: {
                             '0%': { transform: 'translate(0px, 0px) scale(1)' },
-                            '33%': { transform: 'translate(30px, -40px) scale(1.08)' },
-                            '66%': { transform: 'translate(-20px, 20px) scale(0.95)' },
+                            '33%': { transform: 'translate(40px, -60px) scale(1.1)' },
+                            '66%': { transform: 'translate(-30px, 30px) scale(0.9)' },
                             '100%': { transform: 'translate(0px, 0px) scale(1)' },
                         },
                         glowPulse: {
                             '0%, 100%': { 
-                                boxShadow: '0 0 20px rgba(245, 158, 11, 0.4), 0 0 40px rgba(236, 72, 153, 0.2)',
-                                borderColor: 'rgba(245, 158, 11, 0.6)'
+                                boxShadow: '0 0 25px rgba(245, 158, 11, 0.6), 0 0 50px rgba(236, 72, 153, 0.4)',
+                                borderColor: 'rgba(245, 158, 11, 0.8)'
                             },
                             '50%': { 
-                                boxShadow: '0 0 35px rgba(245, 158, 11, 0.8), 0 0 60px rgba(236, 72, 153, 0.5)',
-                                borderColor: 'rgba(236, 72, 153, 0.9)'
+                                boxShadow: '0 0 45px rgba(245, 158, 11, 0.9), 0 0 80px rgba(236, 72, 153, 0.7)',
+                                borderColor: 'rgba(236, 72, 153, 1)'
                             }
                         }
                     }
@@ -52,36 +52,30 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap');
         
-        html {
-            scroll-behavior: smooth;
-        }
-
         body { 
-            background-color: #f8fafc;
-            transition: background-color 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            background-color: #f1f5f9;
+            transition: background-color 0.5s ease;
             -webkit-tap-highlight-color: transparent;
-            font-feature-settings: "cv02", "cv03", "cv04", "cv11";
         }
         .dark body { background-color: #020617; }
         
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        .dark ::-webkit-scrollbar-thumb { background: #1e293b; }
+        ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 10px; }
+        .dark ::-webkit-scrollbar-thumb { background: #334155; }
         ::-webkit-scrollbar-thumb:hover { background: #6366f1; }
         
         .glass {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.7);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.04);
-            will-change: transform, opacity;
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
         }
         .dark .glass {
-            background: rgba(15, 23, 42, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            background: rgba(15, 23, 42, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
         }
 
         .gradient-text {
@@ -89,7 +83,7 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-size: 200% 200%;
-            animation: gradientMove 6s ease infinite;
+            animation: gradientMove 4s ease infinite;
         }
 
         @keyframes gradientMove {
@@ -98,166 +92,188 @@
             100% { background-position: 0% 50%; }
         }
 
-        .card-hover {
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
-            will-change: transform;
-        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
         .card-hover:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 40px -10px rgba(99, 102, 241, 0.15);
+            box-shadow: 0 20px 40px -5px rgba(99, 102, 241, 0.15);
             border-color: rgba(99, 102, 241, 0.3);
         }
         .dark .card-hover:hover {
-            box-shadow: 0 20px 40px -10px rgba(99, 102, 241, 0.25);
+            box-shadow: 0 20px 40px -5px rgba(99, 102, 241, 0.25);
             border-color: rgba(99, 102, 241, 0.4);
         }
         
         .cat-btn-active {
             background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            color: white !important;
+            color: white;
             border-color: transparent !important;
             box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
         }
 
         .leaflet-popup-content-wrapper {
-            background: rgba(255, 255, 255, 0.92) !important;
+            background: rgba(255, 255, 255, 0.95) !important;
             backdrop-filter: blur(16px);
-            border: 1px solid rgba(255,255,255,0.6);
+            border: 1px solid rgba(255,255,255,0.5);
             border-radius: 1.2rem !important;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.12) !important;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15) !important;
             color: #0f172a !important;
         }
         .dark .leaflet-popup-content-wrapper {
-            background: rgba(15, 23, 42, 0.92) !important;
+            background: rgba(15, 23, 42, 0.95) !important;
             border: 1px solid rgba(255,255,255,0.1);
             color: #f8fafc !important;
         }
         .leaflet-popup-tip {
-            background: rgba(255, 255, 255, 0.92) !important;
+            background: rgba(255, 255, 255, 0.95) !important;
         }
         .dark .leaflet-popup-tip {
-            background: rgba(15, 23, 42, 0.92) !important;
+            background: rgba(15, 23, 42, 0.95) !important;
         }
         
         .leaflet-control-zoom a {
             background-color: var(--tw-bg-opacity, #fff) !important;
             color: #475569 !important;
-            border-radius: 10px !important;
+            border-radius: 8px !important;
             margin-bottom: 4px;
             border: none !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
-            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
         }
         .dark .leaflet-control-zoom a {
             background-color: #1e293b !important;
             color: #cbd5e1 !important;
         }
+
+        .user-location-ping {
+            position: relative;
+            width: 20px;
+            height: 20px;
+        }
+        .user-location-ping::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #3b82f6;
+            border-radius: 50%;
+            animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+            opacity: 0.75;
+        }
+        .user-location-ping::after {
+            content: '';
+            position: absolute;
+            top: 4px; left: 4px; width: 12px; height: 12px;
+            background-color: #2563eb;
+            border: 2px solid white;
+            border-radius: 50%;
+        }
     </style>
 </head>
 <body class="text-slate-900 dark:text-slate-100 min-h-screen relative overflow-x-hidden" id="body">
 
-    <div class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[110] glass rounded-full px-4 py-2.5 flex items-center gap-2.5 cursor-help hover:scale-105 transition-all duration-300 shadow-xl" title="Людей сейчас ищут места">
-        <div class="relative flex h-2.5 w-2.5">
+    <div class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[110] glass rounded-full px-3.5 py-2 sm:px-5 sm:py-2.5 flex items-center gap-2 sm:gap-3 cursor-help hover:scale-105 transition-transform shadow-lg" title="Людей сейчас ищут места">
+        <div class="relative flex h-2.5 w-2.5 sm:h-3 sm:w-3">
           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+          <span class="relative inline-flex rounded-full h-2.5 w-2.5 sm:h-3 sm:w-3 bg-emerald-500"></span>
         </div>
-        <div class="font-bold text-xs sm:text-sm tracking-wide flex items-center gap-1.5">
-            <span id="online-count" class="text-emerald-600 dark:text-emerald-400 text-sm sm:text-base font-extrabold transition-all duration-300">342</span> 
-            <span class="hidden sm:inline text-slate-500 dark:text-slate-400">онлайн</span>
+        <div class="font-bold text-xs sm:text-sm tracking-wide">
+            <span id="online-count" class="text-emerald-600 dark:text-emerald-400 text-sm sm:text-lg transition-all duration-300">342</span> <span class="hidden sm:inline">онлайн</span>
         </div>
     </div>
 
     <div class="fixed inset-0 w-full h-full pointer-events-none z-[-1] overflow-hidden">
-        <div class="absolute top-[-10%] left-[-10%] w-[20rem] sm:w-[40rem] h-[20rem] sm:h-[40rem] bg-indigo-500/20 rounded-full filter blur-[100px] animate-blob"></div>
-        <div class="absolute top-[20%] right-[-10%] w-[18rem] sm:w-[35rem] h-[18rem] sm:h-[35rem] bg-fuchsia-500/20 rounded-full filter blur-[100px] animate-blob [animation-delay:2s]"></div>
-        <div class="absolute bottom-[-10%] left-[20%] w-[20rem] sm:w-[40rem] h-[20rem] sm:h-[40rem] bg-amber-500/20 rounded-full filter blur-[100px] animate-blob [animation-delay:4s]"></div>
+        <div class="absolute top-[-10%] left-[-10%] w-[20rem] sm:w-[40rem] h-[20rem] sm:h-[40rem] bg-indigo-500 rounded-full mix-blend-multiply filter blur-[80px] sm:blur-[100px] opacity-20 dark:opacity-30 animate-blob"></div>
+        <div class="absolute top-[20%] right-[-10%] w-[18rem] sm:w-[35rem] h-[18rem] sm:h-[35rem] bg-fuchsia-500 rounded-full mix-blend-multiply filter blur-[80px] sm:blur-[100px] opacity-20 dark:opacity-30 animate-blob animation-delay-2000"></div>
+        <div class="absolute bottom-[-10%] left-[20%] w-[20rem] sm:w-[40rem] h-[20rem] sm:h-[40rem] bg-amber-500 rounded-full mix-blend-multiply filter blur-[80px] sm:blur-[100px] opacity-20 dark:opacity-30 animate-blob animation-delay-4000"></div>
     </div>
 
-    <div id="welcome-screen" class="fixed inset-0 z-[100] bg-white/80 dark:bg-slate-950/80 backdrop-blur-3xl flex flex-col items-center justify-center transition-all duration-700 ease-out overflow-y-auto py-10">
+    <div id="welcome-screen" class="fixed inset-0 z-[100] bg-white/80 dark:bg-slate-950/80 backdrop-blur-3xl flex flex-col items-center justify-center transition-all duration-700 overflow-y-auto py-10">
         <div class="text-center max-w-4xl px-4 sm:px-6 w-full my-auto">
-            <div class="mb-6 animate-float inline-block">
-                <div class="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-indigo-500 to-fuchsia-500 rounded-3xl flex items-center justify-center text-white shadow-2xl shadow-indigo-500/30 rotate-12 mx-auto">
-                    <i data-lucide="wine" class="w-10 h-10 sm:w-12 sm:h-12"></i>
+            <div class="mb-4 sm:mb-6 animate-float inline-block">
+                <div class="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-indigo-500 to-fuchsia-500 rounded-2xl sm:rounded-3xl flex items-center justify-center text-4xl sm:text-5xl shadow-2xl shadow-indigo-500/30 rotate-12 mx-auto">
+                    🍷
                 </div>
             </div>
-            <h1 class="text-4xl sm:text-6xl md:text-7xl font-black mb-4 tracking-tight text-slate-900 dark:text-white">
-                Куда пойдем <span class="gradient-text block mt-1">в Кишиневе?</span>
+            <h1 class="text-4xl sm:text-6xl md:text-8xl font-black mb-4 sm:mb-6 tracking-tighter text-slate-900 dark:text-white">
+                Куда пойдем <span class="gradient-text block mt-1 sm:mt-2">в Кишиневе?</span>
             </h1>
-            <p class="text-base sm:text-xl text-slate-500 dark:text-slate-400 mb-10 font-light">Выбери свой вайб на сегодня</p>
+            <p class="text-base sm:text-xl md:text-2xl text-slate-500 dark:text-slate-400 mb-8 sm:mb-12 font-light">Выбери свой вайб на сегодня</p>
             
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-5 mb-8 max-w-3xl mx-auto">
-                <button onclick="startApp('Центр')" class="group relative p-6 sm:p-7 rounded-2xl sm:rounded-3xl glass hover:-translate-y-1.5 transition-all duration-300 hover:shadow-2xl hover:shadow-indigo-500/20 border border-white/50 dark:border-white/10 hover:border-indigo-500 text-left overflow-hidden">
-                    <div class="text-indigo-500 mb-3 group-hover:scale-110 transition-transform origin-left">
-                        <i data-lucide="landmark" class="w-8 h-8"></i>
-                    </div>
-                    <div class="font-black text-lg sm:text-xl mb-0.5">Центр</div>
-                    <div class="text-xs text-slate-500 dark:text-slate-400 font-medium">Сердце города</div>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6 mb-8 max-w-3xl mx-auto">
+                <button onclick="startApp('Центр')" class="group relative p-5 sm:p-8 rounded-2xl sm:rounded-[2rem] glass hover:-translate-y-1 sm:hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl hover:shadow-indigo-500/30 border border-white/50 dark:border-white/10 hover:border-indigo-500 text-left overflow-hidden">
+                    <div class="absolute -right-4 -bottom-4 text-5xl sm:text-7xl opacity-10 group-hover:scale-125 transition-transform duration-500">🏛️</div>
+                    <div class="text-3xl sm:text-4xl mb-2 sm:mb-4 group-hover:scale-110 transition-transform origin-left drop-shadow-md">🏛️</div>
+                    <div class="font-black text-lg sm:text-2xl mb-0.5 sm:mb-1">Центр</div>
+                    <div class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">Сердце города</div>
                 </button>
-
-                <button onclick="startApp('Ботаника')" class="group relative p-6 sm:p-7 rounded-2xl sm:rounded-3xl glass hover:-translate-y-1.5 transition-all duration-300 hover:shadow-2xl hover:shadow-emerald-500/20 border border-white/50 dark:border-white/10 hover:border-emerald-500 text-left overflow-hidden">
-                    <div class="text-emerald-500 mb-3 group-hover:scale-110 transition-transform origin-left">
-                        <i data-lucide="trees" class="w-8 h-8"></i>
-                    </div>
-                    <div class="font-black text-lg sm:text-xl mb-0.5">Ботаника</div>
-                    <div class="text-xs text-slate-500 dark:text-slate-400 font-medium">Парки и уют</div>
+                <button onclick="startApp('Ботаника')" class="group relative p-5 sm:p-8 rounded-2xl sm:rounded-[2rem] glass hover:-translate-y-1 sm:hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl hover:shadow-emerald-500/30 border border-white/50 dark:border-white/10 hover:border-emerald-500 text-left overflow-hidden">
+                    <div class="absolute -right-4 -bottom-4 text-5xl sm:text-7xl opacity-10 group-hover:scale-125 transition-transform duration-500">🌳</div>
+                    <div class="text-3xl sm:text-4xl mb-2 sm:mb-4 group-hover:scale-110 transition-transform origin-left drop-shadow-md">🌳</div>
+                    <div class="font-black text-lg sm:text-2xl mb-0.5 sm:mb-1">Ботаника</div>
+                    <div class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">Парки и уют</div>
                 </button>
-
-                <button onclick="startApp('Рышкановка')" class="group relative p-6 sm:p-7 rounded-2xl sm:rounded-3xl glass hover:-translate-y-1.5 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20 border border-white/50 dark:border-white/10 hover:border-blue-500 text-left overflow-hidden">
-                    <div class="text-blue-500 mb-3 group-hover:scale-110 transition-transform origin-left">
-                        <i data-lucide="sparkles" class="w-8 h-8"></i>
-                    </div>
-                    <div class="font-black text-lg sm:text-xl mb-0.5">Рышкановка</div>
-                    <div class="text-xs text-slate-500 dark:text-slate-400 font-medium">Стиль и жизнь</div>
+                <button onclick="startApp('Рышкановка')" class="group relative p-5 sm:p-8 rounded-2xl sm:rounded-[2rem] glass hover:-translate-y-1 sm:hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/30 border border-white/50 dark:border-white/10 hover:border-blue-500 text-left overflow-hidden">
+                    <div class="absolute -right-4 -bottom-4 text-5xl sm:text-7xl opacity-10 group-hover:scale-125 transition-transform duration-500">✨</div>
+                    <div class="text-3xl sm:text-4xl mb-2 sm:mb-4 group-hover:scale-110 transition-transform origin-left drop-shadow-md">✨</div>
+                    <div class="font-black text-lg sm:text-2xl mb-0.5 sm:mb-1">Рышкановка</div>
+                    <div class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">Стиль и жизнь</div>
                 </button>
-
-                <button onclick="startApp('Буюканы')" class="group relative p-6 sm:p-7 rounded-2xl sm:rounded-3xl glass hover:-translate-y-1.5 transition-all duration-300 hover:shadow-2xl hover:shadow-orange-500/20 border border-white/50 dark:border-white/10 hover:border-orange-500 text-left overflow-hidden">
-                    <div class="text-orange-500 mb-3 group-hover:scale-110 transition-transform origin-left">
-                        <i data-lucide="sunset" class="w-8 h-8"></i>
-                    </div>
-                    <div class="font-black text-lg sm:text-xl mb-0.5">Буюканы</div>
-                    <div class="text-xs text-slate-500 dark:text-slate-400 font-medium">Закаты и лес</div>
+                <button onclick="startApp('Буюканы')" class="group relative p-5 sm:p-8 rounded-2xl sm:rounded-[2rem] glass hover:-translate-y-1 sm:hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl hover:shadow-orange-500/30 border border-white/50 dark:border-white/10 hover:border-orange-500 text-left overflow-hidden">
+                    <div class="absolute -right-4 -bottom-4 text-5xl sm:text-7xl opacity-10 group-hover:scale-125 transition-transform duration-500">🌅</div>
+                    <div class="text-3xl sm:text-4xl mb-2 sm:mb-4 group-hover:scale-110 transition-transform origin-left drop-shadow-md">🌅</div>
+                    <div class="font-black text-lg sm:text-2xl mb-0.5 sm:mb-1">Буюканы</div>
+                    <div class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">Закаты и лес</div>
                 </button>
-
-                <button onclick="startApp('Чеканы')" class="group relative p-6 sm:p-7 rounded-2xl sm:rounded-3xl glass hover:-translate-y-1.5 transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/20 border border-white/50 dark:border-white/10 hover:border-purple-500 text-left overflow-hidden">
-                    <div class="text-purple-500 mb-3 group-hover:scale-110 transition-transform origin-left">
-                        <i data-lucide="building-2" class="w-8 h-8"></i>
-                    </div>
-                    <div class="font-black text-lg sm:text-xl mb-0.5">Чеканы</div>
-                    <div class="text-xs text-slate-500 dark:text-slate-400 font-medium">Аллеи и бары</div>
+                <button onclick="startApp('Чеканы')" class="group relative p-5 sm:p-8 rounded-2xl sm:rounded-[2rem] glass hover:-translate-y-1 sm:hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/30 border border-white/50 dark:border-white/10 hover:border-purple-500 text-left overflow-hidden">
+                    <div class="absolute -right-4 -bottom-4 text-5xl sm:text-7xl opacity-10 group-hover:scale-125 transition-transform duration-500">🏙️</div>
+                    <div class="text-3xl sm:text-4xl mb-2 sm:mb-4 group-hover:scale-110 transition-transform origin-left drop-shadow-md">🏙️</div>
+                    <div class="font-black text-lg sm:text-2xl mb-0.5 sm:mb-1">Чеканы</div>
+                    <div class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">Аллеи и бары</div>
                 </button>
-
-                <button onclick="startApp('all')" class="group relative p-6 sm:p-7 rounded-2xl sm:rounded-3xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:-translate-y-1.5 transition-all duration-300 shadow-2xl hover:shadow-slate-900/40 text-left flex flex-col justify-center overflow-hidden col-span-2 md:col-span-1">
-                    <div class="mb-3 group-hover:scale-110 transition-transform origin-left">
-                        <i data-lucide="compass" class="w-8 h-8"></i>
-                    </div>
-                    <div class="font-black text-lg sm:text-2xl mb-0.5">Весь город</div>
-                    <div class="text-xs opacity-80 font-medium">Покажите мне всё!</div>
+                <button onclick="startApp('all')" class="group relative p-5 sm:p-8 rounded-2xl sm:rounded-[2rem] bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:-translate-y-1 sm:hover:-translate-y-2 transition-all duration-300 shadow-2xl hover:shadow-slate-900/50 dark:hover:shadow-white/50 text-left flex flex-col justify-center overflow-hidden col-span-2 md:col-span-1">
+                    <div class="absolute -right-4 -bottom-4 text-5xl sm:text-7xl opacity-10 group-hover:scale-125 transition-transform duration-500">🌍</div>
+                    <div class="font-black text-xl sm:text-3xl mb-0.5 sm:mb-1">🌍 Весь город</div>
+                    <div class="text-xs sm:text-sm opacity-80 mt-1 sm:mt-2 font-medium">Покажите мне всё!</div>
                 </button>
             </div>
         </div>
     </div>
 
-    <div id="main-app" class="opacity-0 translate-y-6 transition-all duration-700 ease-out hidden min-h-screen flex flex-col">
+    <div id="random-modal" class="fixed inset-0 z-[150] bg-black/60 backdrop-blur-md hidden flex items-center justify-center p-4 transition-all">
+        <div class="glass max-w-md w-full p-6 rounded-3xl border border-white/20 shadow-2xl relative animate-fade-in-up">
+            <button onclick="closeRandomModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center font-black">✕</button>
+            <div class="text-center mb-4">
+                <span class="text-4xl">🎲</span>
+                <h3 class="text-2xl font-black mt-2">Ваш случайный выбор!</h3>
+            </div>
+            <div id="modal-content" class="space-y-3"></div>
+            <div class="mt-6 flex gap-3">
+                <button onclick="getRandomPlace()" class="flex-1 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold rounded-xl shadow-lg hover:opacity-90">Крутить еще 🎲</button>
+                <a id="modal-map-btn" href="#" target="_blank" class="flex-1 py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold rounded-xl text-center shadow-lg">На карту 🗺️</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-app" class="opacity-0 translate-y-10 transition-all duration-1000 hidden min-h-screen flex flex-col">
         
         <nav class="sticky top-0 w-full z-50 glass shadow-sm transition-colors duration-500 border-b border-white/20 dark:border-white/5">
             <div class="max-w-[1400px] mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-2">
-                <div class="flex items-center gap-3 cursor-pointer group" onclick="location.reload()">
-                    <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center text-white font-black text-lg shadow-lg shadow-purple-500/25 group-hover:rotate-6 transition-transform duration-300">MD</div>
+                <div class="flex items-center gap-3 cursor-pointer" onclick="location.reload()">
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-[1rem] bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center text-white font-black text-xl sm:text-2xl shadow-lg shadow-purple-500/30 transform hover:rotate-12 transition-transform">MD</div>
                     <div>
-                        <h1 class="text-lg sm:text-2xl font-black tracking-tight leading-none">Chisinau<span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-orange-400">.Vibe</span></h1>
-                        <span id="current-district-display" class="text-[9px] sm:text-[10px] font-black text-indigo-500 dark:text-indigo-400 uppercase tracking-widest bg-indigo-500/10 px-2 py-0.5 rounded-md mt-1 inline-block">Весь город</span>
+                        <h1 class="text-lg sm:text-2xl font-black tracking-tight leading-none drop-shadow-sm">Chisinau<span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-orange-400">.Vibe</span></h1>
+                        <span id="current-district-display" class="text-[9px] sm:text-[10px] font-black text-indigo-500 dark:text-indigo-400 uppercase tracking-widest bg-indigo-500/10 px-1.5 sm:px-2 py-0.5 rounded-md mt-0.5 sm:mt-1 inline-block">Весь город</span>
                     </div>
                 </div>
                 
-                <div class="hidden md:flex flex-1 max-w-xl mx-10 relative group">
+                <div class="hidden md:flex flex-1 max-w-2xl mx-12 relative group">
                     <input type="text" id="search-input" onkeyup="applyFilters()" placeholder="Найти место, например: Мясо, Вино, Zaxi..." 
-                           class="w-full bg-white/50 dark:bg-slate-900/50 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-2xl py-3 px-5 pl-12 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all dark:text-white placeholder-slate-400 font-medium text-sm">
-                    <i data-lucide="search" class="absolute left-4 top-3.5 w-5 h-5 text-slate-400 group-focus-within:text-indigo-500 transition-colors"></i>
+                           class="w-full bg-white/50 dark:bg-slate-900/50 backdrop-blur-md border border-slate-200 dark:border-slate-700 rounded-2xl py-3.5 px-6 pl-14 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all dark:text-white placeholder-slate-400/80 shadow-inner font-medium text-lg">
+                    <span class="absolute left-5 top-4 text-slate-400 group-focus-within:text-indigo-500 transition-colors text-lg">🔍</span>
                 </div>
 
                 <div class="flex items-center gap-3">
-                    <button onclick="toggleTheme()" class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-sm text-slate-600 dark:text-slate-300">
-                        <i id="theme-icon" data-lucide="moon" class="w-5 h-5"></i>
+                    <button onclick="toggleTheme()" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-[1rem] bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:scale-105 hover:bg-white dark:hover:bg-slate-800 transition-all shadow-sm">
+                        <span id="theme-icon" class="text-lg sm:text-xl drop-shadow-sm">🌙</span>
                     </button>
                 </div>
             </div>
@@ -265,61 +281,65 @@
 
         <div class="max-w-[1400px] w-full mx-auto px-4 sm:px-6 pt-4 sm:pt-8 pb-12 flex flex-col xl:flex-row gap-6 sm:gap-8 flex-1">
             
-            <aside class="w-full xl:w-72 flex-shrink-0">
-                <div class="glass p-5 rounded-2xl sm:rounded-3xl xl:sticky xl:top-28 space-y-6 shadow-xl shadow-slate-200/10 dark:shadow-black/20 border border-white/60 dark:border-white/10">
+            <aside class="w-full xl:w-80 flex-shrink-0">
+                <div class="glass p-5 sm:p-6 rounded-2xl sm:rounded-[2rem] xl:sticky xl:top-28 space-y-6 sm:space-y-8 shadow-xl shadow-slate-200/20 dark:shadow-black/20 border border-white/60 dark:border-white/10">
                     
                     <div class="md:hidden relative group">
                         <input type="text" id="search-input-mobile" onkeyup="document.getElementById('search-input').value = this.value; applyFilters()" placeholder="Поиск мест..." 
-                               class="w-full bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl py-2.5 px-4 pl-10 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all dark:text-white font-medium text-sm">
-                        <i data-lucide="search" class="absolute left-3.5 top-3 w-4 h-4 text-slate-400"></i>
+                               class="w-full bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl py-3 px-4 pl-11 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all dark:text-white font-medium text-sm">
+                        <span class="absolute left-4 top-3 text-slate-400 text-sm">🔍</span>
                     </div>
 
+                    <button onclick="getRandomPlace()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-amber-500 via-fuchsia-500 to-indigo-500 text-white font-black text-lg shadow-xl shadow-fuchsia-500/25 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 animate-pulse-fast">
+                        <span class="text-2xl">🎲</span> Мне повезёт!
+                    </button>
+
                     <div>
-                        <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center justify-between mb-3 sm:mb-4">
                             <h3 class="text-[11px] font-black uppercase text-slate-400 tracking-[0.2em]">Выбор Района</h3>
                         </div>
-                        <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-1 gap-1.5" id="district-filters">
-                            <button onclick="setDistrict('all')" class="dist-btn w-full text-left px-4 py-2.5 rounded-xl font-bold transition-all duration-200 flex items-center gap-3 bg-white/40 dark:bg-slate-800/40 hover:bg-white dark:hover:bg-slate-800 text-xs sm:text-sm">
-                                <i data-lucide="compass" class="w-4 h-4"></i> Весь город
+                        <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-1 gap-2" id="district-filters">
+                            <button onclick="setDistrict('all')" class="dist-btn w-full text-left px-3.5 sm:px-5 py-2.5 sm:py-3.5 rounded-xl font-bold transition-all flex items-center justify-between bg-white/40 dark:bg-slate-800/40 hover:bg-white dark:hover:bg-slate-800 border border-transparent text-xs sm:text-base">
+                                <span class="flex items-center gap-2 sm:gap-3"><span class="text-base sm:text-xl">🌍</span> Весь город</span>
                             </button>
-                            <button onclick="setDistrict('Центр')" class="dist-btn w-full text-left px-4 py-2.5 rounded-xl font-bold transition-all duration-200 flex items-center gap-3 bg-white/40 dark:bg-slate-800/40 hover:bg-white dark:hover:bg-slate-800 text-xs sm:text-sm">
-                                <i data-lucide="landmark" class="w-4 h-4"></i> Центр
+                            <button onclick="setDistrict('Центр')" class="dist-btn w-full text-left px-3.5 sm:px-5 py-2.5 sm:py-3.5 rounded-xl font-bold transition-all flex items-center justify-between bg-white/40 dark:bg-slate-800/40 hover:bg-white dark:hover:bg-slate-800 border border-transparent text-xs sm:text-base">
+                                <span class="flex items-center gap-2 sm:gap-3"><span class="text-base sm:text-xl">🏛️</span> Центр</span>
                             </button>
-                            <button onclick="setDistrict('Ботаника')" class="dist-btn w-full text-left px-4 py-2.5 rounded-xl font-bold transition-all duration-200 flex items-center gap-3 bg-white/40 dark:bg-slate-800/40 hover:bg-white dark:hover:bg-slate-800 text-xs sm:text-sm">
-                                <i data-lucide="trees" class="w-4 h-4"></i> Ботаника
+                            <button onclick="setDistrict('Ботаника')" class="dist-btn w-full text-left px-3.5 sm:px-5 py-2.5 sm:py-3.5 rounded-xl font-bold transition-all flex items-center justify-between bg-white/40 dark:bg-slate-800/40 hover:bg-white dark:hover:bg-slate-800 border border-transparent text-xs sm:text-base">
+                                <span class="flex items-center gap-2 sm:gap-3"><span class="text-base sm:text-xl">🌳</span> Ботаника</span>
                             </button>
-                            <button onclick="setDistrict('Рышкановка')" class="dist-btn w-full text-left px-4 py-2.5 rounded-xl font-bold transition-all duration-200 flex items-center gap-3 bg-white/40 dark:bg-slate-800/40 hover:bg-white dark:hover:bg-slate-800 text-xs sm:text-sm">
-                                <i data-lucide="sparkles" class="w-4 h-4"></i> Рышкановка
+                            <button onclick="setDistrict('Рышкановка')" class="dist-btn w-full text-left px-3.5 sm:px-5 py-2.5 sm:py-3.5 rounded-xl font-bold transition-all flex items-center justify-between bg-white/40 dark:bg-slate-800/40 hover:bg-white dark:hover:bg-slate-800 border border-transparent text-xs sm:text-base">
+                                <span class="flex items-center gap-2 sm:gap-3"><span class="text-base sm:text-xl">✨</span> Рышкановка</span>
                             </button>
-                            <button onclick="setDistrict('Буюканы')" class="dist-btn w-full text-left px-4 py-2.5 rounded-xl font-bold transition-all duration-200 flex items-center gap-3 bg-white/40 dark:bg-slate-800/40 hover:bg-white dark:hover:bg-slate-800 text-xs sm:text-sm">
-                                <i data-lucide="sunset" class="w-4 h-4"></i> Буюканы
+                            <button onclick="setDistrict('Буюканы')" class="dist-btn w-full text-left px-3.5 sm:px-5 py-2.5 sm:py-3.5 rounded-xl font-bold transition-all flex items-center justify-between bg-white/40 dark:bg-slate-800/40 hover:bg-white dark:hover:bg-slate-800 border border-transparent text-xs sm:text-base">
+                                <span class="flex items-center gap-2 sm:gap-3"><span class="text-base sm:text-xl">🌅</span> Буюканы</span>
                             </button>
-                            <button onclick="setDistrict('Чеканы')" class="dist-btn w-full text-left px-4 py-2.5 rounded-xl font-bold transition-all duration-200 flex items-center gap-3 bg-white/40 dark:bg-slate-800/40 hover:bg-white dark:hover:bg-slate-800 text-xs sm:text-sm">
-                                <i data-lucide="building-2" class="w-4 h-4"></i> Чеканы
+                            <button onclick="setDistrict('Чеканы')" class="dist-btn w-full text-left px-3.5 sm:px-5 py-2.5 sm:py-3.5 rounded-xl font-bold transition-all flex items-center justify-between bg-white/40 dark:bg-slate-800/40 hover:bg-white dark:hover:bg-slate-800 border border-transparent text-xs sm:text-base">
+                                <span class="flex items-center gap-2 sm:gap-3"><span class="text-base sm:text-xl">🏙️</span> Чеканы</span>
                             </button>
                         </div>
                     </div>
 
-                    <hr class="border-slate-200/60 dark:border-slate-800">
+                    <hr class="border-slate-200 dark:border-slate-700">
 
                     <div>
-                        <h3 class="text-[11px] font-black uppercase text-slate-400 tracking-[0.2em] mb-3">Категории</h3>
-                        <div class="grid grid-cols-2 gap-2">
-                            <button onclick="setCategory('all')" id="btn-cat-all" class="cat-btn flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl font-bold transition-all duration-200 border border-slate-200/60 dark:border-slate-800 bg-white/40 dark:bg-slate-800/40 hover:border-indigo-500">
-                                <i data-lucide="layout-grid" class="w-5 h-5"></i> 
-                                <span class="text-[10px] uppercase tracking-wider">Все</span>
+                        <h3 class="text-[11px] font-black uppercase text-slate-400 tracking-[0.2em] mb-3 sm:mb-4">Категории</h3>
+                        <div class="grid grid-cols-2 gap-2 sm:gap-3">
+                            <button onclick="setCategory('all')" id="btn-cat-all" class="cat-btn flex flex-col items-center justify-center gap-1.5 p-3 sm:p-4 rounded-xl sm:rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/40 dark:bg-slate-800/40 hover:border-indigo-500">
+                                <span class="text-xl sm:text-2xl drop-shadow-md">✨</span> 
+                                <span class="text-[10px] sm:text-xs uppercase tracking-wider">Все</span>
                             </button>
-                            <button onclick="setCategory('food')" id="btn-cat-food" class="cat-btn flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl font-bold transition-all duration-200 border border-slate-200/60 dark:border-slate-800 bg-white/40 dark:bg-slate-800/40 hover:border-indigo-500">
-                                <i data-lucide="utensils" class="w-5 h-5"></i> 
-                                <span class="text-[10px] uppercase tracking-wider">Еда</span>
+                            <button onclick="setCategory('food')" id="btn-cat-food" class="cat-btn flex flex-col items-center justify-center gap-1.5 p-3 sm:p-4 rounded-xl sm:rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/40 dark:bg-slate-800/40 hover:border-indigo-500">
+                                <span class="text-xl sm:text-2xl drop-shadow-md">🍽️</span> 
+                                <span class="text-[10px] sm:text-xs uppercase tracking-wider">Еда</span>
                             </button>
-                            <button onclick="setCategory('night')" id="btn-cat-night" class="cat-btn flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl font-bold transition-all duration-200 border border-slate-200/60 dark:border-slate-800 bg-white/40 dark:bg-slate-800/40 hover:border-indigo-500">
-                                <i data-lucide="glass-water" class="w-5 h-5"></i> 
-                                <span class="text-[10px] uppercase tracking-wider">Бары</span>
+                            <button onclick="setCategory('night')" id="btn-cat-night" class="cat-btn flex flex-col items-center justify-center gap-1.5 p-3 sm:p-4 rounded-xl sm:rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/40 dark:bg-slate-800/40 hover:border-indigo-500">
+                                <span class="text-xl sm:text-2xl drop-shadow-md">🥂</span> 
+                                <span class="text-[10px] sm:text-xs uppercase tracking-wider">Бары</span>
                             </button>
-                            <button onclick="setCategory('coffee')" id="btn-cat-coffee" class="cat-btn flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl font-bold transition-all duration-200 border border-slate-200/60 dark:border-slate-800 bg-white/40 dark:bg-slate-800/40 hover:border-indigo-500">
-                                <i data-lucide="coffee" class="w-5 h-5"></i> 
-                                <span class="text-[10px] uppercase tracking-wider">Кофе</span>
+                            <button onclick="setCategory('coffee')" id="btn-cat-coffee" class="cat-btn flex flex-col items-center justify-center gap-1.5 p-3 sm:p-4 rounded-xl sm:rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/40 dark:bg-slate-800/40 hover:border-indigo-500">
+                                <span class="text-xl sm:text-2xl drop-shadow-md">☕</span> 
+                                <span class="text-[10px] sm:text-xs uppercase tracking-wider">Кофе</span>
                             </button>
                         </div>
                     </div>
@@ -327,24 +347,27 @@
             </aside>
 
             <main class="flex-1 min-w-0">
-                <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-3 glass px-6 py-4 rounded-2xl sm:rounded-3xl border border-white/50 dark:border-white/10">
+                <div class="mb-6 sm:mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-3 glass px-5 sm:px-8 py-4 sm:py-5 rounded-2xl sm:rounded-[2rem] border border-white/50 dark:border-white/10">
                     <div>
-                        <h2 class="text-2xl sm:text-3xl font-black mb-0.5 dark:text-white tracking-tight" id="grid-title">Все заведения</h2>
-                        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">Найдено <span id="places-count" class="font-black text-indigo-500 bg-indigo-500/10 px-2 py-0.5 rounded-md transition-all duration-200 inline-block">0</span> топовых мест</p>
+                        <h2 class="text-2xl sm:text-4xl font-black mb-1 dark:text-white tracking-tight" id="grid-title">Все заведения</h2>
+                        <p class="text-xs sm:text-base text-slate-500 dark:text-slate-400 font-medium">Мы нашли <span id="places-count" class="font-black text-indigo-500 text-sm sm:text-lg bg-indigo-100 dark:bg-indigo-900/30 px-2 py-0.5 rounded-lg">0</span> топовых мест для вас</p>
                     </div>
                 </div>
 
-                <div class="mb-6 glass p-3 sm:p-4 rounded-2xl sm:rounded-3xl border border-white/50 dark:border-white/10 shadow-xl overflow-hidden relative">
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 px-1 gap-2 relative z-20">
-                        <h3 class="font-black text-sm sm:text-base flex items-center gap-2">
-                            <i data-lucide="map-pin" class="w-4 h-4 text-indigo-500"></i> Интерактивная карта Кишинева
-                        </h3>
-                        <span class="text-[11px] text-slate-500 dark:text-slate-400 font-medium bg-white/50 dark:bg-slate-800/50 px-3 py-1 rounded-full border border-slate-200/50 dark:border-slate-700/50">Нажмите на маркер для деталей</span>
+                <div class="mb-6 sm:mb-8 glass p-2.5 sm:p-4 rounded-2xl sm:rounded-[2rem] border border-white/50 dark:border-white/10 shadow-xl overflow-hidden relative group">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-2 sm:mb-3 px-2 gap-1.5 relative z-20">
+                        <h3 class="font-black text-base sm:text-lg flex items-center gap-2">📍 Интерактивная карта Кишинева</h3>
+                        <div class="flex items-center gap-2">
+                            <button onclick="getUserLocation()" class="text-[10px] sm:text-xs bg-indigo-500 text-white font-bold px-3 py-1 rounded-full shadow hover:bg-indigo-600 transition-all flex items-center gap-1">
+                                🎯 Мое местоположение
+                            </button>
+                            <span class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-bold bg-white/50 dark:bg-slate-800/50 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full border border-slate-200 dark:border-slate-700 backdrop-blur-md">Нажми на иконку места для деталей</span>
+                        </div>
                     </div>
-                    <div id="map" class="h-[280px] sm:h-[400px] w-full rounded-xl sm:rounded-2xl border border-white/40 dark:border-white/10 z-10 shadow-inner"></div>
+                    <div id="map" class="h-[280px] sm:h-[450px] w-full rounded-xl sm:rounded-2xl border border-white/40 dark:border-white/10 z-10 shadow-inner"></div>
                 </div>
 
-                <div id="places-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 pb-20 items-stretch">
+                <div id="places-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 pb-20 items-stretch">
                 </div>
             </main>
         </div>
@@ -352,231 +375,173 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // БАЗА ДАННЫХ С ИКОНКАМИ LUCIDE
+        // БАЗА ДАННЫХ ДЕЙСТВУЮЩИХ ЗАВЕДЕНИЙ С ГУГЛ КАРТ
         const places = [
+            // McDonalds
             { 
                 name: "McDonald's (Botanica)", type: "food", district: "Ботаника", tags: ["Фастфуд", "Бургеры"], price: "$", rating: 4.3, 
                 desc: "Самый знаменитый фастфуд на пересечении бульваров Дачия и Траян. Быстро, сытно и всегда знакомо.", 
                 entertainment: "McDrive 24/7, детская площадка на улице, удобная летняя терраса.",
-                priceRange: "80 - 150 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=McDonalds+Botanica+Chisinau",
-                lat: 46.9863, lng: 28.8576, gradient: "from-amber-500 to-red-500", icon: "sandwich" 
+                priceRange: "80 - 150 леев", mapUrl: "https://maps.google.com/?q=McDonald's+Botanica+Chisinau",
+                lat: 46.9863, lng: 28.8576, gradient: "from-red-600 to-yellow-500", icon: "🍟" 
             },
             { 
                 name: "McDonald's (Centru)", type: "food", district: "Центр", tags: ["Фастфуд", "Популярное"], price: "$", rating: 4.4, 
                 desc: "Культовый Макдоналдс в самом сердце города на проспекте Штефана чел Маре. Всегда много людей и движа.", 
                 entertainment: "Идеальное место встречи, два этажа, круглосуточное окно выдачи.",
-                priceRange: "80 - 150 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=McDonalds+Stefan+cel+Mare+Chisinau",
-                lat: 47.0252, lng: 28.8317, gradient: "from-amber-500 to-red-500", icon: "sandwich" 
+                priceRange: "80 - 150 леев", mapUrl: "https://maps.google.com/?q=McDonald's+Centru+Chisinau",
+                lat: 47.0252, lng: 28.8317, gradient: "from-red-600 to-yellow-500", icon: "🍔" 
             },
             { 
                 name: "McDonald's (Râșcani)", type: "food", district: "Рышкановка", tags: ["Фастфуд", "McDrive"], price: "$", rating: 4.3, 
                 desc: "Просторный ресторан на Московском проспекте. Отлично подходит для быстрого перекуса в районе.", 
                 entertainment: "Современный интерьер, быстрое обслуживание, McDrive.",
-                priceRange: "80 - 150 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=McDonalds+Rascani+Chisinau",
-                lat: 47.0458, lng: 28.8617, gradient: "from-amber-500 to-red-500", icon: "sandwich" 
+                priceRange: "80 - 150 леев", mapUrl: "https://maps.google.com/?q=McDonald's+Riscani+Chisinau",
+                lat: 47.0458, lng: 28.8617, gradient: "from-red-600 to-yellow-500", icon: "🥤" 
             },
             { 
                 name: "McDonald's (MallDova)", type: "food", district: "Центр", tags: ["Фуд-корт", "Шопинг"], price: "$", rating: 4.2, 
                 desc: "Удобная точка на фуд-корте Shopping MallDova. То что нужно после долгого шопинга или перед кино.", 
                 entertainment: "Быстрое восполнение энергии, доступ ко всем развлечениям торгового центра.",
-                priceRange: "80 - 150 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=McDonalds+Shopping+MallDova+Chisinau",
-                lat: 47.0039, lng: 28.8394, gradient: "from-amber-500 to-red-500", icon: "sandwich" 
+                priceRange: "80 - 150 леев", mapUrl: "https://maps.google.com/?q=McDonald's+MallDova",
+                lat: 47.0039, lng: 28.8394, gradient: "from-red-600 to-yellow-500", icon: "🍟" 
             },
+
+            // Дополнительные топовые и РАБОТАЮЩИЕ заведения Кишинева
+            {
+                name: "MamiCo", type: "food", district: "Центр", tags: ["Молдавская", "Уют"], price: "$$", rating: 4.8,
+                desc: "Аутентичный молдавский ресторан с домашней кухней, мамалыгой, плациндами и уютной террасой.",
+                entertainment: "Национальный декор, дегустация домашнего вина, семейная атмосфера.",
+                priceRange: "150 - 350 леев", mapUrl: "https://maps.google.com/?q=MamiCo+Chisinau",
+                lat: 47.0221, lng: 28.8354, gradient: "from-amber-600 to-amber-900", icon: "🍷"
+            },
+            {
+                name: "Gastrobar", type: "food", district: "Центр", tags: ["Европа", "Гриль"], price: "$$$", rating: 4.7,
+                desc: "Стильный гастробар возле Парка Валя Морилор с акцентом на блюда на гриле и отличную коктейльную карту.",
+                entertainment: "Живая атмосфера, сочные стейки, отличные виды рядом с парком.",
+                priceRange: "200 - 550 леев", mapUrl: "https://maps.google.com/?q=Gastrobar+Chisinau",
+                lat: 47.0189, lng: 28.8220, gradient: "from-stone-800 to-orange-900", icon: "🥩"
+            },
+            {
+                name: "Nargila Lounge", type: "night", district: "Центр", tags: ["Кальян", "Лаунж"], price: "$$", rating: 4.7,
+                desc: "Популярный кальянный бар с огромным ассортиментом табака и атмосферной подсветкой.",
+                entertainment: "Премиальные кальяны, настольные игры, фоновая электронная музыка.",
+                priceRange: "180 - 400 леев", mapUrl: "https://maps.google.com/?q=Nargila+Lounge+Chisinau",
+                lat: 47.0240, lng: 28.8390, gradient: "from-purple-900 to-indigo-950", icon: "💨"
+            },
+            {
+                name: "Rozmarīn", type: "food", district: "Центр", tags: ["Завтраки", "Эко"], price: "$$", rating: 4.7,
+                desc: "Просторное кафе с современным дизайном, полезной едой, отличным спешелти кофе и завтраками весь день.",
+                entertainment: "Здоровая еда, отличный дизайн, дог-френдли атмосфера.",
+                priceRange: "100 - 280 леев", mapUrl: "https://maps.google.com/?q=Rozmarin+Chisinau",
+                lat: 47.0175, lng: 28.8312, gradient: "from-emerald-500 to-teal-700", icon: "🌿"
+            },
+            {
+                name: "Invino Enoteca", type: "night", district: "Центр", tags: ["Вино", "Дегустации"], price: "$$$", rating: 4.9,
+                desc: "Культовое винное место Кишинева с грамотными сомелье и сотнями позиций локальных вин.",
+                entertainment: "Индивидуальные дегустации, сырные сеты, профессиональные сомелье.",
+                priceRange: "200 - 700 леев", mapUrl: "https://maps.google.com/?q=Invino+Enoteca+Chisinau",
+                lat: 47.0210, lng: 28.8380, gradient: "from-rose-900 to-red-950", icon: "🍷"
+            },
+            {
+                name: "5Elements", type: "night", district: "Рышкановка", tags: ["Кальян", "Коктейли"], price: "$$", rating: 4.6,
+                desc: "Современное заведение с премиум кальянами, качественной кухней и хорошим баром.",
+                entertainment: "Кальяны, диджей-сеты по выходным, авторская коктейльная карта.",
+                priceRange: "150 - 400 леев", mapUrl: "https://maps.google.com/?q=5Elements+Chisinau",
+                lat: 47.0425, lng: 28.8650, gradient: "from-blue-900 to-indigo-900", icon: "🍹"
+            },
+            {
+                name: "Eli Pili", type: "food", district: "Центр", tags: ["24/7", "Уют"], price: "$$", rating: 4.5,
+                desc: "Уютный ресторан-бар с атмосферным деревянным интерьером, открытый 24 часа в сутки.",
+                entertainment: "Круглосуточная кухня, большой выбор пива и закусок, сытные порции.",
+                priceRange: "100 - 300 леев", mapUrl: "https://maps.google.com/?q=Eli+Pili+Chisinau",
+                lat: 47.0200, lng: 28.8330, gradient: "from-amber-800 to-amber-950", icon: "🍻"
+            },
+
+            // Оставшиеся места
             { 
                 name: "Marlene", type: "night", district: "Центр", tags: ["Коктейли", "Дворик"], price: "$$$", rating: 4.9, 
                 desc: "Один из лучших коктейльных баров в историческом здании с атмосферным закрытым двориком.", 
-                entertainment: "Авторские коктейли, диджей-сеты по выходным, кальян и уютная лаунж-зона во дворе.",
-                priceRange: "150 - 400 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=Marlene+Bar+Chisinau",
-                lat: 47.0238, lng: 28.8341, gradient: "from-purple-900 to-indigo-900", icon: "glass-water" 
+                entertainment: "Авторские коктейли, диджей-сеты по выходным, уютная лаунж-зона.",
+                priceRange: "150 - 400 леев", mapUrl: "https://maps.google.com/?q=Marlene+Bar+Chisinau",
+                lat: 47.0238, lng: 28.8341, gradient: "from-purple-900 to-indigo-900", icon: "🍸" 
             },
             { 
                 name: "Smokehouse", type: "food", district: "Центр", tags: ["Барбекю", "Крафт"], price: "$$", rating: 4.7, 
-                desc: "Настоящее американское BBQ, топовое крафтовое пиво и отличная англоговорящая тусовка.", 
-                entertainment: "Крафтовое пиво, мясные деликатесы коптящиеся на дровах, живые выступления.",
-                priceRange: "120 - 350 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=Smokehouse+Chisinau",
-                lat: 47.0215, lng: 28.8410, gradient: "from-red-900 to-zinc-900", icon: "flame" 
+                desc: "Настоящее американское BBQ, топовое крафтовое пиво и отличная тусовка.", 
+                entertainment: "Крафтовое пиво, мясные деликатесы коптящиеся на дровах.",
+                priceRange: "120 - 350 леев", mapUrl: "https://maps.google.com/?q=Smokehouse+Chisinau",
+                lat: 47.0215, lng: 28.8410, gradient: "from-red-900 to-black", icon: "🍖" 
             },
             { 
                 name: "Carpe Diem", type: "food", district: "Центр", tags: ["Вино", "Premium"], price: "$$$", rating: 4.9, 
-                desc: "Лучшая энотека города. Огромный выбор эксклюзивных вин и шикарная кухня на ул. Колумна.", 
+                desc: "Лучшая энотека города. Огромный выбор эксклюзивных вин и шикарная кухня.", 
                 entertainment: "Дегустации редких молдавских вин сомелье, гастрономические ужины.",
-                priceRange: "300 - 900 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=Carpe+Diem+Wine+Shop+Chisinau",
-                lat: 47.0265, lng: 28.8385, gradient: "from-rose-800 to-pink-900", icon: "wine" 
+                priceRange: "300 - 900 леев", mapUrl: "https://maps.google.com/?q=Carpe+Diem+Wine+Bar+Chisinau",
+                lat: 47.0265, lng: 28.8385, gradient: "from-rose-800 to-pink-900", icon: "🍷" 
             },
             { 
                 name: "Zaxi Fun & Finest", type: "food", district: "Центр", tags: ["Азиатская", "Панорама"], price: "$$$$", rating: 4.8, 
-                desc: "Панорамный ресторан на крыше отеля Radisson Blu. Суши, авторские коктейли и роскошный вид.", 
-                entertainment: "Вид на весь ночной город, панорамная терраса, премиум-суши и авторские миксы.",
-                priceRange: "400 - 1200 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=Zaxi+Chisinau",
-                lat: 47.0231, lng: 28.8310, gradient: "from-slate-800 to-zinc-900", icon: "sparkles" 
+                desc: "Панорамный ресторан на крыше отеля Radisson Blu. Суши и авторские коктейли.", 
+                entertainment: "Вид на весь ночной город, панорамная терраса, премиум-суши.",
+                priceRange: "400 - 1200 леев", mapUrl: "https://maps.google.com/?q=Zaxi+Chisinau",
+                lat: 47.0231, lng: 28.8310, gradient: "from-slate-800 to-zinc-900", icon: "🍣" 
             },
             { 
                 name: "Tucano Coffee Costa Rica", type: "coffee", district: "Центр", tags: ["Кофе", "Завтраки"], price: "$$", rating: 4.8, 
-                desc: "Легендарная кофейня на Пушкина. Чизкейки, спешелти кофе и расслабленная хиппи-атмосфера.", 
-                entertainment: "Настольные игры, книги, уютные кресла для работы с ноутбуком и сытные завтраки.",
-                priceRange: "60 - 180 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=Tucano+Coffee+Costa+Rica+Chisinau",
-                lat: 47.0250, lng: 28.8335, gradient: "from-amber-500 to-orange-600", icon: "coffee" 
+                desc: "Легендарная кофейня на Пушкина. Чизкейки, спешелти кофе и хиппи-атмосфера.", 
+                entertainment: "Настольные игры, книги, уютные кресла для работы.",
+                priceRange: "60 - 180 леев", mapUrl: "https://maps.google.com/?q=Tucano+Coffee+Costa+Rica+Chisinau",
+                lat: 47.0250, lng: 28.8335, gradient: "from-amber-400 to-orange-500", icon: "☕" 
             },
             { 
                 name: "Kira's Club", type: "night", district: "Центр", tags: ["Андеграунд", "Танцы"], price: "$", rating: 4.7, 
-                desc: "Скрытый бар во дворе театра. Инди-музыка, демократичные цены и максимальная душевность.", 
-                entertainment: "Танцевальные вечеринки, инди-концерты, недорогой бар и крутое тусовочное сообщество.",
-                priceRange: "50 - 200 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=Kiras+Club+Chisinau",
-                lat: 47.0205, lng: 28.8360, gradient: "from-emerald-700 to-teal-950", icon: "music" 
+                desc: "Скрытый бар во дворе театра. Инди-музыка, демократичные цены и душевность.", 
+                entertainment: "Танцевальные вечеринки, инди-концерты, недорогой бар.",
+                priceRange: "50 - 200 леев", mapUrl: "https://maps.google.com/?q=Kira's+Club+Chisinau",
+                lat: 47.0205, lng: 28.8360, gradient: "from-emerald-600 to-teal-900", icon: "👽" 
             },
             { 
                 name: "Saperavi", type: "food", district: "Рышкановка", tags: ["Грузия", "Вино"], price: "$$", rating: 4.8, 
                 desc: "Самые сочные хинкали, хачапури и лучшее грузинское вино на Рышкановке.", 
-                entertainment: "Традиционное грузинское гостеприимство, живая музыка по вечерам, дегустация вин.",
-                priceRange: "150 - 350 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=Saperavi+Chisinau",
-                lat: 47.0450, lng: 28.8600, gradient: "from-red-800 to-orange-900", icon: "utensils" 
-            },
-            { 
-                name: "Torro Grill", type: "food", district: "Рышкановка", tags: ["Мясо", "Бургеры"], price: "$$", rating: 4.6, 
-                desc: "Мощные бургеры и отличные стейки в самом сердце Московского проспекта.", 
-                entertainment: "Спортивные трансляции на больших экранах, сочные стейки на открытом огне.",
-                priceRange: "130 - 380 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=Torro+Grill+Chisinau",
-                lat: 47.0475, lng: 28.8630, gradient: "from-orange-600 to-red-700", icon: "flame" 
+                entertainment: "Традиционное грузинское гостеприимство, живая музыка по вечерам.",
+                priceRange: "150 - 350 леев", mapUrl: "https://maps.google.com/?q=Saperavi+Chisinau",
+                lat: 47.0450, lng: 28.8600, gradient: "from-red-800 to-orange-800", icon: "🥟" 
             },
             { 
                 name: "Pegas", type: "food", district: "Рышкановка", tags: ["Мясо", "Терраса"], price: "$$$", rating: 4.8, 
-                desc: "Знаменитый ресторан с великолепной мясной кухней и огромной уютной террасой на Албишоаре.", 
+                desc: "Знаменитый ресторан с великолепной мясной кухней и огромной уютной террасой.", 
                 entertainment: "Премиальное мясо собственного производства, летняя терраса с фонтаном.",
-                priceRange: "200 - 600 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=Pegas+Restaurant+Chisinau",
-                lat: 47.0390, lng: 28.8520, gradient: "from-rose-700 to-red-900", icon: "chef-hat" 
-            },
-            { 
-                name: "Teatrul Gastronomic", type: "food", district: "Рышкановка", tags: ["Food Court", "Модно"], price: "$$", rating: 4.7, 
-                desc: "Современное фуд-пространство. Несколько кухонь мира и бар под одной стильной крышей.", 
-                entertainment: "Выбор из разных кухонь мира, коктейль-бар, диджейские сэты и открытая площадка.",
-                priceRange: "100 - 300 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=Teatrul+Gastronomic+Chisinau",
-                lat: 47.0430, lng: 28.8580, gradient: "from-indigo-500 to-purple-600", icon: "layout-grid" 
-            },
-            { 
-                name: "Esushi", type: "food", district: "Рышкановка", tags: ["Суши", "Азия"], price: "$$", rating: 4.6, 
-                desc: "Отличные свежие роллы и паназиатская кухня в стильном интерьере на Киевской.", 
-                entertainment: "Японские и паназиатские блюда, стильный минималистичный дизайн.",
-                priceRange: "120 - 320 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=Esushi+Chisinau",
-                lat: 47.0490, lng: 28.8660, gradient: "from-red-500 to-rose-700", icon: "fish" 
+                priceRange: "200 - 600 леев", mapUrl: "https://maps.google.com/?q=Pegas+Restaurant+Chisinau",
+                lat: 47.0390, lng: 28.8520, gradient: "from-rose-600 to-red-800", icon: "🥩" 
             },
             { 
                 name: "Osho Bar & Kitchen", type: "food", district: "Ботаника", tags: ["Стейки", "Стиль"], price: "$$$", rating: 4.8, 
-                desc: "Премиальный стейкхаус с невероятным дизайном. Пожалуй, лучшее мясо на Ботанике.", 
-                entertainment: "Сухой выдержки стейки, винная карта мирового уровня, премиальная обстановка.",
-                priceRange: "250 - 750 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=Osho+Bar+Kitchen+Chisinau",
-                lat: 46.9850, lng: 28.8560, gradient: "from-stone-800 to-neutral-950", icon: "beef" 
-            },
-            { 
-                name: "Roata Vremii", type: "food", district: "Ботаника", tags: ["Молдавская"], price: "$$", rating: 4.6, 
-                desc: "Аутентичный ресторан с национальным колоритом, музеем во дворе и живой музыкой.", 
-                entertainment: "Живая фольклорная музыка, традиционные молдавские блюда, уникальный этно-интерьер.",
-                priceRange: "100 - 300 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=Roata+Vremii+Chisinau",
-                lat: 46.9830, lng: 28.8500, gradient: "from-amber-800 to-orange-950", icon: "castle" 
-            },
-            { 
-                name: "Trattoria della Nonna", type: "food", district: "Ботаника", tags: ["Италия", "Семья"], price: "$$", rating: 4.5, 
-                desc: "Семейный ресторан в центре района с хорошей итальянской пиццей и домашней пастой.", 
-                entertainment: "Детская игровая зона, мастер-классы по приготовлению пиццы для детей.",
-                priceRange: "110 - 300 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=Trattoria+della+Nonna+Chisinau",
-                lat: 46.9880, lng: 28.8600, gradient: "from-emerald-600 to-teal-800", icon: "pizza" 
-            },
-            { 
-                name: "MuzCafe", type: "night", district: "Ботаника", tags: ["Караоке", "Вечеринки"], price: "$$", rating: 4.4, 
-                desc: "Популярный клуб на Сармизеджетуса. Громко, весело, караоке и танцы до самого утра.", 
-                entertainment: "Профессиональное караоке-оборудование, бэк-вокалисты, танцпол и клубные вечеринки.",
-                priceRange: "150 - 450 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=MuzCafe+Chisinau",
-                lat: 46.9790, lng: 28.8650, gradient: "from-fuchsia-600 to-purple-900", icon: "mic" 
-            },
-            { 
-                name: "Keks", type: "coffee", district: "Ботаника", tags: ["Десерты", "Кофе"], price: "$$", rating: 4.7, 
-                desc: "Стильная кондитерская с потрясающими эклерами, тортами и хорошим кофе.", 
-                entertainment: "Свежая выпечка каждый день, десерты ручной работы, уютная атмосфера для встреч.",
-                priceRange: "50 - 150 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=Keks+Chisinau",
-                lat: 46.9865, lng: 28.8590, gradient: "from-pink-400 to-rose-500", icon: "cake-slice" 
+                desc: "Премиальный стейкхаус с невероятным дизайном. Лучшее мясо на Ботанике.", 
+                entertainment: "Стейки сухой выдержки, винная карта мирового уровня.",
+                priceRange: "250 - 750 леев", mapUrl: "https://maps.google.com/?q=Osho+Bar+Kitchen+Chisinau",
+                lat: 46.9850, lng: 28.8560, gradient: "from-stone-700 to-neutral-900", icon: "🔥" 
             },
             { 
                 name: "Keller Holz Gastropub", type: "night", district: "Буюканы", tags: ["Паб", "Крафт"], price: "$$$", rating: 4.7, 
-                desc: "Современный гастропаб с собственной крафтовой пивоварней и отличными закусками.", 
-                entertainment: "Живое пиво из собственной пивоварни, закуски к пиву, музыкальные вечера.",
-                priceRange: "150 - 400 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=Keller+Holz+Gastropub+Chisinau",
-                lat: 47.0320, lng: 28.8050, gradient: "from-amber-600 to-yellow-800", icon: "beer" 
+                desc: "Современный гастропаб с собственной крафтовой пивоварней и закусками.", 
+                entertainment: "Живое пиво из собственной пивоварни, музыкальные вечера.",
+                priceRange: "150 - 400 леев", mapUrl: "https://maps.google.com/?q=Keller+Holz+Gastropub+Chisinau",
+                lat: 47.0320, lng: 28.8050, gradient: "from-amber-600 to-yellow-800", icon: "🍻" 
             },
             { 
                 name: "La Placinte", type: "food", district: "Буюканы", tags: ["Молдавская"], price: "$$", rating: 4.5, 
-                desc: "Классика жанра на Алба Юлия. Традиционная зама, горячая мамалыга и сытные плацинды.", 
-                entertainment: "Уютная домашняя атмосфера, сытные национальные блюда, быстрое обслуживание.",
-                priceRange: "80 - 250 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Chisinau",
-                lat: 47.0350, lng: 28.7980, gradient: "from-yellow-500 to-amber-600", icon: "cooking-pot" 
-            },
-            { 
-                name: "Jengal", type: "coffee", district: "Буюканы", tags: ["Кофе", "Уют"], price: "$", rating: 4.8, 
-                desc: "Маленькая, но безумно уютная спешелти кофейня прямо у входа в парк Дендрарий.", 
-                entertainment: "Кофе с собой для прогулок по парку Дендрарий, авторские чаи и десерты.",
-                priceRange: "40 - 120 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=Jengal+Coffee+Chisinau",
-                lat: 47.0370, lng: 28.8150, gradient: "from-amber-700 to-emerald-800", icon: "cup-soda" 
-            },
-            { 
-                name: "Zity Mall Food Court", type: "food", district: "Буюканы", tags: ["Фуд-корт", "Разное"], price: "$", rating: 4.5, 
-                desc: "Большой выбор фастфуда на огромной открытой террасе торгового центра Zity Mall.", 
-                entertainment: "Шопинг, кинотеатр, разнообразные корнеры с едой и просторная терраса с видом на город.",
-                priceRange: "70 - 250 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=Zity+Mall+Chisinau",
-                lat: 47.0290, lng: 28.8200, gradient: "from-cyan-500 to-blue-600", icon: "shopping-bag" 
+                desc: "Классика жанра на Алба Юлия. Традиционная зама, мамалыга и сытные плацинды.", 
+                entertainment: "Уютная домашняя атмосфера, сытные национальные блюда.",
+                priceRange: "80 - 250 леев", mapUrl: "https://maps.google.com/?q=La+Placinte+Alba+Iulia+Chisinau",
+                lat: 47.0350, lng: 28.7980, gradient: "from-yellow-400 to-orange-500", icon: "🥧" 
             },
             { 
                 name: "Draft", type: "night", district: "Чеканы", tags: ["Паб", "Пиво"], price: "$$", rating: 4.4, 
-                desc: "Отличный сетевой паб на проспекте Мирча чел Бэтрын. Много разливного пива и шумная атмосфера.", 
-                entertainment: "Спортивные трансляции, большой выбор разливного пива, снеки, шумные компании.",
-                priceRange: "120 - 350 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=Draft+Pub+Chisinau",
-                lat: 47.0420, lng: 28.8920, gradient: "from-amber-600 to-orange-800", icon: "beer" 
-            },
-            { 
-                name: "Oliva", type: "food", district: "Чеканы", tags: ["Средиземноморская"], price: "$$", rating: 4.5, 
-                desc: "Здоровая еда, пицца и вкусные салаты. Просторный светлый зал, отлично для семейных ужинов.", 
-                entertainment: "Итальянская паста, дровяная пицца, уютный интерьер для всей семьи.",
-                priceRange: "100 - 300 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=Andys+Pizza+Chisinau",
-                lat: 47.0440, lng: 28.8850, gradient: "from-emerald-500 to-lime-600", icon: "salad" 
-            },
-            { 
-                name: "Andy's Pizza", type: "food", district: "Чеканы", tags: ["Пицца", "Кэжуал"], price: "$", rating: 4.3, 
-                desc: "Самая известная сеть пиццерий в Молдове. Быстро, вкусно и знакомо каждому.", 
-                entertainment: "Большое меню пиццы и суши, доступные цены, детское меню.",
-                priceRange: "70 - 200 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=Andys+Pizza+Chisinau",
-                lat: 47.0395, lng: 28.8880, gradient: "from-red-500 to-red-700", icon: "pizza" 
-            },
-            { 
-                name: "Star Kebab", type: "food", district: "Чеканы", tags: ["Фастфуд", "Кебаб"], price: "$", rating: 4.4, 
-                desc: "Вкуснейшие кебабы, фалафель и айран. Отличный вариант для быстрого и сытного перекуса.", 
-                entertainment: "Быстрое приготовление, сытные порции, удобное расположение на проспекте.",
-                priceRange: "60 - 150 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=Star+Kebab+Chisinau",
-                lat: 47.0410, lng: 28.8950, gradient: "from-orange-500 to-amber-600", icon: "sandwich" 
+                desc: "Сетевой паб на проспекте Мирча чел Бэтрын. Разливное пиво и шумная атмосфера.", 
+                entertainment: "Спортивные трансляции, большой выбор разливного пива, снеки.",
+                priceRange: "120 - 350 леев", mapUrl: "https://maps.google.com/?q=Draft+Ciocana+Chisinau",
+                lat: 47.0420, lng: 28.8920, gradient: "from-yellow-600 to-amber-800", icon: "🍺" 
             }
         ];
 
@@ -584,6 +549,7 @@
         let map = null;
         let markersLayer = null;
         let tileLayer = null;
+        let userMarker = null;
 
         const isMobile = () => window.innerWidth < 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
@@ -598,16 +564,80 @@
             if (isDark) {
                 html.classList.remove('dark');
                 html.classList.add('light');
-                icon.setAttribute('data-lucide', 'moon');
+                icon.textContent = '🌙';
                 if (tileLayer) tileLayer.setUrl(mapStyleLight);
             } else {
                 html.classList.remove('light');
                 html.classList.add('dark');
-                icon.setAttribute('data-lucide', 'sun');
+                icon.textContent = '☀️';
                 if (tileLayer) tileLayer.setUrl(mapStyleDark);
             }
-            lucide.createIcons();
             if (map) map.invalidateSize();
+        }
+
+        // РАНДОМАЙЗЕР ("МНЕ ПОВЕЗЕТ")
+        function getRandomPlace() {
+            let currentPlaces = places.filter(p => {
+                const matchCat = state.category === 'all' || p.type === state.category;
+                const matchDist = state.district === 'all' || p.district === state.district;
+                return matchCat && matchDist;
+            });
+
+            if (currentPlaces.length === 0) currentPlaces = places;
+
+            const random = currentPlaces[Math.floor(Math.random() * currentPlaces.length)];
+            
+            const modal = document.getElementById('random-modal');
+            const content = document.getElementById('modal-content');
+            const mapBtn = document.getElementById('modal-map-btn');
+
+            content.innerHTML = `
+                <div class="p-4 rounded-2xl bg-gradient-to-br ${random.gradient} text-white flex items-center justify-between">
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-widest opacity-80">${random.district}</span>
+                        <h4 class="text-2xl font-black">${random.name}</h4>
+                    </div>
+                    <span class="text-4xl">${random.icon}</span>
+                </div>
+                <p class="text-sm font-medium opacity-90">${random.desc}</p>
+                <div class="bg-indigo-500/10 p-3 rounded-xl border border-indigo-500/20 text-xs">
+                    <b>🎯 Развлечения:</b> ${random.entertainment}
+                </div>
+                <div class="text-xs font-bold text-emerald-500">💰 Средний чек: ${random.priceRange}</div>
+            `;
+            mapBtn.href = random.mapUrl;
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeRandomModal() {
+            document.getElementById('random-modal').classList.add('hidden');
+        }
+
+        // ГЕОЛОКАЦИЯ ПОЛЬЗОВАТЕЛЯ
+        function getUserLocation() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+
+                    if (userMarker) map.removeLayer(userMarker);
+
+                    const userIcon = L.divIcon({
+                        className: 'user-location-ping',
+                        iconSize: [20, 20],
+                        iconAnchor: [10, 10]
+                    });
+
+                    userMarker = L.marker([lat, lng], { icon: userIcon }).addTo(map);
+                    userMarker.bindPopup("<b>Вы находитесь здесь 📍</b>").openPopup();
+                    map.setView([lat, lng], 14);
+                }, error => {
+                    alert("Не удалось получить геопозицию. Убедитесь, что разрешили доступ к местоположению на вашем устройстве.");
+                });
+            } else {
+                alert("Ваш браузер не поддерживает геопозиционирование.");
+            }
         }
 
         function initMap() {
@@ -621,11 +651,14 @@
 
             const isDark = document.documentElement.classList.contains('dark');
             tileLayer = L.tileLayer(isDark ? mapStyleDark : mapStyleLight, {
-                attribution: '© CARTO'
+                attribution: '© <a href="https://carto.com/">CARTO</a>'
             }).addTo(map);
 
             markersLayer = L.layerGroup().addTo(map);
             updateMapMarkers(places);
+
+            // Автозапрос местоположения при загрузке карты
+            getUserLocation();
         }
 
         function updateMapMarkers(placesToRender) {
@@ -635,12 +668,12 @@
             let bounds = [];
 
             placesToRender.forEach(p => {
-                const iconSize = isMobile() ? [36, 36] : [42, 42];
+                const iconSize = isMobile() ? [38, 38] : [48, 48];
                 const customIcon = L.divIcon({
                     className: 'bg-transparent',
                     html: `
-                        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-white shadow-lg border-2 border-white dark:border-slate-800 bg-gradient-to-br ${p.gradient} hover:scale-110 transition-transform duration-300">
-                            <i data-lucide="${p.icon}" class="w-4 h-4 sm:w-5 sm:h-5"></i>
+                        <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-lg sm:text-2xl shadow-xl border-2 sm:border-4 border-white dark:border-slate-800 bg-gradient-to-br ${p.gradient} hover:scale-110 transition-transform duration-300">
+                            ${p.icon}
                         </div>
                     `,
                     iconSize: iconSize,
@@ -652,16 +685,19 @@
                 
                 const popupContent = `
                     <div style="font-family: 'Outfit', sans-serif; padding: 2px; min-width: 200px;">
-                        <h4 style="font-weight: 800; font-size: 15px; margin-bottom: 6px; display: flex; align-items: center; gap: 8px;">
-                            <span style="color: #4f46e5;">●</span> ${p.name}
+                        <h4 style="font-weight: 900; font-size: 16px; margin-bottom: 6px; display: flex; align-items: center; gap: 8px;">
+                            <div class="w-7 h-7 rounded-full bg-gradient-to-br ${p.gradient} flex items-center justify-center text-xs shadow-md" style="color:white; display:flex; align-items:center; justify-content:center;">
+                                ${p.icon}
+                            </div> 
+                            <span style="color: var(--tw-text-opacity, #334155);">${p.name}</span>
                         </h4>
                         <p style="font-size: 12px; color: #64748b; margin-bottom: 6px;"><b>Район:</b> ${p.district}</p>
-                        <p style="font-size: 12px; margin-bottom: 6px; line-height: 1.4;">${p.desc}</p>
-                        <div style="background: rgba(99, 102, 241, 0.08); padding: 6px 8px; border-radius: 8px; margin-bottom: 6px;">
-                            <p style="font-size: 11px; margin: 0; line-height: 1.3;"><b>🎯 Развлечения:</b> ${p.entertainment}</p>
+                        <p style="font-size: 13px; margin-bottom: 6px; line-height: 1.3;">${p.desc}</p>
+                        <div style="background: rgba(99, 102, 241, 0.1); padding: 6px 8px; border-radius: 8px; margin-bottom: 6px;">
+                            <p style="font-size: 12px; margin: 0; line-height: 1.3;"><b>🎯 Развлечения:</b> ${p.entertainment}</p>
                         </div>
-                        <p style="font-size: 11px; font-weight: 800; color: #10b981; margin: 0 0 8px 0; background: rgba(16, 185, 129, 0.08); padding: 4px 8px; border-radius: 6px;">Средний чек: ${p.priceRange}</p>
-                        <a href="${p.mapUrl}" target="_blank" style="display: block; text-align: center; background: #0f172a; color: white; padding: 6px 8px; border-radius: 8px; font-size: 11px; font-weight: bold; text-decoration: none;">Открыть на Google Картах</a>
+                        <p style="font-size: 12px; font-weight: 800; color: #10b981; margin: 0 0 8px 0; background: rgba(16, 185, 129, 0.1); padding: 4px 8px; border-radius: 6px;">💰 Цены: ${p.priceRange}</p>
+                        <a href="${p.mapUrl}" target="_blank" style="display: block; text-align: center; background: #0f172a; color: white; padding: 6px 8px; border-radius: 8px; font-size: 11px; font-weight: bold; text-decoration: none;">🗺️ Открыть на Google Карте</a>
                     </div>
                 `;
 
@@ -669,8 +705,6 @@
                 markersLayer.addLayer(marker);
                 bounds.push([p.lat, p.lng]);
             });
-
-            setTimeout(() => lucide.createIcons(), 50);
 
             if (bounds.length > 0 && state.district !== 'all') {
                 map.fitBounds(bounds, { padding: [30, 30], maxZoom: 15 });
@@ -685,18 +719,20 @@
             el.textContent = current;
 
             setInterval(() => {
-                let diff = Math.floor(Math.random() * 16) - 6;
+                let diff = Math.floor(Math.random() * 20) - 7;
                 current += diff;
                 if (current < 120) current = 120;
                 if (current > 550) current = 550;
                 
-                el.style.transform = 'scale(1.15)';
+                el.style.transform = 'scale(1.3)';
+                el.style.color = '#10b981';
                 el.textContent = current;
                 
                 setTimeout(() => {
                     el.style.transform = 'scale(1)';
-                }, 200);
-            }, 4000);
+                    el.style.color = ''; 
+                }, 300);
+            }, 3500 + Math.random() * 4000);
         }
 
         function startApp(selectedDistrict) {
@@ -704,21 +740,21 @@
             const mainApp = document.getElementById('main-app');
 
             welcome.style.opacity = '0';
-            welcome.style.transform = 'scale(1.02)';
+            welcome.style.transform = 'scale(1.05)';
             
             setTimeout(() => {
                 welcome.classList.add('hidden');
                 mainApp.classList.remove('hidden');
                 
                 requestAnimationFrame(() => {
-                    mainApp.classList.remove('opacity-0', 'translate-y-6');
+                    mainApp.classList.remove('opacity-0', 'translate-y-10');
                     if (!map) {
                         initMap();
                     } else {
                         map.invalidateSize();
                     }
                 });
-            }, 400);
+            }, 500);
 
             setDistrict(selectedDistrict);
             initOnlineCounter();
@@ -732,10 +768,8 @@
                 btn.classList.add('bg-white/40', 'dark:bg-slate-800/40', 'text-slate-600', 'dark:text-slate-300');
             });
             const activeBtn = document.getElementById(`btn-cat-${cat}`);
-            if (activeBtn) {
-                activeBtn.classList.add('cat-btn-active');
-                activeBtn.classList.remove('bg-white/40', 'dark:bg-slate-800/40', 'text-slate-600', 'dark:text-slate-300');
-            }
+            activeBtn.classList.add('cat-btn-active');
+            activeBtn.classList.remove('bg-white/40', 'dark:bg-slate-800/40', 'text-slate-600', 'dark:text-slate-300');
             
             applyFilters();
         }
@@ -745,12 +779,12 @@
             
             const buttons = document.querySelectorAll('.dist-btn');
             buttons.forEach(btn => {
-                btn.classList.remove('bg-indigo-500', 'text-white', 'shadow-lg', 'shadow-indigo-500/25');
+                btn.classList.remove('bg-indigo-500', 'text-white', 'shadow-lg', 'shadow-indigo-500/30', 'scale-[1.02]');
                 btn.classList.add('bg-white/40', 'dark:bg-slate-800/40', 'text-slate-700', 'dark:text-slate-200');
                 
                 if(btn.textContent.includes(dist === 'all' ? 'Весь город' : dist)) {
                     btn.classList.remove('bg-white/40', 'dark:bg-slate-800/40', 'text-slate-700', 'dark:text-slate-200');
-                    btn.classList.add('bg-indigo-500', 'text-white', 'shadow-lg', 'shadow-indigo-500/25');
+                    btn.classList.add('bg-indigo-500', 'text-white', 'shadow-lg', 'shadow-indigo-500/30', 'scale-[1.02]');
                 }
             });
 
@@ -762,10 +796,10 @@
             const title = document.getElementById('grid-title');
             
             if(state.district === 'all') {
-                display.textContent = 'Весь Кишинев';
+                display.textContent = '🌍 Весь Кишинев';
                 title.textContent = state.category === 'all' ? 'Все заведения' : 'Результаты поиска';
             } else {
-                display.textContent = `${state.district}`;
+                display.textContent = `📍 ${state.district}`;
                 title.textContent = `Вайб: ${state.district}`;
             }
         }
@@ -793,45 +827,45 @@
             const grid = document.getElementById('places-grid');
             const countEl = document.getElementById('places-count');
             
+            countEl.style.transform = 'scale(1.3)';
             countEl.textContent = placesToRender.length;
+            setTimeout(() => countEl.style.transform = 'scale(1)', 200);
+
             grid.innerHTML = '';
             
             if(placesToRender.length === 0) {
                 grid.innerHTML = `
-                    <div class="col-span-full glass rounded-3xl p-12 text-center flex flex-col items-center justify-center border border-dashed border-slate-300 dark:border-slate-800">
-                        <i data-lucide="search-x" class="w-12 h-12 text-slate-400 mb-3"></i>
-                        <h3 class="text-xl font-black mb-1">Ничего не найдено</h3>
-                        <p class="text-slate-500 text-sm">Попробуйте изменить запрос или фильтры.</p>
-                        <button onclick="document.getElementById('search-input').value=''; applyFilters()" class="mt-4 px-4 py-2 bg-indigo-500 text-white font-bold text-xs rounded-xl shadow-md hover:bg-indigo-600 transition-colors">Сбросить поиск</button>
+                    <div class="col-span-full glass rounded-2xl sm:rounded-[2rem] p-8 sm:p-16 text-center flex flex-col items-center justify-center border border-dashed border-slate-300 dark:border-slate-700">
+                        <div class="text-5xl sm:text-7xl mb-4 opacity-40 animate-pulse">🏜️</div>
+                        <h3 class="text-xl sm:text-3xl font-black mb-2">Упс, ничего не найдено</h3>
+                        <p class="text-slate-500 text-sm sm:text-lg">Попробуйте изменить фильтры или ввести другой запрос.</p>
+                        <button onclick="document.getElementById('search-input').value=''; applyFilters()" class="mt-4 sm:mt-6 px-5 py-2.5 bg-indigo-500 text-white font-bold text-sm sm:text-base rounded-xl shadow-lg hover:bg-indigo-600 transition-colors">Сбросить поиск</button>
                     </div>`;
-                lucide.createIcons();
                 return;
             }
 
             placesToRender.forEach((p, index) => {
-                const tagsHtml = p.tags.map(t => `<span class="bg-white/30 dark:bg-black/30 backdrop-blur-md border border-white/40 dark:border-white/10 text-slate-700 dark:text-white text-[9px] uppercase font-extrabold px-2 py-0.5 rounded-md">${t}</span>`).join('');
+                const tagsHtml = p.tags.map(t => `<span class="bg-white/30 dark:bg-black/40 backdrop-blur-md border border-white/40 dark:border-white/10 text-slate-700 dark:text-white text-[9px] sm:text-[10px] uppercase font-bold px-2 py-0.5 rounded-md shadow-sm">${t}</span>`).join('');
                 
                 const isTopLeader = index === 0 && p.rating >= 4.8;
-                const topGlowClass = isTopLeader ? 'animate-glow border-2 border-amber-400 dark:border-amber-400' : 'border border-white/60 dark:border-white/10';
+                const topGlowClass = isTopLeader ? 'animate-glow border-2 border-amber-400 dark:border-amber-400 shadow-[0_0_30px_rgba(245,158,11,0.4)]' : 'border border-white/60 dark:border-white/10';
                 
                 const topBadge = isTopLeader ? `
-                    <div class="absolute -top-3 left-6 bg-gradient-to-r from-amber-500 to-pink-500 text-white font-black text-[10px] px-3 py-1 rounded-full shadow-lg z-30 flex items-center gap-1 uppercase tracking-wider">
-                        <i data-lucide="star" class="w-3 h-3 fill-current"></i> Выбор редакции
+                    <div class="absolute -top-3 left-4 sm:left-6 bg-gradient-to-r from-amber-500 to-pink-500 text-white font-black text-[10px] sm:text-xs px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full shadow-lg z-30 flex items-center gap-1 uppercase tracking-wider">
+                        ⭐ Выбор редакции
                     </div>
                 ` : '';
 
                 const cardHtml = `
-                    <div class="glass rounded-3xl p-5 relative flex flex-col justify-between card-hover ${topGlowClass}">
+                    <div class="glass rounded-2xl sm:rounded-[2rem] p-4 sm:p-6 relative flex flex-col justify-between card-hover transition-all duration-300 ${topGlowClass}">
                         ${topBadge}
                         <div>
-                            <div class="h-32 rounded-2xl bg-gradient-to-br ${p.gradient} p-4 flex flex-col justify-between relative overflow-hidden mb-4 shadow-inner">
-                                <div class="absolute -right-3 -bottom-3 text-white/15">
-                                    <i data-lucide="${p.icon}" class="w-24 h-24"></i>
-                                </div>
+                            <div class="h-28 sm:h-36 rounded-xl sm:rounded-2xl bg-gradient-to-br ${p.gradient} p-4 sm:p-5 flex flex-col justify-between relative overflow-hidden mb-4 sm:mb-5 shadow-inner">
+                                <div class="absolute -right-4 -bottom-4 sm:-right-6 sm:-bottom-6 text-6xl sm:text-7xl opacity-20 transform rotate-12">${p.icon}</div>
                                 <div class="flex justify-between items-center relative z-10">
-                                    <span class="bg-white/20 backdrop-blur-md text-white text-[10px] font-black px-2.5 py-1 rounded-full border border-white/20">${p.district}</span>
-                                    <div class="flex items-center gap-1 bg-black/30 backdrop-blur-md text-white text-[10px] font-bold px-2 py-1 rounded-full">
-                                        <i data-lucide="star" class="w-3 h-3 fill-amber-400 text-amber-400"></i> ${p.rating}
+                                    <span class="bg-white/20 backdrop-blur-md text-white text-[10px] sm:text-xs font-black px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full border border-white/20 shadow-sm">${p.district}</span>
+                                    <div class="flex items-center gap-1 bg-black/30 backdrop-blur-md text-white text-[10px] sm:text-xs font-bold px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full shadow-sm">
+                                        ⭐ ${p.rating}
                                     </div>
                                 </div>
                                 <div class="relative z-10 flex flex-wrap gap-1 items-center mt-auto">
@@ -839,48 +873,41 @@
                                 </div>
                             </div>
 
-                            <div class="mb-3">
+                            <div class="mb-3 sm:mb-4">
                                 <div class="flex items-center justify-between mb-1">
-                                    <h3 class="text-xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-                                        <span>${p.name}</span>
+                                    <h3 class="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5 sm:gap-2">
+                                        <span>${p.icon}</span> ${p.name}
                                     </h3>
-                                    <span class="font-black text-indigo-600 dark:text-indigo-400 text-xs">${p.price}</span>
+                                    <span class="font-black text-indigo-600 dark:text-indigo-400 text-xs sm:text-sm tracking-wider">${p.price}</span>
                                 </div>
-                                <p class="text-slate-600 dark:text-slate-300 text-xs font-medium leading-relaxed">${p.desc}</p>
+                                <p class="text-slate-600 dark:text-slate-300 text-xs sm:text-sm font-medium leading-relaxed">${p.desc}</p>
                             </div>
 
-                            <div class="space-y-1.5 mb-4 text-xs font-medium">
-                                <div class="bg-indigo-500/10 dark:bg-indigo-900/20 p-2.5 rounded-xl border border-indigo-500/10">
-                                    <span class="font-bold text-indigo-600 dark:text-indigo-400 block mb-0.5 text-[11px]">Развлечения:</span>
-                                    <span class="text-slate-600 dark:text-slate-300 text-[11px]">${p.entertainment}</span>
+                            <div class="space-y-1.5 sm:space-y-2 mb-4 sm:mb-6 text-[11px] sm:text-xs font-medium">
+                                <div class="bg-indigo-500/10 dark:bg-indigo-900/20 p-2.5 sm:p-3 rounded-xl border border-indigo-500/20">
+                                    <span class="font-bold text-indigo-600 dark:text-indigo-400 block mb-0.5">🎯 Развлечения:</span>
+                                    <span class="text-slate-600 dark:text-slate-300">${p.entertainment}</span>
                                 </div>
-                                <div class="bg-emerald-500/10 dark:bg-emerald-900/20 p-2.5 rounded-xl border border-emerald-500/10 flex items-center justify-between text-[11px]">
-                                    <span class="font-bold text-emerald-600 dark:text-emerald-400">Средний чек:</span>
+                                <div class="bg-emerald-500/10 dark:bg-emerald-900/20 p-2.5 sm:p-3 rounded-xl border border-emerald-500/20 flex items-center justify-between">
+                                    <span class="font-bold text-emerald-600 dark:text-emerald-400">💰 Средний чек:</span>
                                     <span class="text-slate-700 dark:text-slate-200 font-bold">${p.priceRange}</span>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="pt-3 border-t border-slate-200/60 dark:border-slate-800/60 flex items-center gap-3 mt-auto">
-                            <a href="${p.mapUrl}" target="_blank" class="flex-1 py-2.5 px-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs rounded-xl text-center shadow-md hover:opacity-90 transition-all flex items-center justify-center gap-2">
-                                <i data-lucide="map" class="w-3.5 h-3.5"></i> Google Карты
+                        <div class="pt-3 sm:pt-4 border-t border-slate-200/60 dark:border-slate-800/60 flex items-center gap-3 mt-auto">
+                            <a href="${p.mapUrl}" target="_blank" class="flex-1 py-2.5 sm:py-3 px-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs sm:text-sm rounded-xl text-center shadow-md hover:opacity-90 transition-all flex items-center justify-center gap-2 hover:scale-[1.02]">
+                                <span>🗺️</span> Google Карты
                             </a>
                         </div>
                     </div>
                 `;
                 grid.insertAdjacentHTML('beforeend', cardHtml);
             });
-
-            lucide.createIcons();
         }
 
         window.addEventListener('resize', () => {
             if (map) map.invalidateSize();
-        });
-
-        // Первичная инициализация иконок
-        document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
         });
     </script>
 </body>
