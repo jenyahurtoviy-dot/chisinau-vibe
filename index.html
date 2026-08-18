@@ -173,23 +173,22 @@
         }
     </style>
 
-<!-- Адаптированный летающий коктейль для мобильных устройств без изменения дизайна -->
+<!-- Исправленный летающий коктейль без обрезания на мобильных -->
 <style>
 @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-15px); }
+    0%, 100% { transform: translateY(0) rotate(12deg); }
+    50% { transform: translateY(-12px) rotate(12deg); }
 }
-.animate-float {
+.animate-float-safe {
     animation: float 6s ease-in-out infinite;
 }
 </style>
 
-<div class="mb-6 animate-float inline-block max-w-full overflow-hidden px-2 sm:px-0">
-    <div class="w-16 h-16 sm:w-24 sm:h-24 bg-gradient-to-br from-indigo-500 to-pink-500 rounded-3xl flex items-center justify-center text-white text-3xl sm:text-4xl shadow-2xl shadow-indigo-500/40 rotate-12 mx-auto">
-        <i class="fa-solid fa-martini-glass-citrus -rotate-12"></i>
+<div class="mb-6 py-3 px-4 text-center">
+    <div class="animate-float-safe inline-block w-16 h-16 sm:w-24 sm:h-24 bg-gradient-to-br from-indigo-500 to-pink-500 rounded-3xl flex items-center justify-center text-white text-3xl sm:text-4xl shadow-2xl shadow-indigo-500/40 mx-auto">
+        <i class="fa-solid fa-martini-glass-citrus"></i>
     </div>
 </div>
-
 
 
 </head>
