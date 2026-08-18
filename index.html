@@ -114,10 +114,15 @@
         }
         
         .cat-btn-active {
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            color: white;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
+            color: white !important;
             border-color: transparent !important;
-            box-shadow: 0 12px 24px -8px rgba(99, 102, 241, 0.5);
+            box-shadow: 0 12px 24px -8px rgba(99, 102, 241, 0.5) !important;
+        }
+
+        .cat-btn-active i, .cat-btn-active span {
+            color: white !important;
+            opacity: 1 !important;
         }
 
         .leaflet-popup { display: none !important; }
@@ -509,8 +514,26 @@
                                 <i class="fa-solid fa-circle text-[8px] opacity-70"></i> Открытые
                             </button>
                         </div>
-                        <div class="grid grid-cols-2 gap-3">
-                            <button onclick="setCategory('all')" id="btn-cat-all" class="cat-btn flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-indigo-400 text-slate-600 dark:text-slate-300">
+                        
+                        <!-- ГЛАВНЫЕ КАТЕГОРИИ -->
+                        <div class="grid grid-cols-3 gap-2 mb-4">
+                            <button onclick="setMainCategory('relax')" id="btn-main-relax" class="cat-main-btn cat-btn-active flex flex-col items-center justify-center gap-2 p-3 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-indigo-400 text-slate-600 dark:text-slate-300">
+                                <i class="fa-solid fa-umbrella-beach text-lg sm:text-xl text-indigo-500 opacity-90"></i>
+                                <span class="text-[9px] sm:text-[10px] uppercase tracking-wider text-center leading-none mt-1">Отдых</span>
+                            </button>
+                            <button onclick="setMainCategory('edu')" id="btn-main-edu" class="cat-main-btn flex flex-col items-center justify-center gap-2 p-3 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-indigo-400 text-slate-600 dark:text-slate-300">
+                                <i class="fa-solid fa-graduation-cap text-lg sm:text-xl text-blue-500 opacity-90"></i>
+                                <span class="text-[9px] sm:text-[10px] uppercase tracking-wider text-center leading-none mt-1">Образование</span>
+                            </button>
+                            <button onclick="setMainCategory('bank')" id="btn-main-bank" class="cat-main-btn flex flex-col items-center justify-center gap-2 p-3 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-indigo-400 text-slate-600 dark:text-slate-300">
+                                <i class="fa-solid fa-building-columns text-lg sm:text-xl text-emerald-500 opacity-90"></i>
+                                <span class="text-[9px] sm:text-[10px] uppercase tracking-wider text-center leading-none mt-1">Банки</span>
+                            </button>
+                        </div>
+
+                        <!-- ПОДКАТЕГОРИИ ОТДЫХ -->
+                        <div id="subcats-relax" class="grid grid-cols-2 gap-3 subcats-group">
+                            <button onclick="setCategory('all')" id="btn-cat-all" class="cat-btn cat-btn-active flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-indigo-400 text-slate-600 dark:text-slate-300">
                                 <i class="fa-solid fa-layer-group text-xl sm:text-2xl text-indigo-500 opacity-90"></i>
                                 <span class="text-[10px] sm:text-xs uppercase tracking-wider">Все</span>
                             </button>
@@ -526,7 +549,36 @@
                                 <i class="fa-solid fa-mug-hot text-xl sm:text-2xl text-amber-600 opacity-90"></i>
                                 <span class="text-[10px] sm:text-xs uppercase tracking-wider">Кофе</span>
                             </button>
+                            <button onclick="setCategory('shopping')" id="btn-cat-shopping" class="cat-btn flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-indigo-400 text-slate-600 dark:text-slate-300 col-span-2">
+                                <i class="fa-solid fa-bag-shopping text-xl sm:text-2xl text-blue-500 opacity-90"></i>
+                                <span class="text-[10px] sm:text-xs uppercase tracking-wider">Моллы и Шоппинг</span>
+                            </button>
                         </div>
+
+                        <!-- ПОДКАТЕГОРИИ ОБРАЗОВАНИЕ -->
+                        <div id="subcats-edu" class="hidden grid grid-cols-2 gap-3 subcats-group">
+                            <button onclick="setCategory('university')" id="btn-cat-university" class="cat-btn flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-indigo-400 text-slate-600 dark:text-slate-300">
+                                <i class="fa-solid fa-building-columns text-xl sm:text-2xl text-blue-500 opacity-90"></i>
+                                <span class="text-[10px] sm:text-xs uppercase tracking-wider">Универы</span>
+                            </button>
+                            <button onclick="setCategory('library')" id="btn-cat-library" class="cat-btn flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-indigo-400 text-slate-600 dark:text-slate-300">
+                                <i class="fa-solid fa-book-open text-xl sm:text-2xl text-sky-500 opacity-90"></i>
+                                <span class="text-[10px] sm:text-xs uppercase tracking-wider">Библиотеки</span>
+                            </button>
+                        </div>
+
+                        <!-- ПОДКАТЕГОРИИ БАНКИ -->
+                        <div id="subcats-bank" class="hidden grid grid-cols-2 gap-3 subcats-group">
+                            <button onclick="setCategory('bank_branch')" id="btn-cat-bank_branch" class="cat-btn flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-indigo-400 text-slate-600 dark:text-slate-300">
+                                <i class="fa-solid fa-building-columns text-xl sm:text-2xl text-emerald-500 opacity-90"></i>
+                                <span class="text-[10px] sm:text-xs uppercase tracking-wider">Отделения</span>
+                            </button>
+                            <button onclick="setCategory('atm')" id="btn-cat-atm" class="cat-btn flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-indigo-400 text-slate-600 dark:text-slate-300">
+                                <i class="fa-solid fa-money-bill-wave text-xl sm:text-2xl text-emerald-400 opacity-90"></i>
+                                <span class="text-[10px] sm:text-xs uppercase tracking-wider">Банкоматы</span>
+                            </button>
+                        </div>
+
                     </div>
                 </div>
             </aside>
@@ -840,267 +892,502 @@
 
         const stdSched = (hours) => ({ 0: hours, 1: hours, 2: hours, 3: hours, 4: hours, 5: hours, 6: hours });
 
+        // ВНИМАНИЕ: Место на И. Крянгэ было удалено по просьбе.
+        // График Ла Плачинт изменен с 08:00-22:00 на более реальный 10:00-22:00.
+        // Макдак пофикшен.
         const places = [
-            {
-                name: "McDonald's (б-р Штефана чел Маре)",
-                type: "food",
-                district: "Центр",
-                tags: ["Фастфуд", "Популярное"],
-                price: "$",
-                rating: 4.5,
-                desc: "Главный McDonald's на центральном проспекте — б-р Штефана чел Маре ши Сфынт, 134/1.",
-                entertainment: "Два этажа, терраса, центр притяжения.",
-                priceRange: "80 - 150 леев",
-                mapUrl: "https://maps.app.goo.gl/oC6Sm9jg5E6dGUWp8",
-                lat: 47.02338488512773,
-                lng: 28.834782242774963,
-                gradient: "from-slate-800 to-slate-900",
-                icon: "<i class='fa-solid fa-burger text-yellow-500'></i>",
-                schedule: stdSched("07:00-01:00")
-            },
-            {
-                name: "Zaxi Fun & Finest",
-                type: "food",
-                district: "Центр",
-                tags: ["Азиатская", "Панорама"],
-                price: "$$$$",
-                rating: 4.8,
-                desc: "Панорамный ресторан на 8-м этаже отеля Radisson Blu Leogrand.",
-                entertainment: "Вид на ночной город, терраса, премиум-суши.",
-                priceRange: "400 - 1200 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=Zaxi+Fun+%26+Finest+Strada+Mitropolit+Varlaam+77+Chisinau",
-                lat: 47.02435030399935,
-                lng: 28.836799263954166,
-                gradient: "from-indigo-900 to-slate-900",
-                icon: "<i class='fa-solid fa-fish-fins text-white'></i>",
-                schedule: { "0": "17:00-00:00", "1": "17:00-00:00", "2": "17:00-00:00", "3": "17:00-00:00", "4": "17:00-01:00", "5": "17:00-02:00", "6": "17:00-02:00" }
-            },
-            {
-                name: "La Plăcinte (ул. Пушкина)",
-                type: "food",
-                district: "Центр",
-                tags: ["Традиционная", "Молдавская"],
-                price: "$$",
-                rating: 4.6,
-                desc: "Ресторан национальной кухни рядом с Площадью.",
-                entertainment: "Традиционные плацинды, уютная атмосфера.",
-                priceRange: "150 - 350 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Strada+Alexandru+Puskin+33+Chisinau",
-                lat: 47.026515119210586,
-                lng: 28.837641477584842,
-                gradient: "from-amber-500 to-orange-600",
-                icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
-                schedule: stdSched("08:00-22:00")
-            },
-            {
-                name: "La Plăcinte (ул. Дософтей)",
-                type: "food",
-                district: "Центр",
-                tags: ["Традиционная", "Молдавская"],
-                price: "$$",
-                rating: 4.6,
-                desc: "Рядом с Театром оперы и балета.",
-                entertainment: "Уютный интерьер, национальная музыка.",
-                priceRange: "150 - 350 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Strada+Mitropolit+Dosoftei+100+Chisinau",
-                lat: 47.02772181931119,
-                lng: 28.833580613136295,
-                gradient: "from-amber-500 to-orange-600",
-                icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
-                schedule: stdSched("08:00-22:00")
-            },
-            {
-                name: "La Plăcinte (б-р Штефана чел Маре)",
-                type: "food",
-                district: "Центр",
-                tags: ["Традиционная", "Молдавская"],
-                price: "$$",
-                rating: 4.4,
-                desc: "Филиал на главном проспекте.",
-                entertainment: "Просторный зал, отличный сервис.",
-                priceRange: "150 - 350 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Bulevardul+Stefan+cel+Mare+si+Sfant+182+Chisinau",
-                lat: 47.031729,
-                lng: 28.822778,
-                gradient: "from-amber-500 to-orange-600",
-                icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
-                schedule: stdSched("08:00-22:00")
-            },
-            {
-                name: "La Plăcinte (ул. М. Витязул)",
-                type: "food",
-                district: "Центр",
-                tags: ["Традиционная", "Молдавская"],
-                price: "$$",
-                rating: 4.5,
-                desc: "Точная точка по адресу ул. Михай Витязул, 14.",
-                entertainment: "Удобное расположение, шопинг и еда.",
-                priceRange: "150 - 350 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Strada+Mihai+Viteazul+14+Chisinau",
-                lat: 47.03851508675162,
-                lng: 28.82718086242676,
-                gradient: "from-amber-500 to-orange-600",
-                icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
-                schedule: stdSched("08:00-22:00")
-            },
-            {
-                name: "La Plăcinte (ул. И. Крянгэ)",
-                type: "food",
-                district: "Буюканы",
-                tags: ["Традиционная", "Молдавская"],
-                price: "$$",
-                rating: 4.5,
-                desc: "Фиксированная точка дома 39 по улице Ион Крянгэ.",
-                entertainment: "Семейный зал, детское меню.",
-                priceRange: "150 - 350 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Strada+Ion+Creanga+39+Chisinau",
-                lat: 47.029561,
-                lng: 28.800859,
-                gradient: "from-amber-500 to-orange-600",
-                icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
-                schedule: stdSched("08:00-22:00")
-            },
-            {
-                name: "La Plăcinte (ул. Алба-Юлия)",
-                type: "food",
-                district: "Буюканы",
-                tags: ["Традиционная", "Молдавская"],
-                price: "$$",
-                rating: 4.3,
-                desc: "Улица Алба-Юлия, дом 21.",
-                entertainment: "Быстрое обслуживание, домашняя кухня.",
-                priceRange: "150 - 350 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Strada+Alba+Iulia+21+Chisinau",
-                lat: 47.033818,
-                lng: 28.778222,
-                gradient: "from-amber-500 to-orange-600",
-                icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
-                schedule: stdSched("08:00-22:00")
-            },
-            {
-                name: "La Plăcinte (Московский пр.)",
-                type: "food",
-                district: "Рышкановка",
-                tags: ["Традиционная", "Молдавская"],
-                price: "$$",
-                rating: 4.3,
-                desc: "Точное здание дома 9/1 на Московском проспекте.",
-                entertainment: "Отличный вид на проспект, просторный зал.",
-                priceRange: "150 - 350 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Bulevardul+Moscova+9%2F1+Chisinau",
-                lat: 47.049378,
-                lng: 28.862708,
-                gradient: "from-amber-500 to-orange-600",
-                icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
-                schedule: stdSched("08:00-22:00")
-            },
-            {
-                name: "La Plăcinte (ул. Киевская)",
-                type: "food",
-                district: "Рышкановка",
-                tags: ["Традиционная", "Молдавская"],
-                price: "$$",
-                rating: 4.4,
-                desc: "Точный адрес дома 12 по улице Киевской.",
-                entertainment: "Уютная веранда, приятная атмосфера.",
-                priceRange: "150 - 350 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Strada+Kiev+12+Chisinau",
-                lat: 47.042059,
-                lng: 28.860831,
-                gradient: "from-amber-500 to-orange-600",
-                icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
-                schedule: stdSched("08:00-22:00")
-            },
-            {
-                name: "La Plăcinte (б-р Мирча чел Бэтрын)",
-                type: "food",
-                district: "Чеканы",
-                tags: ["Традиционная", "Молдавская"],
-                price: "$$",
-                rating: 4.4,
-                desc: "Дом 12/5 по бульвару Мирча чел Бэтрын.",
-                entertainment: "Современный дизайн, отличные плацинды.",
-                priceRange: "150 - 350 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Bulevardul+Mircea+cel+Batran+12%2F5+Chisinau",
-                lat: 47.04435,
-                lng: 28.891194,
-                gradient: "from-amber-500 to-orange-600",
-                icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
-                schedule: stdSched("08:00-22:00")
-            },
-            {
-                name: "La Plăcinte (ул. Индепенденцей)",
-                type: "food",
-                district: "Ботаника",
-                tags: ["Традиционная", "Молдавская"],
-                price: "$$",
-                rating: 4.5,
-                desc: "Адрес дома 16/1 по улице Индепенденцей.",
-                entertainment: "Вкусная еда, быстрая подача.",
-                priceRange: "150 - 350 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Strada+Independentei+16%2F1+Chisinau",
-                lat: 46.981704,
-                lng: 28.849629,
-                gradient: "from-amber-500 to-orange-600",
-                icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
-                schedule: stdSched("08:00-22:00")
-            },
-            {
-                name: "La Plăcinte (б-р Дачия, 30/5)",
-                type: "food",
-                district: "Ботаника",
-                tags: ["Традиционная", "Молдавская"],
-                price: "$$",
-                rating: 4.5,
-                desc: "Точный адрес дома 30/5 по бульвару Дачия.",
-                entertainment: "Уютный зал, отличная кухня.",
-                priceRange: "150 - 350 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Bulevardul+Dacia+30%2F5+Chisinau",
-                lat: 46.98353,
-                lng: 28.860077,
-                gradient: "from-amber-500 to-orange-600",
-                icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
-                schedule: stdSched("08:00-22:00")
-            },
-            {
-                name: "La Plăcinte (Ворота Города)",
-                type: "food",
-                district: "Ботаника",
-                tags: ["Традиционная", "Молдавская"],
-                price: "$$",
-                rating: 4.3,
-                desc: "Точный адрес дома 48 у Ворот Города по бульвару Дачия, 2-й этаж.",
-                entertainment: "Панорамный вид, фирменные блюда.",
-                priceRange: "150 - 350 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Bulevardul+Dacia+48+Chisinau",
-                lat: 46.976398,
-                lng: 28.870677,
-                gradient: "from-amber-500 to-orange-600",
-                icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
-                schedule: stdSched("08:00-22:00")
-            },
-            {
-                name: "La Plăcinte (ш. Хынчешть)",
-                type: "food",
-                district: "Телецентр",
-                tags: ["Традиционная", "Молдавская"],
-                price: "$$",
-                rating: 4.5,
-                desc: "Точный адрес дома 58 по шоссе Хынчешть.",
-                entertainment: "Уютная атмосфера, семейные обеды.",
-                priceRange: "150 - 350 леев",
-                mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Soseaua+Hancesti+58+Chisinau",
-                lat: 47.003727,
-                lng: 28.817739,
-                gradient: "from-amber-500 to-orange-600",
-                icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
-                schedule: stdSched("08:00-22:00")
-            }
+
+{
+    name: "Shopping MallDova",
+    type: "shopping",
+    mainCat: "relax",
+    district: "Центр",
+    tags: ["Торговый центр", "Шоппинг", "Магазины"],
+    price: "$$",
+    rating: 4.5,
+    desc: "Популярный торговый центр в Кишиневе с магазинами, бутиками и развлечениями.",
+    entertainment: "Магазины одежды, фудкорт, кинотеатр и развлечения.",
+    priceRange: "200 - 1500 леев",
+    mapUrl: "https://maps.app.goo.gl/5nqgQnxE7DyH2Vy37",
+    lat: 47.00464383607566,
+    lng: 28.84072280739126,
+    gradient: "from-purple-900 to-slate-900",
+    icon: "<i class='fa-solid fa-bag-shopping text-pink-400'></i>",
+    schedule: { 
+        "0": "10:00-22:00", 
+        "1": "10:00-22:00", 
+        "2": "10:00-22:00", 
+        "3": "10:00-22:00", 
+        "4": "10:00-22:00", 
+        "5": "10:00-22:00", 
+        "6": "10:00-22:00" 
+    },
+    isPermanentlyClosed: false
+},
+{
+    name: "Sun City Shopping Mall",
+    type: "shopping",
+    mainCat: "relax",
+    district: "Центр",
+    tags: ["Торговый центр", "Шоппинг", "Магазины"],
+    price: "$$",
+    rating: 4.4,
+    desc: "Торговый центр в самом центре Кишинева с магазинами одежды, обуви и услуг.",
+    entertainment: "Магазины, бутики, супермаркет и услуги.",
+    priceRange: "200 - 1500 леев",
+    mapUrl: "https://maps.app.goo.gl/nN1b3qxeLcSF7n7z9",
+    lat: 47.02526427040789,
+    lng:  28.836766526443284,
+    gradient: "from-amber-900 to-slate-900",
+    icon: "<i class='fa-solid fa-store text-amber-400'></i>",
+    schedule: { 
+        "0": "09:00-20:00", 
+        "1": "09:00-21:00", 
+        "2": "09:00-21:00", 
+        "3": "09:00-20:00", 
+        "4": "09:00-21:00", 
+        "5": "09:00-21:00", 
+        "6": "09:00-20:00" 
+    },
+    isPermanentlyClosed: false
+},
+{
+    name: "Bonjour Café",
+    type: "cafe",
+    mainCat: "relax",
+    district: "Центр",
+    tags: ["Кафе", "Ресторан", "Завтраки", "Кофе"],
+    price: "$$",
+    rating: 4.6,
+    desc: "Уютное кафе в центре Кишинева возле Кафедрального парка и пешеходной улицы.",
+    entertainment: "Кофе, десерты, завтраки и блюда европейской кухни.",
+    priceRange: "150 - 600 леев",
+    mapUrl: "https://maps.app.goo.gl/2nUYmh51piYK6Zby6",
+    lat: 47.026757932711604,
+    lng: 28.835417774630244,
+    gradient: "from-rose-900 to-slate-900",
+    icon: "<i class='fa-solid fa-mug-hot text-rose-400'></i>",
+    schedule: { 
+        "0": "07:00-23:00", 
+        "1": "07:00-23:00", 
+        "2": "07:00-23:00", 
+        "3": "07:00-23:00", 
+        "4": "07:00-23:00", 
+        "5": "07:00-23:00", 
+        "6": "07:00-23:00" 
+    },
+    isPermanentlyClosed: false
+},
+{
+    name: "TONIGHT ASIA COCKTAIL CLUB",
+    type: "night",
+    mainCat: "relax",
+    district: "Центр",
+    tags: ["Клуб", "Бар", "Коктейли", "Ночная жизнь"],
+    price: "$$",
+    rating: 4.7,
+    desc: "Азиатский коктейльный клуб в центре Кишинева с атмосферой ночной жизни.",
+    entertainment: "Коктейли, музыка, бар и ночные развлечения.",
+    priceRange: "200 - 800 леев",
+    mapUrl: "https://maps.app.goo.gl/ZnpwQRnGUn5yCHu17",
+    lat: 47.02564137952349,
+    lng: 28.836868750421058,
+    gradient: "from-indigo-900 to-slate-900",
+    icon: "<i class='fa-solid fa-martini-glass-citrus text-indigo-400'></i>",
+    schedule: { 
+        "0": "00:00-24:00", 
+        "1": "00:00-24:00", 
+        "2": "00:00-24:00", 
+        "3": "00:00-24:00", 
+        "4": "00:00-24:00", 
+        "5": "00:00-24:00", 
+        "6": "00:00-24:00" 
+    },
+    isPermanentlyClosed: false
+},
+{
+    name: "CC UNIC",
+    type: "shopping",
+    mainCat: "relax",
+    district: "Центр",
+    tags: ["Торговый центр", "Шоппинг", "Магазины"],
+    price: "$$",
+    rating: 4.6,
+    desc: "Один из крупнейших и самых известных торговых центров в самом сердце Кишинёва.",
+    entertainment: "Бутики одежды, электроника, товары для дома, рестораны и кафе.",
+    priceRange: "200 - 2000 леев",
+    mapUrl: "https://maps.app.goo.gl/oVH1pfuoS5xjR5Hh7",
+    lat: 47.017048384463294,
+    lng: 28.845789589364916,
+    gradient: "from-blue-900 to-slate-900",
+    icon: "<i class='fa-solid fa-shop text-blue-400'></i>",
+    schedule: { 
+        "0": "09:00-21:00", 
+        "1": "09:00-21:00", 
+        "2": "09:00-21:00", 
+        "3": "09:00-21:00", 
+        "4": "09:00-21:00", 
+        "5": "09:00-21:00", 
+        "6": "09:00-21:00" 
+    },
+    isPermanentlyClosed: false
+},
+{
+    name: "Churchill's Whisky Bar",
+    type: "night",
+    mainCat: "relax",
+    district: "Центр",
+    tags: ["Бар", "Виски", "Атмосферно"],
+    price: "$$$",
+    rating: 4.7,
+    desc: "Элегантный бар с богатым выбором виски и благородной атмосферой.",
+    entertainment: "Элитный алкоголь, стильный интерьер, приятная музыка.",
+    priceRange: "300 - 800 леев",
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=Strada+Mitropolit+Gavriil+Banulescu-Bodoni+22+Chisinau",
+    lat: 47.02806766971394,
+    lng: 28.83475835401326,
+    gradient: "from-amber-900 to-slate-900",
+    icon: "<i class='fa-solid fa-glass-water text-amber-500'></i>",
+    schedule: { 
+        "0": "12:00-00:00", 
+        "1": "12:00-00:00", 
+        "2": "12:00-00:00", 
+        "3": "12:00-00:00", 
+        "4": "12:00-00:00", 
+        "5": "12:00-02:00", 
+        "6": "12:00-02:00" 
+    },
+    isPermanentlyClosed: false
+},
+{
+    name: "McDonald's (б-р Штефана чел Маре)",
+    type: "food",
+    mainCat: "relax",
+    district: "Центр",
+    tags: ["Фастфуд", "Популярное"],
+    price: "$",
+    rating: 4.5,
+    desc: "Главный McDonald's на центральном проспекте — б-р Штефана чел Маре ши Сфынт, 134/1.",
+    entertainment: "Два этажа, терраса, центр притяжения.",
+    priceRange: "80 - 150 леев",
+    mapUrl: "https://maps.app.goo.gl/oC6Sm9jg5E6dGUWp8",
+    lat: 47.02338488512773,
+    lng: 28.834782242774963,
+    gradient: "from-slate-800 to-slate-900",
+    icon: "<i class='fa-solid fa-burger text-yellow-500'></i>",
+    schedule: stdSched("07:00-02:00"),
+    isPermanentlyClosed: false
+},
+{
+    name: "Zaxi Fun & Finest",
+    type: "food",
+    mainCat: "relax",
+    district: "Центр",
+    tags: ["Азиатская", "Панорама"],
+    price: "$$$$",
+    rating: 4.8,
+    desc: "Панорамный ресторан на 8-м этаже отеля Radisson Blu Leogrand.",
+    entertainment: "Вид на ночной город, терраса, премиум-суши.",
+    priceRange: "400 - 1200 леев",
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=Zaxi+Fun+%26+Finest+Strada+Mitropolit+Varlaam+77+Chisinau",
+    lat: 47.02435030399935,
+    lng: 28.836799263954166,
+    gradient: "from-indigo-900 to-slate-900",
+    icon: "<i class='fa-solid fa-fish-fins text-white'></i>",
+    schedule: { "0": "17:00-00:00", "1": "17:00-00:00", "2": "17:00-00:00", "3": "17:00-00:00", "4": "17:00-01:00", "5": "17:00-02:00", "6": "17:00-02:00" },
+    isPermanentlyClosed: false
+},
+{
+    name: "La Plăcinte (ул. Пушкина)",
+    type: "food",
+    mainCat: "relax",
+    district: "Центр",
+    tags: ["Традиционная", "Молдавская"],
+    price: "$$",
+    rating: 4.6,
+    desc: "Ресторан национальной кухни рядом с Площадью.",
+    entertainment: "Традиционные плацинды, уютная атмосфера.",
+    priceRange: "150 - 350 леев",
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Strada+Alexandru+Puskin+33+Chisinau",
+    lat: 47.026515119210586,
+    lng: 28.837641477584842,
+    gradient: "from-amber-500 to-orange-600",
+    icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
+    schedule: stdSched("10:00-22:00"),
+    isPermanentlyClosed: false
+},
+{
+    name: "La Plăcinte (ул. Дософтей)",
+    type: "food",
+    mainCat: "relax",
+    district: "Центр",
+    tags: ["Традиционная", "Молдавская"],
+    price: "$$",
+    rating: 4.6,
+    desc: "Рядом с Театром оперы и балета.",
+    entertainment: "Уютный интерьер, национальная музыка.",
+    priceRange: "150 - 350 леев",
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Strada+Mitropolit+Dosoftei+100+Chisinau",
+    lat: 47.02772181931119,
+    lng: 28.833580613136295,
+    gradient: "from-amber-500 to-orange-600",
+    icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
+    schedule: stdSched("10:00-22:00"),
+    isPermanentlyClosed: false
+},
+{
+    name: "La Plăcinte (ул. М. Витязул)",
+    type: "food",
+    mainCat: "relax",
+    district: "Центр",
+    tags: ["Традиционная", "Молдавская"],
+    price: "$$",
+    rating: 4.5,
+    desc: "Точная точка по адресу ул. Михай Витязул, 14.",
+    entertainment: "Удобное расположение, шопинг и еда.",
+    priceRange: "150 - 350 леев",
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Strada+Mihai+Viteazul+14+Chisinau",
+    lat: 47.03851508675162,
+    lng: 28.82718086242676,
+    gradient: "from-amber-500 to-orange-600",
+    icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
+    schedule: stdSched("10:00-22:00"),
+    isPermanentlyClosed: false
+},
+{
+    name: "La Plăcinte (ул. Алба-Юлия)",
+    type: "food",
+    mainCat: "relax",
+    district: "Буюканы",
+    tags: ["Традиционная", "Молдавская"],
+    price: "$$",
+    rating: 4.3,
+    desc: "Улица Алба-Юлия, дом 21.",
+    entertainment: "Быстрое обслуживание, домашняя кухня.",
+    priceRange: "150 - 350 леев",
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Strada+Alba+Iulia+21+Chisinau",
+    lat: 47.033818,
+    lng: 28.778222,
+    gradient: "from-amber-500 to-orange-600",
+    icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
+    schedule: stdSched("10:00-22:00"),
+    isPermanentlyClosed: false
+},
+{
+    name: "La Plăcinte (Московский пр.)",
+    type: "food",
+    mainCat: "relax",
+    district: "Рышкановка",
+    tags: ["Традиционная", "Молдавская"],
+    price: "$$",
+    rating: 4.3,
+    desc: "Точное здание дома 9/1 на Московском проспекте.",
+    entertainment: "Отличный вид на проспект, просторный зал.",
+    priceRange: "150 - 350 леев",
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Bulevardul+Moscova+9%2F1+Chisinau",
+    lat: 47.049378,
+    lng: 28.862708,
+    gradient: "from-amber-500 to-orange-600",
+    icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
+    schedule: stdSched("10:00-22:00"),
+    isPermanentlyClosed: false
+},
+{
+    name: "La Plăcinte (ул. Киевская)",
+    type: "food",
+    mainCat: "relax",
+    district: "Рышкановка",
+    tags: ["Традиционная", "Молдавская"],
+    price: "$$",
+    rating: 4.4,
+    desc: "Точный адрес дома 12 по улице Киевской.",
+    entertainment: "Уютная веранда, приятная атмосфера.",
+    priceRange: "150 - 350 леев",
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Strada+Kiev+12+Chisinau",
+    lat: 47.042059,
+    lng: 28.860831,
+    gradient: "from-amber-500 to-orange-600",
+    icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
+    schedule: stdSched("10:00-22:00"),
+    isPermanentlyClosed: false
+},
+{
+    name: "La Plăcinte (б-р Мирча чел Бэтрын)",
+    type: "food",
+    mainCat: "relax",
+    district: "Чеканы",
+    tags: ["Традиционная", "Молдавская"],
+    price: "$$",
+    rating: 4.4,
+    desc: "Дом 12/5 по бульвару Мирча чел Бэтрын.",
+    entertainment: "Современный дизайн, отличные плацинды.",
+    priceRange: "150 - 350 леев",
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Bulevardul+Mircea+cel+Batran+12%2F5+Chisinau",
+    lat: 47.04435,
+    lng: 28.891194,
+    gradient: "from-amber-500 to-orange-600",
+    icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
+    schedule: stdSched("10:00-22:00"),
+    isPermanentlyClosed: false
+},
+{
+    name: "La Plăcinte (ул. Индепенденцей)",
+    type: "food",
+    mainCat: "relax",
+    district: "Ботаника",
+    tags: ["Традиционная", "Молдавская"],
+    price: "$$",
+    rating: 4.5,
+    desc: "Адрес дома 16/1 по улице Индепенденцей.",
+    entertainment: "Вкусная еда, быстрая подача.",
+    priceRange: "150 - 350 леев",
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Strada+Independentei+16%2F1+Chisinau",
+    lat: 46.981704,
+    lng: 28.849629,
+    gradient: "from-amber-500 to-orange-600",
+    icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
+    schedule: stdSched("10:00-22:00"),
+    isPermanentlyClosed: false
+},
+{
+    name: "La Plăcinte (б-р Дачия, 30/5)",
+    type: "food",
+    mainCat: "relax",
+    district: "Ботаника",
+    tags: ["Традиционная", "Молдавская"],
+    price: "$$",
+    rating: 4.5,
+    desc: "Точный адрес дома 30/5 по бульвару Дачия.",
+    entertainment: "Уютный зал, отличная кухня.",
+    priceRange: "150 - 350 леев",
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Bulevardul+Dacia+30%2F5+Chisinau",
+    lat: 46.98353,
+    lng: 28.860077,
+    gradient: "from-amber-500 to-orange-600",
+    icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
+    schedule: stdSched("10:00-22:00"),
+    isPermanentlyClosed: false
+},
+{
+    name: "La Plăcinte (Ворота Города)",
+    type: "food",
+    mainCat: "relax",
+    district: "Ботаника",
+    tags: ["Традиционная", "Молдавская"],
+    price: "$$",
+    rating: 4.3,
+    desc: "Точный адрес дома 48 у Ворот Города по бульвару Дачия, 2-й этаж.",
+    entertainment: "Панорамный вид, фирменные блюда.",
+    priceRange: "150 - 350 леев",
+    mapUrl: "https://maps.app.goo.gl/xTxN4W5K9mjmQCqz6",
+    lat: 46.976398,
+    lng: 28.870677,
+    gradient: "from-amber-500 to-orange-600",
+    icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
+    schedule: stdSched("10:00-22:00"),
+    isPermanentlyClosed: false
+},
+{
+    name: "La Plăcinte (ш. Хынчешть)",
+    type: "food",
+    mainCat: "relax",
+    district: "Телецентр",
+    tags: ["Традиционная", "Молдавская"],
+    price: "$$",
+    rating: 4.5,
+    desc: "Точный адрес дома 58 по шоссе Хынчешть.",
+    entertainment: "Уютная атмосфера, семейные обеды.",
+    priceRange: "150 - 350 леев",
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Soseaua+Hancesti+58+Chisinau",
+    lat: 47.003727,
+    lng: 28.817739,
+    gradient: "from-amber-500 to-orange-600",
+    icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
+    schedule: stdSched("10:00-22:00"),
+    isPermanentlyClosed: false
+},
+// НОВЫЕ ПРИМЕРЫ ДЛЯ БАНКОВ И ОБРАЗОВАНИЯ (ЧТОБЫ РАБОТАЛИ КАТЕГОРИИ)
+{
+    name: "Государственный Университет (USM)",
+    type: "university",
+    mainCat: "edu",
+    district: "Центр",
+    tags: ["Университет", "Образование", "USM"],
+    price: "Беспл.",
+    rating: 4.7,
+    desc: "Молдавский государственный университет, главный корпус.",
+    entertainment: "Учеба, библиотека, сквер, столовая.",
+    priceRange: "Учеба",
+    mapUrl: "https://maps.app.goo.gl/xxx",
+    lat: 47.017778,
+    lng: 28.824167,
+    gradient: "from-blue-600 to-slate-900",
+    icon: "<i class='fa-solid fa-building-columns text-white'></i>",
+    schedule: stdSched("08:00-18:00"),
+    isPermanentlyClosed: false
+},
+{
+    name: "Национальная Библиотека",
+    type: "library",
+    mainCat: "edu",
+    district: "Центр",
+    tags: ["Библиотека", "Книги", "Образование"],
+    price: "Беспл.",
+    rating: 4.8,
+    desc: "Национальная библиотека Республики Молдова.",
+    entertainment: "Читальный зал, архивы, тихая атмосфера.",
+    priceRange: "Бесплатно",
+    mapUrl: "https://maps.app.goo.gl/xxx",
+    lat: 47.0227,
+    lng: 28.8315,
+    gradient: "from-sky-600 to-slate-900",
+    icon: "<i class='fa-solid fa-book-open text-white'></i>",
+    schedule: stdSched("09:00-19:00"),
+    isPermanentlyClosed: false
+},
+{
+    name: "MAIB Главный офис",
+    type: "bank_branch",
+    mainCat: "bank",
+    district: "Центр",
+    tags: ["Банк", "MAIB", "Отделение"],
+    price: "Услуги",
+    rating: 4.5,
+    desc: "Главный филиал Moldova Agroindbank.",
+    entertainment: "Кредиты, переводы, обслуживание бизнеса.",
+    priceRange: "Комиссии банка",
+    mapUrl: "https://maps.app.goo.gl/xxx",
+    lat: 47.0245,
+    lng: 28.8322,
+    gradient: "from-emerald-600 to-slate-900",
+    icon: "<i class='fa-solid fa-money-check-dollar text-white'></i>",
+    schedule: stdSched("09:00-17:00"),
+    isPermanentlyClosed: false
+},
+{
+    name: "Банкомат MICB (24/7)",
+    type: "atm",
+    mainCat: "bank",
+    district: "Рышкановка",
+    tags: ["Банкомат", "MICB", "Наличные"],
+    price: "Беспл.",
+    rating: 4.2,
+    desc: "Круглосуточный банкомат Moldindconbank.",
+    entertainment: "Снятие наличных, пополнение счета.",
+    priceRange: "Без комиссий (свои)",
+    mapUrl: "https://maps.app.goo.gl/xxx",
+    lat: 47.0450,
+    lng: 28.8600,
+    gradient: "from-emerald-500 to-emerald-800",
+    icon: "<i class='fa-solid fa-money-bill-wave text-white'></i>",
+    schedule: { "0": "00:00-24:00", "1": "00:00-24:00", "2": "00:00-24:00", "3": "00:00-24:00", "4": "00:00-24:00", "5": "00:00-24:00", "6": "00:00-24:00" },
+    isPermanentlyClosed: false
+}
         ];
 
         places.forEach((p, i) => { p.id = p.id || ('place_' + i); });
 
-        let state = { category: 'all', district: 'all', search: '', onlyOpen: false };
+        let state = { mainCat: 'relax', category: 'all', district: 'all', search: '', onlyOpen: false };
         let map = null;
         let markersLayer = null;
         let tileLayer = null;
@@ -1151,8 +1438,8 @@
 
             return {
                 isOpen,
-                statusText: isOpen ? `Открыто (до ${endStr})` : `Закрыто (откроется в ${startStr})`,
-                todayHours: `${startStr} - ${endStr}`,
+                statusText: isOpen ? `Открыто (Сегодня: ${todaySchedule})` : `Закрыто (Сегодня: ${todaySchedule})`,
+                todayHours: `Сегодня: ${startStr} - ${endStr}`,
                 badgeBg: isOpen ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 border-emerald-500/30" : "bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400 border-rose-500/30",
                 dot: "<i class='fa-solid fa-circle text-[8px]'></i>"
             };
@@ -1230,43 +1517,334 @@
                 <div class="flex items-center gap-2 text-xs font-bold px-3.5 py-2 rounded-xl border ${status.badgeBg} shadow-sm">
                     <span class="mt-0.5">${status.dot}</span>
                     <span>${status.statusText}</span>
-                    <span class="ml-auto opacity-70"><i class="fa-regular fa-clock"></i> ${status.todayHours}</span>
                 </div>
                 <p class="text-sm font-medium text-slate-700 dark:text-slate-300 leading-relaxed">${p.desc}</p>
                 <div class="bg-indigo-50 dark:bg-indigo-500/10 p-3.5 rounded-xl border border-indigo-100 dark:border-indigo-500/20 text-xs text-slate-700 dark:text-slate-300 shadow-sm">
-                    <b class="text-indigo-600 dark:text-indigo-400 block mb-1"><i class="fa-solid fa-gamepad"></i> Развлечения:</b> ${p.entertainment}
+                    <b class="text-indigo-600 dark:text-indigo-400 block mb-1"><i class="fa-solid fa-gamepad"></i> Детали:</b> ${p.entertainment}
                 </div>
                 <div class="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 p-3.5 rounded-xl border border-emerald-100 dark:border-emerald-500/20 flex items-center justify-between shadow-sm">
-                    <span><i class="fa-solid fa-wallet"></i> Средний чек:</span>
+                    <span><i class="fa-solid fa-wallet"></i> Чек / Прайс:</span>
                     <span>${p.priceRange}</span>
                 </div>
             `;
             mapBtn.href = p.mapUrl;
-            mapBtn.style.display = 'flex';
-            actionBtn.textContent = 'Закрыть';
-            actionBtn.onclick = closeRandomModal;
-
-            modal.classList.remove('hidden');
+                actionBtn.onclick = function() { closeRandomModal(); };
+                modal.classList.remove('hidden');
         }
 
+        function closeRandomModal() {
+            document.getElementById('random-modal').classList.add('hidden');
+        }
+
+        function initMap() {
+            if (map) return;
+            const isDark = document.documentElement.classList.contains('dark');
+            const tileUrl = isDark ? mapStyleDark : mapStyleLight;
+
+            map = L.map('map', { zoomControl: false }).setView([47.0105, 28.8335], 13);
+            
+            tileLayer = L.tileLayer(tileUrl, {
+                maxZoom: 19,
+                attribution: isDark ? '© CARTO' : '© Google Maps'
+            }).addTo(map);
+
+            L.control.zoom({ position: 'bottomright' }).addTo(map);
+            markersLayer = L.layerGroup().addTo(map);
+        }
+
+        function getUserLocation() {
+            if (!navigator.geolocation) {
+                alert("Геолокация не поддерживается вашим браузером");
+                return;
+            }
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    
+                    if (userMarker) map.removeLayer(userMarker);
+
+                    const userIcon = L.divIcon({
+                        className: 'custom-user-pin',
+                        html: '<div class="user-location-ping"></div>',
+                        iconSize: [20, 20],
+                        iconAnchor: [10, 10]
+                    });
+
+                    userMarker = L.marker([lat, lng], { icon: userIcon }).addTo(map);
+                    userMarker.bindPopup("<div class='font-bold text-xs'>Вы здесь!</div>").openPopup();
+                    map.setView([lat, lng], 15);
+                },
+                () => {
+                    alert("Не удалось получить ваше местоположение. Проверьте разрешения.");
+                },
+                { enableHighAccuracy: true }
+            );
+        }
+
+        function renderMapMarkers(filteredPlaces) {
+            if (!map || !markersLayer) return;
+            markersLayer.clearLayers();
+
+            filteredPlaces.forEach(p => {
+                const isFav = userFavorites.includes(p.id);
+                const customIcon = L.divIcon({
+                    className: 'custom-map-marker',
+                    html: `<div class="w-9 h-9 rounded-xl bg-gradient-to-br ${p.gradient} text-white flex items-center justify-center text-sm shadow-xl border-2 border-white dark:border-slate-800 hover:scale-125 transition-transform cursor-pointer">${p.icon}</div>`,
+                    iconSize: [36, 36],
+                    iconAnchor: [18, 18]
+                });
+
+                const marker = L.marker([p.lat, p.lng], { icon: customIcon });
+                marker.on('click', () => {
+                    showPlaceModal(p);
+                });
+                markersLayer.addLayer(marker);
+            });
+        }
+
+        function applyFilters() {
+            const searchInput = document.getElementById('search-input');
+            const searchInputMob = document.getElementById('search-input-mobile');
+            if (searchInput) state.search = searchInput.value.toLowerCase().trim();
+            if (searchInputMob && searchInputMob.value) state.search = searchInputMob.value.toLowerCase().trim();
+
+            const filtered = places.filter(p => {
+                if (p.isPermanentlyClosed) return false;
+
+                if (state.district !== 'all' && p.district !== state.district) return false;
+                
+                if (state.mainCat && p.mainCat !== state.mainCat) return false;
+
+                if (state.category !== 'all' && p.type !== state.category) return false;
+
+                if (state.onlyOpen) {
+                    const status = checkOpenStatus(p.schedule);
+                    if (!status.isOpen) return false;
+                }
+
+                if (state.search) {
+                    const matchName = p.name.toLowerCase().includes(state.search);
+                    const matchDesc = p.desc.toLowerCase().includes(state.search);
+                    const matchTags = p.tags.some(t => t.toLowerCase().includes(state.search));
+                    const matchDist = p.district.toLowerCase().includes(state.search);
+                    if (!matchName && !matchDesc && !matchTags && !matchDist) return false;
+                }
+
+                return true;
+            });
+
+            renderPlacesGrid(filtered);
+            renderMapMarkers(filtered);
+        }
+
+        function renderPlacesGrid(list) {
+            const grid = document.getElementById('places-grid');
+            const countEl = document.getElementById('places-count');
+            if (countEl) countEl.textContent = list.length;
+
+            if (list.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full py-20 text-center glass rounded-[2rem] border border-white/40 dark:border-white/10">
+                        <div class="w-20 h-20 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-500 rounded-3xl flex items-center justify-center text-3xl mx-auto mb-4 shadow-inner">
+                            <i class="fa-solid fa-mug-hot"></i>
+                        </div>
+                        <h3 class="text-xl font-black mb-1 text-slate-800 dark:text-white">Ничего не найдено</h3>
+                        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">Попробуйте изменить параметры поиска или выбрать другой район.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = '';
+            list.forEach(p => {
+                const status = checkOpenStatus(p.schedule);
+                const isFav = userFavorites.includes(p.id);
+
+                const adminEditBtn = (currentSession && currentSession.user && currentSession.user.email === ADMIN_EMAIL && isAdminEditMode) ? `
+                    <button onclick="openAdminEditModal('${p.id}', event)" class="absolute top-4 left-4 z-20 px-3 py-1.5 rounded-xl bg-rose-500 text-white font-bold text-[10px] shadow-lg hover:scale-105 transition-all flex items-center gap-1.5">
+                        <i class="fa-solid fa-pen"></i> Изменить
+                    </button>
+                ` : '';
+
+                grid.insertAdjacentHTML('beforeend', `
+                    <div onclick="showPlaceModalById('${p.id}')" class="glass rounded-[2.5rem] p-5 sm:p-6 card-hover flex flex-col justify-between border border-white/60 dark:border-white/10 cursor-pointer relative overflow-hidden group">
+                        ${adminEditBtn}
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br ${p.gradient} flex items-center justify-center text-2xl text-white shadow-lg shadow-indigo-500/20 group-hover:scale-110 transition-transform">
+                                    ${p.icon}
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button onclick="toggleFavorite('${p.id}', event)" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800/80 flex items-center justify-center text-base ${isFav ? 'text-rose-500' : 'text-slate-400 dark:text-slate-500'} hover:scale-110 transition-transform">
+                                        <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
+                                    </button>
+                                    <span class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 font-black text-xs text-slate-700 dark:text-slate-300 shadow-sm flex items-center gap-1">
+                                        <i class="fa-solid fa-star text-amber-400 text-[10px]"></i> ${p.rating}
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-[10px] font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 px-2.5 py-1 rounded-md border border-indigo-100 dark:border-indigo-500/20">
+                                    <i class="fa-solid fa-location-dot"></i> ${p.district}
+                                </span>
+                                <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-md">
+                                    ${p.price}
+                                </span>
+                            </div>
+
+                            <h3 class="text-lg sm:text-xl font-black mb-2 text-slate-800 dark:text-white group-hover:text-indigo-500 transition-colors leading-tight">
+                                ${p.name}
+                            </h3>
+                            
+                            <p class="text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-400 line-clamp-2 mb-4">
+                                ${p.desc}
+                            </p>
+                        </div>
+
+                        <div class="space-y-3 pt-3 border-t border-slate-200/80 dark:border-slate-800/80">
+                            <div class="flex items-center gap-2 text-[11px] font-bold px-3 py-1.5 rounded-xl border ${status.badgeBg} shadow-sm">
+                                <span>${status.dot}</span>
+                                <span class="truncate">${status.statusText}</span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between pt-1">
+                                <span class="text-xs font-black text-emerald-600 dark:text-emerald-400"><i class="fa-solid fa-wallet"></i> ${p.priceRange}</span>
+                                <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400 group-hover:translate-x-1 transition-transform flex items-center gap-1">
+                                    Подробнее <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                `);
+            });
+        }
+
+        function setDistrict(dist) {
+            state.district = dist;
+            document.querySelectorAll('.dist-btn').forEach(btn => {
+                btn.classList.remove('bg-gradient-to-r', 'from-indigo-500', 'to-purple-500', 'text-white', 'shadow-lg');
+                btn.classList.add('bg-white/60', 'dark:bg-slate-800/60', 'text-slate-700', 'dark:text-slate-200');
+            });
+            event.currentTarget.classList.remove('bg-white/60', 'dark:bg-slate-800/60', 'text-slate-700', 'dark:text-slate-200');
+            event.currentTarget.classList.add('bg-gradient-to-r', 'from-indigo-500', 'to-purple-500', 'text-white', 'shadow-lg');
+
+            const distName = dist === 'all' ? 'Весь город' : dist;
+            document.getElementById('current-district-display').textContent = distName;
+            document.getElementById('grid-title').textContent = dist === 'all' ? 'Все заведения' : `Заведения: ${dist}`;
+
+            applyFilters();
+        }
+
+        function setMainCategory(mainCat) {
+            state.mainCat = mainCat;
+            state.category = 'all';
+
+            document.querySelectorAll('.cat-main-btn').forEach(btn => {
+                btn.classList.remove('cat-btn-active');
+            });
+            const activeMainBtn = document.getElementById(`btn-main-${mainCat}`);
+            if (activeMainBtn) activeMainBtn.classList.add('cat-btn-active');
+
+            document.querySelectorAll('.subcats-group').forEach(group => {
+                group.classList.add('hidden');
+            });
+            const targetSubcats = document.getElementById(`subcats-${mainCat}`);
+            if (targetSubcats) targetSubcats.classList.remove('hidden');
+
+            applyFilters();
+        }
+
+        function setCategory(cat) {
+            state.category = cat;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.classList.remove('cat-btn-active');
+            });
+            const activeBtn = document.getElementById(`btn-cat-${cat}`);
+            if (activeBtn) activeBtn.classList.add('cat-btn-active');
+
+            applyFilters();
+        }
+
+        function toggleOnlyOpen() {
+            state.onlyOpen = !state.onlyOpen;
+            const btn = document.getElementById('btn-only-open');
+            if (state.onlyOpen) {
+                btn.classList.add('bg-emerald-500', 'text-white', 'border-transparent');
+                btn.classList.remove('bg-white/60', 'dark:bg-slate-800/60', 'text-slate-600', 'dark:text-slate-300');
+            } else {
+                btn.classList.remove('bg-emerald-500', 'text-white', 'border-transparent');
+                btn.classList.add('bg-white/60', 'dark:bg-slate-800/60', 'text-slate-600', 'dark:text-slate-300');
+            }
+            applyFilters();
+        }
+
+        function getRandomPlace() {
+            const filtered = places.filter(p => !p.isPermanentlyClosed);
+            if (filtered.length === 0) return;
+            const randomP = filtered[Math.floor(Math.random() * filtered.length)];
+            showPlaceModal(randomP);
+        }
+
+       function startApp(district) {
+    const welcome = document.getElementById('welcome-screen');
+    const mainApp = document.getElementById('main-app');
+
+    // Сохраняем выбранный район в состояние, если он передан и не равен 'all'
+    if (district && district !== 'all') {
+        state.district = district;
+        
+        // Обновляем текст в интерфейсе
+        const distName = district;
+        document.getElementById('current-district-display').textContent = distName;
+        document.getElementById('grid-title').textContent = `Заведения: ${district}`;
+
+        // Подсвечиваем нужную кнопку района в фильтрах
+        document.querySelectorAll('.dist-btn').forEach(btn => {
+            if (btn.textContent.trim() === district) {
+                btn.classList.remove('bg-white/60', 'dark:bg-slate-800/60', 'text-slate-700', 'dark:text-slate-200');
+                btn.classList.add('bg-gradient-to-r', 'from-indigo-500', 'to-purple-500', 'text-white', 'shadow-lg');
+            } else {
+                btn.classList.remove('bg-gradient-to-r', 'from-indigo-500', 'to-purple-500', 'text-white', 'shadow-lg');
+                btn.classList.add('bg-white/60', 'dark:bg-slate-800/60', 'text-slate-700', 'dark:text-slate-200');
+            }
+        });
+    }
+
+    welcome.style.opacity = '0';
+    welcome.style.transform = 'scale(1.05)';
+    setTimeout(() => {
+        welcome.style.display = 'none';
+        mainApp.classList.remove('hidden');
+        setTimeout(() => {
+            mainApp.classList.remove('opacity-0', 'translate-y-10');
+            initMap();
+            
+            applyFilters();
+            setInterval(updateClockUI, 1000);
+            updateClockUI();
+        }, 50);
+    }, 600);
+}
+
         function toggleAdminEditMode() {
-            if (!currentSession || currentSession.user.email !== ADMIN_EMAIL) return;
             isAdminEditMode = !isAdminEditMode;
             const btn = document.getElementById('admin-mode-toggle-btn');
             if (isAdminEditMode) {
-                btn.textContent = '👑 Режим админа: ВКЛ';
+                btn.innerHTML = `<i class="fa-solid fa-shield-halved"></i> Режим админа: ВКЛ`;
                 btn.classList.remove('bg-rose-500', 'hover:bg-rose-600');
                 btn.classList.add('bg-emerald-500', 'hover:bg-emerald-600');
             } else {
-                btn.textContent = '👑 Режим админа: ВЫКЛ';
+                btn.innerHTML = `<i class="fa-solid fa-shield-halved"></i> Режим админа: ВЫКЛ`;
                 btn.classList.remove('bg-emerald-500', 'hover:bg-emerald-600');
                 btn.classList.add('bg-rose-500', 'hover:bg-rose-600');
             }
             applyFilters();
         }
 
-        function openAdminEditModal(placeId) {
-            if (!currentSession || currentSession.user.email !== ADMIN_EMAIL) return;
+        function openAdminEditModal(placeId, event) {
+            if (event) event.stopPropagation();
             const p = places.find(item => item.id === placeId);
             if (!p) return;
 
@@ -1283,391 +1861,25 @@
             document.getElementById('admin-edit-modal').classList.add('hidden');
         }
 
-        function savePlaceEdit(e) {
-            e.preventDefault();
-            if (!currentSession || currentSession.user.email !== ADMIN_EMAIL) return;
-
+        function savePlaceEdit(event) {
+            event.preventDefault();
             const id = document.getElementById('edit-place-id').value;
-            const p = places.find(item => item.id === id);
-            if (!p) return;
+            const name = document.getElementById('edit-name').value;
+            const district = document.getElementById('edit-district').value;
+            const desc = document.getElementById('edit-desc').value;
+            const priceRange = document.getElementById('edit-price-range').value;
 
-            p.name = document.getElementById('edit-name').value;
-            p.district = document.getElementById('edit-district').value;
-            p.desc = document.getElementById('edit-desc').value;
-            p.priceRange = document.getElementById('edit-price-range').value;
+            const p = places.find(item => item.id === id);
+            if (p) {
+                p.name = name;
+                p.district = district;
+                p.desc = desc;
+                p.priceRange = priceRange;
+            }
 
             closeAdminEditModal();
             applyFilters();
-            alert('Изменения успешно сохранены!');
-        }
-
-        function getRandomPlace() {
-            let currentPlaces = places.filter(p => {
-                const matchCat = state.category === 'all' || p.type === state.category;
-                const matchDist = state.district === 'all' || p.district === state.district;
-                const status = checkOpenStatus(p.schedule);
-                const matchOpen = !state.onlyOpen || status.isOpen;
-                return matchCat && matchDist && matchOpen;
-            });
-
-            if (currentPlaces.length === 0) currentPlaces = places;
-            const random = currentPlaces[Math.floor(Math.random() * currentPlaces.length)];
-            
-            showPlaceModal(random);
-            const actionBtn = document.getElementById('modal-action-btn');
-            actionBtn.textContent = 'Крутить еще';
-            actionBtn.onclick = getRandomPlace;
-        }
-
-        function closeRandomModal() {
-            document.getElementById('random-modal').classList.add('hidden');
-        }
-
-        function getUserLocation() {
-            if ("geolocation" in navigator) {
-                navigator.geolocation.getCurrentPosition(position => {
-                    const lat = position.coords.latitude;
-                    const lng = position.coords.longitude;
-
-                    if (userMarker) map.removeLayer(userMarker);
-
-                    const userIcon = L.divIcon({
-                        className: 'user-location-ping',
-                        iconSize: [20, 20],
-                        iconAnchor: [10, 10]
-                    });
-
-                    userMarker = L.marker([lat, lng], { icon: userIcon }).addTo(map);
-                    userMarker.bindPopup("<b>Вы находитесь здесь <i class='fa-solid fa-street-view'></i></b>").openPopup();
-                    map.setView([lat, lng], 14);
-                }, () => {
-                    alert("Не удалось получить геопозицию.");
-                });
-            } else {
-                alert("Геолокация не поддерживается вашим браузером.");
-            }
-        }
-
-        function initMap() {
-            map = L.map('map', { 
-                zoomControl: false,
-                dragging: true,
-                tap: true
-            }).setView([47.025, 28.832], isMobile() ? 12 : 13);
-            
-            L.control.zoom({ position: 'bottomright' }).addTo(map);
-
-            const isDark = document.documentElement.classList.contains('dark');
-            tileLayer = L.tileLayer(isDark ? mapStyleDark : mapStyleLight, {
-                attribution: isDark ? '© <a href="https://carto.com/">CARTO</a>' : '© Google Maps'
-            }).addTo(map);
-
-            markersLayer = L.layerGroup().addTo(map);
-            applyFilters();
-            getUserLocation();
-        }
-
-        function updateMapMarkers(placesToRender) {
-            if (!markersLayer) return;
-            markersLayer.clearLayers();
-
-            let bounds = [];
-            const isUserAdmin = currentSession && currentSession.user && currentSession.user.email === ADMIN_EMAIL;
-
-            placesToRender.forEach(p => {
-                const status = checkOpenStatus(p.schedule);
-                const iconSize = isMobile() ? [38, 38] : [46, 46];
-                const customIcon = L.divIcon({
-                    className: 'bg-transparent',
-                    html: `
-                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-lg sm:text-xl shadow-lg border-[3px] ${status.isOpen ? 'border-emerald-400' : 'border-slate-300 dark:border-slate-600'} bg-gradient-to-br ${p.gradient} hover:scale-110 transition-transform duration-300 relative">
-                            ${p.icon}
-                            <span class="absolute -top-1 -right-1 text-xs ${status.isOpen ? 'text-emerald-500' : 'text-slate-400'} bg-white dark:bg-slate-900 rounded-full w-4 h-4 flex items-center justify-center border border-slate-200 dark:border-slate-700 shadow-sm">${status.dot}</span>
-                        </div>
-                    `,
-                    iconSize: iconSize,
-                    iconAnchor: [iconSize[0]/2, iconSize[1]/2],
-                    popupAnchor: [0, -iconSize[1]/2]
-                });
-
-                const isDraggable = isUserAdmin && isAdminEditMode;
-                const marker = L.marker([p.lat, p.lng], { icon: customIcon, draggable: isDraggable });
-                
-                if (isDraggable) {
-                    marker.on('dragend', (event) => {
-                        const newPos = event.target.getLatLng();
-                        p.lat = newPos.lat;
-                        p.lng = newPos.lng;
-                        alert(`Координаты заведения "${p.name}" успешно обновлены на карте!`);
-                    });
-
-                    marker.on('contextmenu', () => {
-                        openAdminEditModal(p.id);
-                    });
-                }
-
-                marker.on('click', () => {
-                    if (isUserAdmin && isAdminEditMode) {
-                        openAdminEditModal(p.id);
-                    } else {
-                        showPlaceModal(p);
-                    }
-                });
-
-                markersLayer.addLayer(marker);
-                bounds.push([p.lat, p.lng]);
-            });
-
-            if (bounds.length > 0 && state.district !== 'all') {
-                map.fitBounds(bounds, { padding: [30, 30], maxZoom: 15 });
-            } else if (bounds.length > 0 && state.district === 'all') {
-                map.setView([47.025, 28.832], isMobile() ? 12 : 13);
-            }
-        }
-
-        function initOnlineCounter() {
-            const el = document.getElementById('online-count');
-            let current = Math.floor(Math.random() * 400) + 100;
-            el.textContent = current;
-
-            setInterval(() => {
-                let diff = Math.floor(Math.random() * 20) - 7;
-                current += diff;
-                if (current < 120) current = 120;
-                if (current > 550) current = 550;
-                
-                el.style.transform = 'scale(1.2)';
-                el.style.color = '#10b981';
-                el.textContent = current;
-                
-                setTimeout(() => {
-                    el.style.transform = 'scale(1)';
-                    el.style.color = ''; 
-                }, 300);
-            }, 3500 + Math.random() * 4000);
-        }
-
-        function startApp(selectedDistrict) {
-            const welcome = document.getElementById('welcome-screen');
-            const mainApp = document.getElementById('main-app');
-
-            welcome.style.opacity = '0';
-            welcome.style.transform = 'scale(1.05)';
-            
-            setTimeout(() => {
-                welcome.classList.add('hidden');
-                mainApp.classList.remove('hidden');
-                
-                requestAnimationFrame(() => {
-                    mainApp.classList.remove('opacity-0', 'translate-y-10');
-                    if (!map) {
-                        initMap();
-                    } else {
-                        map.invalidateSize();
-                    }
-                });
-            }, 500);
-
-            setDistrict(selectedDistrict);
-            initOnlineCounter();
-            updateClockUI();
-            setInterval(updateClockUI, 1000);
-        }
-
-        function toggleOnlyOpen() {
-            state.onlyOpen = !state.onlyOpen;
-            const btn = document.getElementById('btn-only-open');
-            if (state.onlyOpen) {
-                btn.classList.add('bg-emerald-500', 'text-white', 'border-emerald-500');
-                btn.classList.remove('bg-white/60', 'dark:bg-slate-800/60', 'text-slate-600', 'dark:text-slate-300');
-            } else {
-                btn.classList.remove('bg-emerald-500', 'text-white', 'border-emerald-500');
-                btn.classList.add('bg-white/60', 'dark:bg-slate-800/60', 'text-slate-600', 'dark:text-slate-300');
-            }
-            applyFilters();
-        }
-
-        function setCategory(cat) {
-            state.category = cat;
-            
-            document.querySelectorAll('.cat-btn').forEach(btn => {
-                btn.classList.remove('cat-btn-active');
-                btn.classList.add('bg-white/60', 'dark:bg-slate-800/60', 'text-slate-600', 'dark:text-slate-300');
-            });
-            const activeBtn = document.getElementById(`btn-cat-${cat}`);
-            activeBtn.classList.add('cat-btn-active');
-            activeBtn.classList.remove('bg-white/60', 'dark:bg-slate-800/60', 'text-slate-600', 'dark:text-slate-300');
-            
-            applyFilters();
-        }
-
-        function setDistrict(dist) {
-            state.district = dist;
-            
-            const buttons = document.querySelectorAll('.dist-btn');
-            buttons.forEach(btn => {
-                btn.classList.remove('bg-indigo-500', 'text-white', 'shadow-lg', 'shadow-indigo-500/30', 'scale-[1.02]');
-                btn.classList.add('bg-white/60', 'dark:bg-slate-800/60', 'text-slate-700', 'dark:text-slate-200');
-                const icon = btn.querySelector('i');
-                if(icon) icon.classList.remove('text-white');
-                
-                if(btn.textContent.trim().toLowerCase().includes(dist === 'all' ? 'весь город' : dist.toLowerCase())) {
-                    btn.classList.remove('bg-white/60', 'dark:bg-slate-800/60', 'text-slate-700', 'dark:text-slate-200');
-                    btn.classList.add('bg-indigo-500', 'text-white', 'shadow-lg', 'shadow-indigo-500/30', 'scale-[1.02]');
-                    if(icon) icon.classList.add('text-white');
-                }
-            });
-
-            applyFilters();
-        }
-
-        function updateDistrictDisplay() {
-            const display = document.getElementById('current-district-display');
-            const title = document.getElementById('grid-title');
-            
-            if(state.district === 'all') {
-                display.innerHTML = '<i class="fa-solid fa-earth-europe"></i> Весь Кишинев';
-                title.textContent = state.category === 'all' ? 'Все заведения' : 'Результаты поиска';
-            } else {
-                display.innerHTML = `<i class="fa-solid fa-map-pin"></i> ${state.district}`;
-                title.textContent = `Вайб: ${state.district}`;
-            }
-        }
-
-        function applyFilters() {
-            const searchInput = document.getElementById('search-input');
-            state.search = searchInput ? searchInput.value.toLowerCase() : '';
-            updateDistrictDisplay();
-
-            let filtered = places.filter(p => {
-                const matchCat = state.category === 'all' || p.type === state.category;
-                const matchDist = state.district === 'all' || p.district.toLowerCase() === state.district.toLowerCase();
-                const matchSearch = p.name.toLowerCase().includes(state.search) || 
-                                  p.tags.some(t => t.toLowerCase().includes(state.search)) ||
-                                  p.desc.toLowerCase().includes(state.search);
-                const status = checkOpenStatus(p.schedule);
-                const matchOpen = !state.onlyOpen || status.isOpen;
-
-                return matchCat && matchDist && matchSearch && matchOpen;
-            });
-
-            filtered.sort((a, b) => b.rating - a.rating);
-
-            renderGrid(filtered);
-            updateMapMarkers(filtered);
-        }
-
-        function renderGrid(placesToRender) {
-            const grid = document.getElementById('places-grid');
-            const countEl = document.getElementById('places-count');
-            
-            if (!grid || !countEl) return;
-
-            countEl.style.transform = 'scale(1.2)';
-            countEl.textContent = placesToRender.length;
-            setTimeout(() => countEl.style.transform = 'scale(1)', 200);
-
-            grid.innerHTML = '';
-            
-            if(placesToRender.length === 0) {
-                grid.innerHTML = `
-                    <div class="col-span-full glass rounded-[2rem] p-8 sm:p-16 text-center flex flex-col items-center justify-center border border-dashed border-slate-300 dark:border-slate-700">
-                        <div class="text-5xl sm:text-6xl mb-4 text-slate-400 opacity-60"><i class="fa-solid fa-ghost"></i></div>
-                        <h3 class="text-xl sm:text-2xl font-black mb-2 text-slate-800 dark:text-slate-200">Упс, ничего не найдено</h3>
-                        <p class="text-slate-500 text-sm sm:text-base">Попробуйте изменить фильтры или сбросить выбор.</p>
-                        <button onclick="document.getElementById('search-input').value=''; state.onlyOpen=false; applyFilters()" class="mt-5 px-6 py-3 bg-indigo-500 text-white font-bold text-sm sm:text-base rounded-xl shadow-lg hover:bg-indigo-600 transition-colors flex items-center gap-2"><i class="fa-solid fa-rotate-right"></i> Сбросить поиск</button>
-                    </div>`;
-                return;
-            }
-
-            const isUserAdmin = currentSession && currentSession.user && currentSession.user.email === ADMIN_EMAIL;
-
-            placesToRender.forEach((p, index) => {
-                const status = checkOpenStatus(p.schedule);
-                const isFav = userFavorites.includes(p.id);
-
-                const tagsHtml = p.tags.map(t => `<span class="bg-white/40 dark:bg-black/40 backdrop-blur-md border border-white/40 dark:border-white/10 text-slate-800 dark:text-slate-200 text-[10px] uppercase font-bold px-2.5 py-1 rounded-lg shadow-sm">${t}</span>`).join('');
-                
-                const isTopLeader = index === 0 && p.rating >= 4.8;
-                const topGlowClass = isTopLeader ? 'animate-glow border-2 border-indigo-400 dark:border-indigo-500 shadow-[0_0_30px_rgba(99,102,241,0.2)]' : 'border border-white/60 dark:border-white/10 shadow-lg';
-                
-                const topBadge = isTopLeader ? `
-                    <div class="absolute -top-3 left-6 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-black text-[10px] sm:text-xs px-3 py-1 rounded-full shadow-lg z-30 flex items-center gap-1.5 uppercase tracking-wider">
-                        <i class="fa-solid fa-star text-amber-300"></i> Выбор редакции
-                    </div>
-                ` : '';
-
-                const adminEditCardBtn = isUserAdmin ? `
-                    <button onclick="openAdminEditModal('${p.id}')" class="w-full mb-2.5 py-2.5 px-4 bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/30 font-bold text-xs rounded-xl text-center hover:bg-rose-500 hover:text-white transition-all flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-shield-halved"></i> Редактировать карточку (Админ)
-                    </button>
-                ` : '';
-
-                const cardHtml = `
-                    <div class="glass rounded-[2rem] p-5 sm:p-6 relative flex flex-col justify-between card-hover ${topGlowClass}">
-                        ${topBadge}
-                        <div>
-                            <div class="h-32 sm:h-40 rounded-2xl bg-gradient-to-br ${p.gradient} p-4 sm:p-5 flex flex-col justify-between relative overflow-hidden mb-5 shadow-inner">
-                                <div class="absolute -right-4 -bottom-6 text-7xl sm:text-8xl opacity-10 transform -rotate-12">${p.icon}</div>
-                                <div class="flex justify-between items-center relative z-10">
-                                    <span class="bg-white/20 backdrop-blur-md text-white text-[10px] sm:text-xs font-black px-3 py-1 rounded-full border border-white/20 shadow-sm flex items-center gap-1.5"><i class="fa-solid fa-map-pin"></i> ${p.district}</span>
-                                    <div class="flex items-center gap-2">
-                                        <button onclick="toggleFavorite('${p.id}', event)" class="w-8 h-8 rounded-full bg-black/40 backdrop-blur-md text-white flex items-center justify-center hover:scale-110 transition-transform ${isFav ? 'text-rose-400' : 'text-white'}" title="В избранное">
-                                            <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
-                                        </button>
-                                        <div class="flex items-center gap-1.5 bg-black/40 backdrop-blur-md text-white text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-full border border-white/10 shadow-sm">
-                                            <i class="fa-solid fa-star text-amber-400"></i> ${p.rating}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="relative z-10 flex flex-wrap gap-1.5 items-center mt-auto">
-                                    ${tagsHtml}
-                                </div>
-                            </div>
-
-                            <div class="mb-4">
-                                <div class="flex items-center justify-between gap-2 mb-2">
-                                    <h3 class="min-w-0 flex-1 text-xl sm:text-2xl font-black tracking-tight text-slate-800 dark:text-white flex items-center gap-2.5">
-                                        <span class="text-xl opacity-90 shrink-0">${p.icon}</span> 
-                                        <span class="break-words leading-snug">${p.name}</span>
-                                    </h3>
-                                    <span class="font-black text-indigo-600 dark:text-indigo-400 text-sm tracking-wider ml-1 bg-indigo-50 dark:bg-indigo-500/10 px-2 py-0.5 rounded-lg border border-indigo-100 dark:border-indigo-500/20 shrink-0">${p.price}</span>
-                                </div>
-
-                                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold border ${status.badgeBg} backdrop-blur-md mb-3 shadow-sm">
-                                    <span class="mt-0.5">${status.dot}</span>
-                                    <span>${status.statusText}</span>
-                                </div>
-
-                                <p class="text-slate-600 dark:text-slate-300 text-sm font-medium leading-relaxed">${p.desc}</p>
-                            </div>
-
-                            <div class="space-y-2 mb-6 text-xs font-medium">
-                                <div class="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center justify-between shadow-sm">
-                                    <span class="font-bold text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
-                                        <i class="fa-solid fa-gamepad text-indigo-500"></i> Развлечения:
-                                    </span>
-                                    <span class="text-slate-800 dark:text-slate-200 text-right font-bold">${p.entertainment}</span>
-                                </div>
-                                <div class="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center justify-between shadow-sm">
-                                    <span class="font-bold text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
-                                        <i class="fa-solid fa-wallet text-emerald-500"></i> Средний чек:
-                                    </span>
-                                    <span class="text-emerald-600 dark:text-emerald-400 font-black">${p.priceRange}</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="pt-2">
-                            ${adminEditCardBtn}
-                            <a href="${p.mapUrl}" target="_blank" class="w-full py-3.5 px-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs sm:text-sm rounded-xl text-center shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2">
-                                <span>Открыть на карте</span> <i class="fa-solid fa-location-arrow text-xs"></i>
-                            </a>
-                        </div>
-                    </div>
-                `;
-                grid.insertAdjacentHTML('beforeend', cardHtml);
-            });
+            alert('Место успешно обновлено!');
         }
     </script>
 </body>
