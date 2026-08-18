@@ -1,269 +1,177 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" class="light">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aivora | Ultimate AI Banking v11.4</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chisinau Vibe | Premium Guide</title>
+    <!-- Подключаем Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Подключаем FontAwesome для премиальных иконок вместо эмодзи -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <!-- Подключаем Supabase JS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Outfit', 'sans-serif'] },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'fade-in-up': 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'blob': 'blob 7s infinite',
+                        'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'glow': 'glowPulse 2s infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-15px)' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(30px) scale(0.95)' },
+                            '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
+                        },
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(40px, -60px) scale(1.1)' },
+                            '66%': { transform: 'translate(-30px, 30px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        },
+                        glowPulse: {
+                            '0%, 100%': { 
+                                boxShadow: '0 0 25px rgba(99, 102, 241, 0.5), 0 0 50px rgba(168, 85, 247, 0.3)',
+                                borderColor: 'rgba(99, 102, 241, 0.8)'
+                            },
+                            '50%': { 
+                                boxShadow: '0 0 45px rgba(99, 102, 241, 0.8), 0 0 80px rgba(168, 85, 247, 0.6)',
+                                borderColor: 'rgba(168, 85, 247, 1)'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
 
 
 
 
-        /* === БАЗОВЫЕ ПЕРЕМЕННЫЕ И НАСТРОЙКИ === */
-        :root {
-            --bg-color: #030002;
-            --text-main: #ffffff;
-            --text-muted: #9e8791;
-            --accent-1: #ff0055;
-            --accent-2: #ff2a6d;
-            --accent-glow: rgba(255, 0, 85, 0.4);
-            --glass-bg: rgba(20, 5, 10, 0.65);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --modal-shadow: 0 30px 60px rgba(0, 0, 0, 0.9), 0 0 50px rgba(255, 0, 85, 0.15);
-            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap');
+        
+        body { 
+            background-color: #f8fafc;
+            transition: background-color 0.5s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .dark body { background-color: #020617; }
+        
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 10px; }
+        .dark ::-webkit-scrollbar-thumb { background: #334155; }
+        ::-webkit-scrollbar-thumb:hover { background: #6366f1; }
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 10px 40px -10px rgba(31, 38, 135, 0.08);
+        }
+        .dark .glass {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.4);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Space Grotesk', sans-serif; cursor: none !important; }
-        html { scroll-behavior: smooth; }
-        body { background-color: var(--bg-color); color: var(--text-main); overflow-x: hidden; min-height: 100vh; position: relative; }
-        
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.5); }
-        ::-webkit-scrollbar-thumb { background: var(--accent-1); border-radius: 10px; }
-
-        /* === КУРСОР === */
-        .custom-cursor {
-            position: fixed; width: 14px; height: 14px; background: var(--accent-1);
-            border-radius: 50%; pointer-events: none; z-index: 9999;
-            top: 0; left: 0; will-change: transform;
-            box-shadow: 0 0 15px var(--accent-1), 0 0 30px var(--accent-1);
-            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        .gradient-text {
+            background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% 200%;
+            animation: gradientMove 4s ease infinite;
         }
 
-        /* === ФОНЫ И ЭФФЕКТЫ === */
-        .world-map-bg {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -2; opacity: 0.12; pointer-events: none;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 500" fill="none" stroke="%23ff0055" stroke-width="1"><path d="M150,150 Q200,100 250,130 T300,200 T200,300 Z M350,100 Q450,80 500,150 T450,300 T380,250 Z M550,120 Q650,100 750,160 T850,220 T700,380 T600,280 Z"/></svg>');
-            background-size: cover; background-position: center;
-        }
-        .glow-circle {
-            position: fixed; width: 700px; height: 700px;
-            background: radial-gradient(circle, rgba(255,0,85,0.15) 0%, transparent 70%);
-            filter: blur(120px); opacity: 0.8; border-radius: 50%; z-index: -1;
-            pointer-events: none; top: 0; left: 0; will-change: transform;
-        }
-        .noise-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; opacity: 0.03; pointer-events: none;
-            background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)"/></svg>');
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        /* === НАВИГАЦИЯ === */
-        nav {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 16px 36px; position: fixed; width: 85%; max-width: 1200px;
-            top: 25px; left: 50%; transform: translateX(-50%);
-            background: var(--glass-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            border: 1px solid var(--glass-border); border-radius: 40px; z-index: 1000;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        .logo { font-size: 24px; font-weight: 700; letter-spacing: 2px; color: #fff; text-shadow: 0 0 15px rgba(255,0,85,0.5); cursor: pointer !important; transition: var(--transition); }
-        .logo:hover { text-shadow: 0 0 25px var(--accent-1); transform: scale(1.02); }
-        .logo span { color: var(--accent-1); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        .nav-links { display: flex; gap: 30px; list-style: none; }
-        .nav-links a { color: var(--text-muted); text-decoration: none; font-weight: 500; font-size: 14px; transition: var(--transition); }
-        .nav-links a:hover { color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.4); }
-
-        .auth-buttons, .user-profile-nav { display: flex; gap: 12px; align-items: center; }
-        .user-profile-nav { display: none; }
-        .user-profile-info { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.03); padding: 5px 14px 5px 5px; border-radius: 35px; border: 1px solid var(--glass-border); transition: var(--transition); cursor: pointer !important; }
-        .user-profile-info:hover { background: rgba(255,0,85,0.1); border-color: var(--accent-1); }
-        .user-avatar { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-1), var(--accent-2)); display: flex; justify-content: center; align-items: center; font-weight: 700; color: white; font-size: 14px; box-shadow: 0 0 10px rgba(255,0,85,0.4); }
-        .logout-icon-btn { color: var(--text-muted); font-size: 13px; padding: 8px 14px; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 20px; transition: var(--transition); cursor: pointer !important; }
-        .logout-icon-btn:hover { color: var(--accent-1); border-color: var(--accent-1); background: rgba(255,0,85,0.1); }
-
-        /* === КНОПКИ === */
-        .btn {
-            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
-            color: #ffffff; padding: 12px 28px; border: none; border-radius: 32px;
-            font-weight: 600; font-size: 14px; letter-spacing: 0.5px; cursor: pointer !important; transition: var(--transition);
-            box-shadow: 0 5px 20px rgba(255,0,85,0.3); position: relative; overflow: hidden;
+        .card-hover {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: 0.5s; }
-        .btn:hover::before { left: 100%; }
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(255,0,85,0.5); }
-        .btn-outline { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); color: #fff; box-shadow: none; }
-        .btn-outline:hover { background: rgba(255, 255, 255, 0.08); border-color: var(--accent-1); box-shadow: 0 0 15px rgba(255,0,85,0.2); }
-
-        /* === ЛЕНДИНГ === */
-        #landing-page { transition: opacity 0.4s ease; padding-top: 150px; }
-        .hero { display: flex; align-items: center; justify-content: space-between; min-height: 70vh; padding: 0 8%; max-width: 1600px; margin: 0 auto; }
-        .hero-text { max-width: 600px; }
-        .hero-text h1 { font-size: 68px; line-height: 1.1; margin-bottom: 25px; font-weight: 700; letter-spacing: -1px; }
-        .hero-text h1 span { background: linear-gradient(90deg, var(--accent-1), var(--accent-2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .hero-text p { color: var(--text-muted); font-size: 18px; line-height: 1.6; margin-bottom: 40px; }
-
-        /* 3D КАРТА */
-        .card-container { perspective: 1200px; display: flex; justify-content: center; align-items: center; z-index: 10; cursor: pointer !important; }
-        .glass-card {
-            width: 440px; height: 270px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
-            backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px);
-            border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 28px; padding: 35px;
-            display: flex; flex-direction: column; justify-content: space-between;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.7), inset 0 0 25px rgba(255,255,255,0.05);
-            transform-style: preserve-3d;
-            transition: transform 0.1s ease-out, border-color 0.3s ease, box-shadow 0.3s ease;
-            will-change: transform;
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 25px 50px -12px rgba(99, 102, 241, 0.15);
+            border-color: rgba(99, 102, 241, 0.4);
         }
-        .glass-card:hover { border-color: rgba(255,0,85,0.6); box-shadow: 0 35px 70px rgba(0,0,0,0.8), 0 0 45px rgba(255,0,85,0.3); }
-        .card-top { display: flex; justify-content: space-between; align-items: center; transform: translateZ(35px); }
-        .chip { width: 50px; height: 38px; background: linear-gradient(135deg, #e6c27a, #d4af37); border-radius: 8px; opacity: 0.95; box-shadow: 0 2px 10px rgba(0,0,0,0.5); }
-        .card-logo { font-weight: 700; font-size: 22px; letter-spacing: 3px; color: rgba(255,255,255,0.95); }
-        .card-holder { color: #fff; font-weight: 600; font-size: 22px; letter-spacing: 1.5px; margin-top: 10px; transform: translateZ(45px); text-shadow: 0 2px 5px rgba(0,0,0,0.5); }
-        .card-bottom { display: flex; justify-content: space-between; color: rgba(255,255,255,0.7); font-size: 13px; text-transform: uppercase; letter-spacing: 1px; transform: translateZ(25px); }
+        .dark .card-hover:hover {
+            box-shadow: 0 25px 50px -12px rgba(99, 102, 241, 0.25);
+            border-color: rgba(99, 102, 241, 0.5);
+        }
         
-        .click-hint { position: absolute; top: -40px; right: -20px; background: var(--accent-1); color: #fff; padding: 6px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; animation: bounce 2s infinite; transform: translateZ(50px); pointer-events: none; box-shadow: 0 5px 15px rgba(255,0,85,0.4); }
-        .click-hint::after { content: ''; position: absolute; bottom: -5px; left: 20px; border-width: 5px 5px 0; border-style: solid; border-color: var(--accent-1) transparent transparent transparent; }
-        @keyframes bounce { 0%, 100% { transform: translateZ(50px) translateY(0); } 50% { transform: translateZ(50px) translateY(-10px); } }
-
-        .stats-section { display: flex; justify-content: center; gap: 60px; padding: 60px 8%; border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border); background: rgba(0,0,0,0.3); margin: 60px 0; }
-        .stat-item { text-align: center; }
-        .stat-number { font-size: 42px; font-weight: 700; color: #fff; margin-bottom: 5px; text-shadow: 0 0 20px rgba(255,255,255,0.2); }
-        .stat-label { color: var(--accent-1); font-size: 14px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
-
-        .philosophy-section { max-width: 1400px; margin: 0 auto 120px; padding: 0 5%; }
-        .section-header { text-align: center; margin-bottom: 60px; }
-        .section-header h2 { font-size: 42px; font-weight: 700; margin-bottom: 15px; }
-        .section-header p { color: var(--text-muted); font-size: 18px; max-width: 600px; margin: 0 auto; }
-        
-        .acronym-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 24px; }
-        .acronym-card {
-            background: var(--glass-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            border: 1px solid var(--glass-border); border-radius: 24px; padding: 32px;
-            display: flex; gap: 20px; align-items: flex-start; transition: var(--transition);
-            opacity: 0; transform: translateY(30px);
-        }
-        .acronym-card.visible { opacity: 1; transform: translateY(0); }
-        .acronym-card:hover { border-color: rgba(255,0,85,0.5); transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0,0,0,0.6), inset 0 0 20px rgba(255,0,85,0.05); }
-        .acronym-letter { font-size: 42px; font-weight: 800; background: linear-gradient(135deg, var(--accent-1), var(--accent-2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1; text-shadow: 0 0 20px rgba(255,0,85,0.3); }
-        .acronym-content h3 { font-size: 20px; color: #fff; margin-bottom: 8px; font-weight: 600; }
-        .acronym-content p { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
-
-        footer { border-top: 1px solid var(--glass-border); padding: 40px 8%; text-align: center; color: var(--text-muted); font-size: 13px; background: rgba(0,0,0,0.5); }
-
-        /* === ДАШБОРД === */
-        #profile-page { display: none; opacity: 0; transition: opacity 0.4s ease; padding: 130px 4% 60px; max-width: 1500px; margin: 0 auto; }
-        .dashboard-grid { display: grid; grid-template-columns: 2.2fr 1fr; gap: 30px; }
-        .dash-panel {
-            background: var(--glass-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            border: 1px solid var(--glass-border); border-radius: 32px; padding: 35px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        .cat-btn-active {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
+            color: white !important;
+            border-color: transparent !important;
+            box-shadow: 0 12px 24px -8px rgba(99, 102, 241, 0.5) !important;
         }
 
-        .dash-tabs { display: flex; gap: 10px; margin-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; overflow-x: auto; scrollbar-width: none; }
-        .dash-tabs::-webkit-scrollbar { display: none; }
-        .dash-tab { background: transparent; border: 1px solid transparent; color: var(--text-muted); font-weight: 600; font-size: 14px; padding: 10px 20px; border-radius: 16px; transition: var(--transition); white-space: nowrap; cursor: pointer !important; }
-        .dash-tab.active { background: rgba(255, 0, 85, 0.1); color: #fff; border-color: rgba(255,0,85,0.4); box-shadow: 0 0 20px rgba(255,0,85,0.15); }
-        .dash-tab:hover:not(.active) { color: #fff; background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.1); }
+        .cat-btn-active i, .cat-btn-active span {
+            color: white !important;
+            opacity: 1 !important;
+        }
 
-        .balance-label { color: var(--text-muted); font-size: 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .balance-amount { font-size: 64px; font-weight: 700; color: #fff; margin-bottom: 5px; letter-spacing: -1px; }
-        .balance-diff { color: #00ff88; font-size: 15px; font-weight: 600; margin-bottom: 35px; display: flex; align-items: center; gap: 8px; background: rgba(0,255,136,0.1); display: inline-flex; padding: 4px 12px; border-radius: 20px; }
-        
-        .action-buttons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
-        .action-btn { padding: 16px; background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: 20px; color: #fff; font-weight: 600; font-size: 15px; transition: var(--transition); text-align: center; cursor: pointer !important; }
-        .action-btn:hover { background: rgba(255,0,85,0.1); border-color: var(--accent-1); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(255,0,85,0.2); }
+        .leaflet-popup { display: none !important; }
 
-        .ai-insight { display: flex; gap: 20px; align-items: center; background: linear-gradient(90deg, rgba(255,0,85,0.1), transparent); border-left: 4px solid var(--accent-1); padding: 20px 25px; border-radius: 0 20px 20px 0; margin-top: 35px; transition: var(--transition); border: 1px solid transparent; border-left-color: var(--accent-1); }
-        .ai-insight:hover { background: linear-gradient(90deg, rgba(255,0,85,0.15), rgba(255,255,255,0.02)); border-color: var(--glass-border); border-left-color: var(--accent-1); transform: translateX(5px); }
-        
-        /* Крипто Рынок */
-        .crypto-layout { display: grid; grid-template-columns: 1fr 1.6fr; gap: 24px; }
-        .crypto-list { background: rgba(0,0,0,0.3); border-radius: 24px; border: 1px solid var(--glass-border); overflow: hidden; height: 450px; display: flex; flex-direction: column; }
-        .crypto-header { display: flex; justify-content: space-between; padding: 16px 24px; background: rgba(255,255,255,0.02); font-size: 12px; color: var(--text-muted); border-bottom: 1px solid var(--glass-border); text-transform: uppercase; letter-spacing: 1px; }
-        .crypto-body { overflow-y: auto; flex: 1; }
-        .crypto-item { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; border-bottom: 1px solid rgba(255,255,255,0.02); transition: 0.2s; cursor: pointer !important; }
-        .crypto-item:hover { background: rgba(255,255,255,0.05); }
-        .crypto-item.active { background: rgba(255, 0, 85, 0.1); border-left: 4px solid var(--accent-1); }
-        .crypto-info { display: flex; align-items: center; gap: 14px; }
-        .crypto-icon { width: 36px; height: 36px; border-radius: 50%; background: #fff; padding: 2px; }
-        .crypto-name { font-weight: 600; color: #fff; font-size: 16px; }
-        .crypto-symbol { font-size: 13px; color: var(--text-muted); text-transform: uppercase; }
-        .crypto-price-block { text-align: right; }
-        .crypto-price { font-weight: 600; color: #fff; font-size: 16px; }
-        .crypto-change.pos { color: #00ff88; font-size: 13px; }
-        .crypto-change.neg { color: var(--accent-1); font-size: 13px; }
+        .leaflet-control-zoom a {
+            background-color: var(--tw-bg-opacity, #fff) !important;
+            color: #475569 !important;
+            border-radius: 10px !important;
+            margin-bottom: 6px;
+            border: 1px solid rgba(0,0,0,0.05) !important;
+            box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.1) !important;
+            transition: all 0.2s;
+        }
+        .dark .leaflet-control-zoom a {
+            background-color: #1e293b !important;
+            color: #cbd5e1 !important;
+            border-color: rgba(255,255,255,0.05) !important;
+        }
+        .leaflet-control-zoom a:hover {
+            color: #6366f1 !important;
+        }
 
-        .crypto-chart-container { background: rgba(0,0,0,0.3); border-radius: 24px; border: 1px solid var(--glass-border); padding: 24px; display: flex; flex-direction: column; }
-        .chart-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
-        .chart-title-block h3 { font-size: 26px; color: #fff; margin-bottom: 4px; }
-        .chart-title-block p { color: var(--text-muted); font-size: 15px; }
-        .chart-canvas-wrapper { flex: 1; position: relative; min-height: 280px; }
-
-        .analytics-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-        .analytics-card { background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 24px; padding: 25px; }
-        .pie-chart-wrapper { position: relative; height: 250px; width: 100%; display: flex; justify-content: center; }
-
-        .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .history-header h3 { font-size: 22px; font-weight: 600; }
-        .tx-list { display: flex; flex-direction: column; gap: 14px; max-height: 400px; overflow-y: auto; padding-right: 8px; }
-        .tx-item { display: flex; justify-content: space-between; align-items: center; padding: 18px; background: rgba(255,255,255,0.02); border-radius: 20px; transition: var(--transition); border: 1px solid transparent; }
-        .tx-item:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); transform: translateX(-5px); }
-        .tx-info { display: flex; align-items: center; gap: 16px; }
-        .tx-avatar { width: 46px; height: 46px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 1px solid var(--glass-border); font-size: 18px; font-weight: bold; background: rgba(0,0,0,0.5); }
-        .tx-details h4 { color: #fff; font-size: 16px; margin-bottom: 4px; }
-        .tx-details p { color: var(--text-muted); font-size: 13px; }
-        .tx-amount { font-weight: 700; font-size: 17px; }
-        .tx-amount.pos { color: #00ff88; }
-        .tx-amount.neg { color: #fff; }
-
-        .settings-form .input-group { margin-bottom: 20px; }
-        .settings-form label { display: block; margin-bottom: 8px; color: var(--text-muted); font-size: 14px; }
-        .settings-form input { width: 100%; padding: 16px 20px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); border-radius: 16px; color: #fff; outline: none; transition: 0.3s; }
-        .settings-form input:focus { border-color: var(--accent-1); }
-        .toggle-switch { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: rgba(255,255,255,0.02); border-radius: 16px; margin-bottom: 15px; border: 1px solid var(--glass-border); }
-        .switch-btn { width: 44px; height: 24px; background: rgba(255,255,255,0.1); border-radius: 12px; position: relative; transition: 0.3s; cursor: pointer !important; }
-        .switch-btn.active { background: var(--accent-1); }
-        .switch-btn::after { content: ''; position: absolute; width: 20px; height: 20px; background: #fff; border-radius: 50%; top: 2px; left: 2px; transition: 0.3s; }
-        .switch-btn.active::after { left: 22px; }
-
-        .chatbot-btn { position: fixed; bottom: 30px; left: 30px; width: 60px; height: 60px; background: linear-gradient(135deg, var(--accent-1), var(--accent-2)); border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 10px 25px rgba(255,0,85,0.4); z-index: 2000; font-size: 24px; transition: 0.3s; cursor: pointer !important; }
-        .chatbot-btn:hover { transform: scale(1.1) rotate(10deg); }
-
-        /* === МОДАЛЬНЫЕ ОКНА === */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; justify-content: center; align-items: center; z-index: 3000; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
-        .modal-overlay.active { opacity: 1; visibility: visible; }
-        
-        .modal-content { background: rgba(10, 2, 6, 0.95); border: 1px solid rgba(255,255,255,0.1); border-radius: 40px; width: 950px; min-height: 550px; display: flex; box-shadow: var(--modal-shadow); transform: scale(0.95) translateY(20px); transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); overflow: hidden; position: relative; }
-        .modal-overlay.active .modal-content { transform: scale(1) translateY(0); }
-        
-        .close-btn { position: absolute; top: 20px; right: 30px; font-size: 32px; color: var(--text-muted); transition: 0.2s; z-index: 10; font-weight: 300; cursor: pointer !important; }
-        .close-btn:hover { color: #fff; transform: rotate(90deg); }
-        
-        .modal-form { flex: 1; padding: 50px; display: flex; flex-direction: column; justify-content: center; border-right: 1px solid rgba(255,255,255,0.05); }
-        .modal-form h2 { margin-bottom: 30px; font-size: 32px; color: #fff; font-weight: 700; }
-        .input-group { margin-bottom: 20px; }
-        .input-group input { width: 100%; padding: 18px 22px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 20px; color: white; font-size: 16px; outline: none; transition: 0.3s; cursor: text !important; }
-        .input-group input:focus { border-color: var(--accent-1); background: rgba(255, 0, 85, 0.05); box-shadow: 0 0 20px rgba(255,0,85,0.2); }
-        
-        .modal-map-container { flex: 1.1; padding: 30px; display: flex; flex-direction: column; background: rgba(0,0,0,0.4); position: relative; }
-        #map { flex: 1; border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); width: 100%; filter: grayscale(100%) invert(100%) contrast(150%); }
-
-        .action-modal-content { background: rgba(10, 2, 6, 0.98); border: 1px solid rgba(255,255,255,0.1); border-radius: 36px; width: 500px; padding: 45px; box-shadow: var(--modal-shadow); position: relative; text-align: center; transform: scale(0.95); transition: 0.3s; }
-        .modal-overlay.active .action-modal-content { transform: scale(1); }
-
-        .toast-container { position: fixed; bottom: 30px; right: 30px; z-index: 4000; display: flex; flex-direction: column; gap: 12px; }
-        .toast { background: rgba(15, 2, 8, 0.95); border: 1px solid var(--accent-1); border-radius: 18px; padding: 18px 24px; color: #fff; font-size: 15px; box-shadow: 0 10px 30px rgba(255,0,85,0.3); animation: slideIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; gap: 12px; backdrop-filter: blur(10px); }
-        @keyframes slideIn { from { transform: translateX(100%) scale(0.8); opacity: 0; } to { transform: translateX(0) scale(1); opacity: 1; } }
-
-        .fade-in { animation: fadeIn 0.4s ease forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .user-location-ping {
+            position: relative;
+            width: 20px;
+            height: 20px;
+        }
+        .user-location-ping::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #6366f1;
+            border-radius: 50%;
+            animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+            opacity: 0.75;
+        }
+        .user-location-ping::after {
+            content: '';
+            position: absolute;
+            top: 4px; left: 4px; width: 12px; height: 12px;
+            background-color: #4f46e5;
+            border: 2px solid white;
+            border-radius: 50%;
+        }
     </style>
-
 
 <!-- Адаптированный летающий коктейль для мобильных устройств без изменения дизайна -->
 <style>
@@ -283,977 +191,1747 @@
 </div>
 
 
+
 </head>
-<body>
+<body class="text-slate-900 dark:text-slate-100 min-h-screen relative overflow-x-hidden" id="body">
 
-    <div class="custom-cursor" id="custom-cursor"></div>
-    <div class="world-map-bg"></div>
-    <div class="glow-circle" id="glow-circle"></div>
-    <div class="noise-overlay"></div>
-
-    <nav>
-        <div class="logo" onclick="goToLanding()">AIVORA <span>v11.4</span></div>
-        <ul class="nav-links">
-            <li><a href="#features" onclick="goToLanding()">Экосистема</a></li>
-            <li><a href="#philosophy" onclick="goToLanding()">Философия</a></li>
-            <li><a href="#" onclick="openShopperModal()">AI Scanner</a></li>
-        </ul>
-        <div class="auth-buttons" id="nav-auth-btns">
-            <button class="btn btn-outline" onclick="openModal('login')">Вход</button>
-            <button class="btn" onclick="openModal('register')">Регистрация</button>
+    <div class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[110] glass rounded-full px-4 py-2.5 flex items-center gap-3 cursor-help hover:scale-105 transition-transform shadow-xl" title="Людей сейчас ищут места">
+        <div class="relative flex h-3 w-3">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
         </div>
-        <div class="user-profile-nav" id="nav-user-profile">
-            <div class="user-profile-info" onclick="goToProfile()">
-                <div class="user-avatar" id="user-avatar-initials">A</div>
-                <span id="user-name-display" style="font-weight: 600; font-size: 14px; color: #fff; padding-right: 5px;">@user</span>
+        <div class="font-bold text-xs sm:text-sm tracking-wide flex items-center gap-2">
+            <span id="online-count" class="text-emerald-600 dark:text-emerald-400 text-sm sm:text-lg transition-all duration-300">342</span> 
+            <span class="hidden sm:inline text-slate-500 dark:text-slate-400">онлайн</span>
+        </div>
+    </div>
+
+    <div class="fixed inset-0 w-full h-full pointer-events-none z-[-1] overflow-hidden">
+        <div class="absolute top-[-10%] left-[-10%] w-[20rem] sm:w-[40rem] h-[20rem] sm:h-[40rem] bg-indigo-500 rounded-full mix-blend-multiply filter blur-[80px] sm:blur-[120px] opacity-20 dark:opacity-30 animate-blob"></div>
+        <div class="absolute top-[20%] right-[-10%] w-[18rem] sm:w-[35rem] h-[18rem] sm:h-[35rem] bg-purple-500 rounded-full mix-blend-multiply filter blur-[80px] sm:blur-[120px] opacity-20 dark:opacity-30 animate-blob animation-delay-2000"></div>
+        <div class="absolute bottom-[-10%] left-[20%] w-[20rem] sm:w-[40rem] h-[20rem] sm:h-[40rem] bg-pink-500 rounded-full mix-blend-multiply filter blur-[80px] sm:blur-[120px] opacity-10 dark:opacity-20 animate-blob animation-delay-4000"></div>
+    </div>
+
+    <div id="welcome-screen" class="fixed inset-0 z-[100] bg-white/90 dark:bg-slate-950/90 backdrop-blur-3xl flex flex-col items-center justify-center transition-all duration-700 overflow-y-auto py-10 px-4">
+        <div class="text-center max-w-4xl w-full my-auto">
+            <div class="mb-6 animate-float inline-block">
+                <div class="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-indigo-500 to-pink-500 rounded-3xl flex items-center justify-center text-white text-4xl shadow-2xl shadow-indigo-500/40 rotate-12 mx-auto">
+                    <i class="fa-solid fa-martini-glass-citrus -rotate-12"></i>
+                </div>
             </div>
-            <button class="logout-icon-btn" onclick="logout()" title="Выйти">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-            </button>
+            <h1 class="text-3xl sm:text-6xl md:text-8xl font-black mb-3 sm:mb-6 tracking-tighter text-slate-900 dark:text-white">
+                Куда пойдем <span class="gradient-text block mt-1 sm:mt-2">в Кишиневе?</span>
+            </h1>
+            <p class="text-sm sm:text-xl md:text-2xl text-slate-500 dark:text-slate-400 mb-6 sm:mb-12 font-light">Выбери свой вайб на сегодня</p>
+            
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6 mb-8 max-w-3xl mx-auto">
+                <button onclick="startApp('Центр')" class="group relative p-4 sm:p-8 rounded-3xl glass hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl hover:shadow-indigo-500/20 border border-white/50 dark:border-white/10 hover:border-indigo-500 text-left overflow-hidden">
+                    <i class="fa-solid fa-landmark absolute -right-4 -bottom-4 text-6xl sm:text-8xl text-indigo-500 opacity-5 group-hover:scale-125 transition-transform duration-500"></i>
+                    <div class="text-2xl sm:text-4xl mb-2 sm:mb-4 text-indigo-500 group-hover:scale-110 transition-transform origin-left drop-shadow-md"><i class="fa-solid fa-landmark"></i></div>
+                    <div class="font-black text-base sm:text-2xl mb-1 text-slate-800 dark:text-white">Центр</div>
+                    <div class="text-[11px] sm:text-sm text-slate-500 dark:text-slate-400 font-medium">Сердце города</div>
+                </button>
+                <button onclick="startApp('Ботаника')" class="group relative p-4 sm:p-8 rounded-3xl glass hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl hover:shadow-emerald-500/20 border border-white/50 dark:border-white/10 hover:border-emerald-500 text-left overflow-hidden">
+                    <i class="fa-solid fa-tree-city absolute -right-4 -bottom-4 text-6xl sm:text-8xl text-emerald-500 opacity-5 group-hover:scale-125 transition-transform duration-500"></i>
+                    <div class="text-2xl sm:text-4xl mb-2 sm:mb-4 text-emerald-500 group-hover:scale-110 transition-transform origin-left drop-shadow-md"><i class="fa-solid fa-tree-city"></i></div>
+                    <div class="font-black text-base sm:text-2xl mb-1 text-slate-800 dark:text-white">Ботаника</div>
+                    <div class="text-[11px] sm:text-sm text-slate-500 dark:text-slate-400 font-medium">Парки и уют</div>
+                </button>
+                <button onclick="startApp('Рышкановка')" class="group relative p-4 sm:p-8 rounded-3xl glass hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20 border border-white/50 dark:border-white/10 hover:border-blue-500 text-left overflow-hidden">
+                    <i class="fa-solid fa-gem absolute -right-4 -bottom-4 text-6xl sm:text-8xl text-blue-500 opacity-5 group-hover:scale-125 transition-transform duration-500"></i>
+                    <div class="text-2xl sm:text-4xl mb-2 sm:mb-4 text-blue-500 group-hover:scale-110 transition-transform origin-left drop-shadow-md"><i class="fa-solid fa-gem"></i></div>
+                    <div class="font-black text-base sm:text-2xl mb-1 text-slate-800 dark:text-white">Рышкановка</div>
+                    <div class="text-[11px] sm:text-sm text-slate-500 dark:text-slate-400 font-medium">Стиль и жизнь</div>
+                </button>
+                <button onclick="startApp('Буюканы')" class="group relative p-4 sm:p-8 rounded-3xl glass hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl hover:shadow-orange-500/20 border border-white/50 dark:border-white/10 hover:border-orange-500 text-left overflow-hidden">
+                    <i class="fa-solid fa-cloud-sun absolute -right-4 -bottom-4 text-6xl sm:text-8xl text-orange-500 opacity-5 group-hover:scale-125 transition-transform duration-500"></i>
+                    <div class="text-2xl sm:text-4xl mb-2 sm:mb-4 text-orange-500 group-hover:scale-110 transition-transform origin-left drop-shadow-md"><i class="fa-solid fa-cloud-sun"></i></div>
+                    <div class="font-black text-base sm:text-2xl mb-1 text-slate-800 dark:text-white">Буюканы</div>
+                    <div class="text-[11px] sm:text-sm text-slate-500 dark:text-slate-400 font-medium">Закаты и лес</div>
+                </button>
+                <button onclick="startApp('Чеканы')" class="group relative p-4 sm:p-8 rounded-3xl glass hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/20 border border-white/50 dark:border-white/10 hover:border-purple-500 text-left overflow-hidden">
+                    <i class="fa-solid fa-building absolute -right-4 -bottom-4 text-6xl sm:text-8xl text-purple-500 opacity-5 group-hover:scale-125 transition-transform duration-500"></i>
+                    <div class="text-2xl sm:text-4xl mb-2 sm:mb-4 text-purple-500 group-hover:scale-110 transition-transform origin-left drop-shadow-md"><i class="fa-solid fa-building"></i></div>
+                    <div class="font-black text-base sm:text-2xl mb-1 text-slate-800 dark:text-white">Чеканы</div>
+                    <div class="text-[11px] sm:text-sm text-slate-500 dark:text-slate-400 font-medium">Аллеи и бары</div>
+                </button>
+                <button onclick="startApp('all')" class="group relative p-4 sm:p-8 rounded-3xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:-translate-y-2 transition-all duration-300 shadow-2xl hover:shadow-slate-900/40 dark:hover:shadow-white/30 text-left flex flex-col justify-center overflow-hidden col-span-2 md:col-span-1">
+                    <i class="fa-solid fa-map-location-dot absolute -right-4 -bottom-4 text-6xl sm:text-8xl opacity-10 group-hover:scale-125 transition-transform duration-500"></i>
+                    <div class="font-black text-lg sm:text-2xl mb-1 flex items-center gap-3">
+                        <i class="fa-solid fa-map-location-dot text-xl sm:text-2xl"></i> Весь город
+                    </div>
+                    <div class="text-[11px] sm:text-sm opacity-80 mt-1 sm:mt-2 font-medium">Покажите мне всё!</div>
+                </button>
+            </div>
         </div>
-    </nav>
+    </div>
 
-    <div id="landing-page">
-        <section class="hero">
-            <div class="hero-text">
-                <div style="display:inline-block; padding: 6px 16px; background: rgba(255,0,85,0.1); border: 1px solid rgba(255,0,85,0.3); border-radius: 20px; color: var(--accent-1); font-size: 13px; font-weight: 600; margin-bottom: 20px; letter-spacing: 1px;">AIVORA CORE V11.4 LIVE</div>
-                <h1>Банкинг новой <br><span>экосистемы</span></h1>
-                <p>Умный капитал, единый @карт-тег, живые крипто-активы и автоматическое управление налогами с помощью ИИ. Будущее уже здесь.</p>
-                <div style="display: flex; gap: 20px;">
-                    <button class="btn" style="padding: 18px 45px; font-size: 16px;" onclick="openModal('register')">Открыть счет</button>
-                    <button class="btn btn-outline" style="padding: 18px 30px; font-size: 16px;" onclick="document.getElementById('philosophy').scrollIntoView()">Узнать больше</button>
+    <!-- Модальное окно для выбора наугад / деталей локации -->
+    <div id="random-modal" class="fixed inset-0 z-[150] bg-slate-900/60 backdrop-blur-md hidden flex items-center justify-center p-4 transition-all">
+        <div class="glass max-w-md w-full p-6 sm:p-8 rounded-[2rem] border border-white/20 shadow-2xl relative animate-fade-in-up max-h-[90vh] overflow-y-auto no-scrollbar">
+            <button onclick="closeRandomModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white flex items-center justify-center transition-colors z-10">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div id="modal-content" class="space-y-4"></div>
+            <div class="mt-6 flex gap-3">
+                <button id="modal-action-btn" onclick="closeRandomModal()" class="flex-1 py-3.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold rounded-xl text-center shadow-lg hover:scale-[1.02] transition-transform flex justify-center items-center gap-2 text-sm">
+                    Понятно <i class="fa-solid fa-check ml-1"></i>
+                </button>
+                <a id="modal-map-btn" href="#" target="_blank" class="flex-1 py-3.5 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-bold rounded-xl shadow-lg hover:shadow-indigo-500/30 transition-all flex justify-center items-center gap-2 text-sm">
+                    На карту <i class="fa-solid fa-location-arrow ml-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно Редактирования места (Только для Админа) -->
+    <div id="admin-edit-modal" class="hidden fixed inset-0 z-[150] bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 transition-all">
+        <div class="glass max-w-md w-full p-6 sm:p-8 rounded-[2rem] border border-indigo-500/30 shadow-2xl relative animate-fade-in-up max-h-[90vh] overflow-y-auto no-scrollbar">
+            <button onclick="closeAdminEditModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white flex items-center justify-center transition-colors z-10">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="flex items-center gap-3 mb-5">
+                <div class="w-10 h-10 rounded-xl bg-indigo-500 text-white flex items-center justify-center text-lg shadow-md shadow-indigo-500/30">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                </div>
+                <div>
+                    <h3 class="text-xl font-black text-slate-900 dark:text-white">Редактирование места</h3>
+                    <span class="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">Панель администратора</span>
                 </div>
             </div>
             
-            <div class="card-container" onclick="openModal('register')" title="Нажмите для входа">
-                <div class="glass-card" id="tilt-card">
-                    <div class="click-hint">Кликни меня</div>
-                    <div class="card-top">
-                        <div class="chip"></div>
-                        <div class="card-logo">AIVORA</div>
+            <form id="admin-edit-form" onsubmit="savePlaceEdit(event)" class="space-y-4">
+                <input type="hidden" id="edit-place-id">
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Название заведения</label>
+                    <input type="text" id="edit-name" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm font-bold outline-none focus:ring-2 focus:ring-indigo-500 dark:text-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Район</label>
+                    <input type="text" id="edit-district" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm font-bold outline-none focus:ring-2 focus:ring-indigo-500 dark:text-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Описание</label>
+                    <textarea id="edit-desc" rows="3" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500 dark:text-white"></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Средний чек</label>
+                    <input type="text" id="edit-price-range" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm font-bold outline-none focus:ring-2 focus:ring-indigo-500 dark:text-white">
+                </div>
+                <div class="grid grid-cols-2 gap-3 pt-2">
+                    <button type="button" onclick="closeAdminEditModal()" class="py-3 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold rounded-xl text-center text-xs hover:bg-slate-300 transition-colors">
+                        Отмена
+                    </button>
+                    <button type="submit" class="py-3 bg-indigo-500 text-white font-bold rounded-xl text-center text-xs shadow-lg shadow-indigo-500/30 hover:bg-indigo-600 transition-all">
+                        Сохранить
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно авторизации и регистрации -->
+    <div id="auth-modal" class="hidden fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity">
+        <div class="glass w-full max-w-md rounded-[2rem] p-6 sm:p-8 border border-white/60 dark:border-white/10 shadow-2xl relative">
+            <button onclick="closeAuthModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white flex items-center justify-center transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white text-xl shadow-lg shadow-indigo-500/30 mx-auto mb-3">
+                    <i id="auth-icon-header" class="fa-solid fa-right-to-bracket"></i>
+                </div>
+                <h3 id="auth-title" class="text-2xl font-black text-slate-800 dark:text-white">Вход в систему</h3>
+                <p id="auth-subtitle" class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1">Войдите, чтобы сохранять свои любимые места</p>
+            </div>
+
+            <div id="auth-error" class="hidden mb-4 p-3 rounded-xl bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs font-bold text-center"></div>
+            <div id="auth-success" class="hidden mb-4 p-3 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-bold text-center"></div>
+
+            <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1.5">Email</label>
+                    <input id="auth-email" type="email" required placeholder="name@example.com" class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm font-bold outline-none focus:ring-2 focus:ring-indigo-500 transition-all shadow-inner dark:text-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1.5">Пароль</label>
+                    <input id="auth-password" type="password" required placeholder="••••••••" class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm font-bold outline-none focus:ring-2 focus:ring-indigo-500 transition-all shadow-inner dark:text-white">
+                </div>
+                <button type="submit" id="auth-submit-btn" class="w-full py-3.5 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-bold rounded-xl shadow-lg hover:shadow-indigo-500/30 transition-all flex items-center justify-center gap-2 text-sm">
+                    Войти
+                </button>
+            </form>
+
+            <div class="mt-5 text-center">
+                <button type="button" onclick="toggleAuthMode()" id="auth-switch-btn" class="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline">
+                    Нет аккаунта? Зарегистрироваться
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Красивое отдельное окно Личного кабинета / Аккаунта -->
+    <div id="profile-modal" class="hidden fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md transition-opacity">
+        <div class="glass w-full max-w-xl rounded-[2.5rem] p-6 sm:p-8 border border-white/60 dark:border-white/10 shadow-2xl relative max-h-[90vh] overflow-y-auto animate-fade-in-up">
+            <button onclick="closeProfileModal()" class="absolute top-6 right-6 w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white flex items-center justify-center transition-colors shadow-sm">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            
+            <!-- Шапка профиля -->
+            <div class="flex flex-col sm:flex-row items-center gap-5 mb-8 pb-6 border-b border-slate-200/80 dark:border-slate-800 text-center sm:text-left">
+                <div class="relative">
+                    <div class="w-20 h-20 rounded-3xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center text-white text-3xl font-black shadow-xl shadow-indigo-500/30 ring-4 ring-white/50 dark:ring-slate-800/50">
+                        <i class="fa-solid fa-user-astronaut"></i>
+                    </div>
+                    <span class="absolute bottom-0 right-0 w-5 h-5 bg-emerald-500 border-2 border-white dark:border-slate-900 rounded-full"></span>
+                </div>
+                <div class="min-w-0 flex-1">
+                    <span id="profile-badge-label" class="text-[10px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 px-2.5 py-1 rounded-lg border border-indigo-100 dark:border-indigo-500/20 inline-block mb-1">VIP Вайбер</span>
+                    <h3 id="profile-email-display" class="text-lg sm:text-xl font-black text-slate-900 dark:text-white truncate">user@example.com</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">Управление аккаунтом и сохраненными локациями</p>
+                </div>
+            </div>
+
+            <!-- Статистика / Данные пользователя -->
+            <div class="grid grid-cols-2 gap-3 mb-6">
+                <div class="p-4 rounded-2xl bg-indigo-50/50 dark:bg-slate-800/40 border border-indigo-100 dark:border-slate-700 flex items-center gap-3.5">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-500 text-white flex items-center justify-center text-lg shrink-0 shadow-md shadow-indigo-500/20">
+                        <i class="fa-solid fa-heart"></i>
                     </div>
                     <div>
-                        <div style="font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 4px;">SECURE @TAG NETWORK</div>
-                        <div class="card-holder" id="landing-card-tag">@your_tag</div>
-                    </div>
-                    <div class="card-bottom">
-                        <span>08/29</span>
-                        <span>PLATINUM AI</span>
+                        <div id="fav-count-badge" class="text-lg font-black text-slate-800 dark:text-white">0</div>
+                        <div class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">В избранном</div>
                     </div>
                 </div>
-            </div>
-        </section>
-
-        <div class="stats-section">
-            <div class="stat-item">
-                <div class="stat-number">$4.8B+</div>
-                <div class="stat-label">Объем транзакций</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">99.9%</div>
-                <div class="stat-label">Точность ИИ-прогнозов</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">120K+</div>
-                <div class="stat-label">Активных нод</div>
-            </div>
-        </div>
-
-        <div class="philosophy-section" id="philosophy">
-            <div class="section-header">
-                <h2>Философия Aivora</h2>
-                <p>Пять столпов автономной финансовой экосистемы будущего</p>
-            </div>
-            <div class="acronym-grid">
-                <div class="acronym-card">
-                    <div class="acronym-letter">A</div>
-                    <div class="acronym-content">
-                        <h3>Autonomous Capital</h3>
-                        <p>Капитал работает сам. ИИ автоматически перераспределяет ликвидность в доходные пулы без вашего участия.</p>
+                <div class="p-4 rounded-2xl bg-emerald-50/50 dark:bg-slate-800/40 border border-emerald-100 dark:border-slate-700 flex items-center gap-3.5">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center text-lg shrink-0 shadow-md shadow-emerald-500/20">
+                        <i class="fa-solid fa-shield-halved"></i>
                     </div>
-                </div>
-                <div class="acronym-card">
-                    <div class="acronym-letter">I</div>
-                    <div class="acronym-content">
-                        <h3>Intelligence Core</h3>
-                        <p>Нейросетевой процессор анализирует тысячи рыночных сигналов за миллисекунды для защиты ваших активов.</p>
-                    </div>
-                </div>
-                <div class="acronym-card">
-                    <div class="acronym-letter">V</div>
-                    <div class="acronym-content">
-                        <h3>Vault Security</h3>
-                        <p>Многоуровневое квантовое шифрование и децентрализованные узлы хранения исключают риск взлома.</p>
-                    </div>
-                </div>
-                <div class="acronym-card">
-                    <div class="acronym-letter">O</div>
-                    <div class="acronym-content">
-                        <h3>Omnichannel</h3>
-                        <p>Мгновенные переводы по всему миру через единый @карт-тег в любой фиатной или криптовалюте.</p>
-                    </div>
-                </div>
-                <div class="acronym-card">
-                    <div class="acronym-letter">R</div>
-                    <div class="acronym-content">
-                        <h3>Real-time Yield</h3>
-                        <p>Ежесекундное начисление процентов по вкладам с возможностью моментального вывода средств.</p>
-                    </div>
-                </div>
-                <div class="acronym-card">
-                    <div class="acronym-letter">A</div>
-                    <div class="acronym-content">
-                        <h3>Adaptive UI</h3>
-                        <p>Интерфейс подстраивается под ваши привычки, предлагая наиболее востребованные финансовые инструменты.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <footer>
-            <div style="font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 10px; letter-spacing: 2px;">AIVORA</div>
-            <p>© 2026 Aivora Financial Technologies. All rights reserved.</p>
-            <p style="margin-top: 10px; color: rgba(255,255,255,0.3);">Система защищена квантовым шифрованием. Средства застрахованы.</p>
-        </footer>
-    </div>
-
-    <div id="profile-page">
-        <div class="dashboard-grid">
-            <div class="dash-left">
-                <div class="dash-panel" style="margin-bottom: 30px;">
-                    <div class="dash-tabs">
-                        <button class="dash-tab active" onclick="switchTab(this, 'overview')">Обзор счета</button>
-                        <button class="dash-tab" onclick="switchTab(this, 'crypto')">Крипто-Рынок 🔴</button>
-                        <button class="dash-tab" onclick="switchTab(this, 'cards')">Мои Карты</button>
-                        <button class="dash-tab" onclick="switchTab(this, 'analytics')">Аналитика</button>
-                        <button class="dash-tab" onclick="switchTab(this, 'settings')">Настройки</button>
-                    </div>
-
-                    <div id="tab-overview" class="fade-in">
-                        <div class="balance-label">
-                            <span>Общий капитал (USD)</span>
-                            <span style="color: var(--accent-2); cursor: pointer; font-size: 13px; background: rgba(255,0,85,0.1); padding: 4px 10px; border-radius: 12px;" onclick="triggerBonus()">+ Бонус ИИ</span>
-                        </div>
-                        <div class="balance-amount" id="balance-display">$12,450.00</div>
-                        <div class="balance-diff">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg> 
-                            +$450.20 (За неделю)
-                        </div>
-
-                        <div class="action-buttons">
-                            <button class="action-btn" onclick="openTransferModal()">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom:6px;"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg><br>Перевод
-                            </button>
-                            <button class="action-btn" onclick="openTopUpModal()">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom:6px;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg><br>Пополнить
-                            </button>
-                            <button class="action-btn" onclick="openShopperModal()">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom:6px;"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg><br>AI Scanner
-                            </button>
-                        </div>
-
-                        <div class="ai-insight">
-                            <div style="font-size: 28px;">💡</div>
-                            <div>
-                                <h4 style="color: #fff; font-size: 15px; margin-bottom: 4px;">ИИ Рекомендация</h4>
-                                <p style="color: var(--text-muted); font-size: 13px; line-height: 1.4;">Рынок Ethereum показывает высокую волатильность. Автоматический стекинг активирован, ожидаемая доходность +14.2% годовых.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="tab-crypto" class="fade-in" style="display: none;">
-                        <div class="crypto-layout">
-                            <div class="crypto-list">
-                                <div class="crypto-header">
-                                    <span>Актив</span>
-                                    <span>Цена / 24ч</span>
-                                </div>
-                                <div class="crypto-body" id="crypto-market-list">
-                                    <div style="text-align:center; padding: 40px; color: var(--text-muted);">Загрузка рынков...</div>
-                                </div>
-                            </div>
-                            <div class="crypto-chart-container">
-                                <div class="chart-header">
-                                    <div class="chart-title-block">
-                                        <h3 id="chart-title-name" style="display:flex; align-items:center; gap:10px;">Bitcoin</h3>
-                                        <p id="chart-title-price" style="font-size: 24px; color:#fff; font-weight:700; margin-top:5px;">$0.00</p>
-                                    </div>
-                                    <div style="font-size: 12px; padding: 6px 14px; background: rgba(255,255,255,0.08); border-radius: 12px; color:#fff; font-weight:600;">График: 7 Дней</div>
-                                </div>
-                                <div class="chart-canvas-wrapper">
-                                    <canvas id="mainCryptoChart"></canvas>
-                                </div>
-                                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-top:20px;">
-                                    <button class="btn" style="padding:10px; font-size:14px;" onclick="showToast('✅ Ордер на покупку создан')">Купить</button>
-                                    <button class="btn btn-outline" style="padding:10px; font-size:14px;" onclick="showToast('✅ Ордер на продажу создан')">Продать</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="tab-cards" class="fade-in" style="display: none;">
-                        <h3 style="font-size: 24px; color: #fff; margin-bottom: 20px;">Управление картами</h3>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                            <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--accent-1); border-radius: 20px; padding: 25px; box-shadow: 0 0 20px rgba(255,0,85,0.1);">
-                                <h4 style="color:#fff; margin-bottom: 10px;">Основная карта</h4>
-                                <p style="color:var(--text-muted); font-size:14px; margin-bottom: 20px;">Физическая • Platinum</p>
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 14px;"><span>Лимит</span> <span style="color:#fff;">$50,000</span></div>
-                                <div style="display: flex; gap: 10px;">
-                                    <button class="btn btn-outline" style="flex:1; padding:10px; font-size:13px;" onclick="openDetailsModal()">Реквизиты</button>
-                                    <button class="btn btn-outline" style="flex:1; padding:10px; font-size:13px;" onclick="toggleFreezeCard(this)">Заморозить</button>
-                                </div>
-                            </div>
-                            <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: 20px; padding: 25px;">
-                                <h4 style="color:#fff; margin-bottom: 10px;">Виртуальная карта AI</h4>
-                                <p style="color:var(--text-muted); font-size:14px; margin-bottom: 20px;">Одноразовая для подписок</p>
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 14px;"><span>Лимит</span> <span style="color:#fff;">$500</span></div>
-                                <button class="btn" style="width:100%; padding:10px; font-size:13px;" onclick="showToast('⚡ Новая виртуальная карта выпущена')">Выпустить карту</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="tab-analytics" class="fade-in" style="display: none;">
-                        <div class="analytics-layout">
-                            <div class="analytics-card">
-                                <h4 style="color:#fff; margin-bottom: 15px; font-size:18px;">Структура расходов</h4>
-                                <div class="pie-chart-wrapper">
-                                    <canvas id="expensesPieChart"></canvas>
-                                </div>
-                            </div>
-                            <div class="analytics-card" style="display:flex; flex-direction:column; justify-content:center;">
-                                <h4 style="color:#fff; margin-bottom: 15px; font-size:18px;">ИИ Финансовый индекс</h4>
-                                <div style="font-size:48px; font-weight:700; color:#00ff88; margin-bottom:10px;">94 / 100</div>
-                                <p style="color:var(--text-muted); font-size:14px; line-height:1.5;">Ваши расходы за текущий месяц оптимизированы на 18% эффективнее среднего показателя по системе.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="tab-settings" class="fade-in settings-form" style="display: none;">
-                        <h3 style="font-size: 24px; color: #fff; margin-bottom: 20px;">Настройки безопасности</h3>
-                        <div class="toggle-switch">
-                            <div>
-                                <div style="color:#fff; font-weight:600; font-size:15px; margin-bottom:4px;">Двухфакторная аутентификация (2FA)</div>
-                                <div style="color:var(--text-muted); font-size:13px;">Подтверждение входа через приложение-аутентификатор</div>
-                            </div>
-                            <div class="switch-btn active" onclick="this.classList.toggle('active'); showToast('Настройка 2FA изменена')"></div>
-                        </div>
-                        <div class="toggle-switch">
-                            <div>
-                                <div style="color:#fff; font-weight:600; font-size:15px; margin-bottom:4px;">AI Блокировка аномалий</div>
-                                <div style="color:var(--text-muted); font-size:13px;">Автоматически замораживать карту при подозрительных транзакциях</div>
-                            </div>
-                            <div class="switch-btn active" onclick="this.classList.toggle('active'); showToast('Настройка AI защиты изменена')"></div>
-                        </div>
-                        <div style="margin-top: 30px; padding-top: 30px; border-top: 1px solid var(--glass-border);">
-                            <label>Изменить Email адрес</label>
-                            <div class="input-group" style="display:flex; gap:15px;">
-                                <input type="email" placeholder="Новый email" id="set-email">
-                                <button class="btn btn-outline" style="white-space:nowrap;" onclick="showToast('Запрос на смену Email отправлен')">Обновить</button>
-                            </div>
-                        </div>
+                    <div>
+                        <div class="text-sm font-black text-emerald-600 dark:text-emerald-400">Активен</div>
+                        <div class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Статус сессии</div>
                     </div>
                 </div>
             </div>
 
-            <div class="dash-right">
-                <div class="dash-panel">
-                    <div class="history-header">
-                        <h3 style="font-size: 20px; color: #fff;">История операций</h3>
-                        <span style="color: var(--accent-1); font-size: 14px; font-weight:600; cursor: pointer;" onclick="generateMockTransactions()">Обновить</span>
-                    </div>
-                    <div class="tx-list" id="transaction-list">
-                        </div>
+            <!-- Список избранного -->
+            <div class="mb-6">
+                <div class="flex items-center justify-between mb-3 px-1">
+                    <h4 class="text-xs font-black uppercase text-slate-400 tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-bookmark text-indigo-500"></i> Сохраненные заведения
+                    </h4>
+                    <span id="fav-count" class="text-xs font-bold text-slate-500">0 мест</span>
                 </div>
+                <div id="favorites-container" class="space-y-2.5 max-h-[260px] overflow-y-auto pr-1">
+                    <!-- Сюда динамически добавятся карточки избранного -->
+                </div>
+            </div>
+
+            <!-- Нижняя панель действий -->
+            <div class="pt-4 border-t border-slate-200/80 dark:border-slate-800 flex flex-col sm:flex-row justify-between items-center gap-3">
+                <button onclick="handleLogout()" class="w-full sm:w-auto px-5 py-3 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-500 hover:text-white font-bold text-xs transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-right-from-bracket"></i> Выйти из аккаунта
+                </button>
+                <button onclick="closeProfileModal()" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs shadow-lg hover:scale-105 transition-all">
+                    Готово
+                </button>
             </div>
         </div>
     </div>
 
-    <div class="chatbot-btn" onclick="showToast('💬 ИИ-ассистент Aivora готов ответить на ваши вопросы')">🤖</div>
+    <div id="main-app" class="opacity-0 translate-y-10 transition-all duration-1000 hidden min-h-screen flex flex-col">
+        
+        <nav class="sticky top-0 w-full z-50 glass shadow-sm transition-colors duration-500 border-b border-white/40 dark:border-white/5">
+            <div class="max-w-[1400px] mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-4">
+                <div class="flex items-center gap-3 sm:gap-4 cursor-pointer" onclick="location.reload()">
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white text-xl sm:text-2xl shadow-lg shadow-indigo-500/30 transform hover:rotate-12 transition-transform shrink-0">
+                        <i class="fa-solid fa-location-dot"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <h1 class="text-base sm:text-2xl font-black tracking-tight leading-none text-slate-900 dark:text-white truncate">
+                            Chisinau<span class="text-indigo-500">.Vibe</span>
+                        </h1>
+                        <span id="current-district-display" class="text-[9px] sm:text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest bg-indigo-500/10 px-2 py-0.5 rounded-md mt-1 inline-block truncate max-w-[120px] sm:max-w-none">Весь город</span>
+                    </div>
+                </div>
 
-    <div class="modal-overlay" id="auth-modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal()">&times;</span>
-            <div class="modal-form">
-                <div style="font-size: 12px; color: var(--accent-1); font-weight: 700; letter-spacing: 2px; margin-bottom: 10px; text-transform: uppercase;">Aivora Secure Net</div>
-                <h2 id="modal-title">Идентификация</h2>
+                <div class="hidden sm:flex items-center gap-3 bg-slate-100/50 dark:bg-slate-800/50 px-5 py-2.5 rounded-2xl border border-slate-200/50 dark:border-slate-700/50 shadow-inner">
+                    <i class="fa-solid fa-clock text-indigo-500 text-lg opacity-80"></i>
+                    <div class="flex flex-col text-left leading-tight">
+                        <span id="chisinau-date" class="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">--.--.----</span>
+                        <span id="chisinau-clock" class="text-sm font-black text-slate-800 dark:text-slate-200 font-mono tracking-wider">--:--:--</span>
+                    </div>
+                </div>
                 
-                <div class="input-group" id="username-group">
-                    <input type="text" id="reg-username" placeholder="Придумайте уникальный @тег (например: @alex)">
-                </div>
-                <div class="input-group">
-                    <input type="email" id="auth-email" placeholder="Электронная почта (Email)">
-                </div>
-                <div class="input-group">
-                    <input type="password" id="auth-password" placeholder="Пароль (мин. 8 символов, буквы и цифры)">
+                <div class="hidden md:flex flex-1 max-w-xl mx-6 relative group">
+                    <input type="text" id="search-input" onkeyup="applyFilters()" placeholder="Найти место, например: Мясо, Вино, Zaxi..." 
+                           class="w-full bg-white/60 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-700 rounded-2xl py-3.5 px-6 pl-14 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all dark:text-white placeholder-slate-400 font-medium">
+                    <i class="fa-solid fa-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors"></i>
                 </div>
 
-                <button class="btn" id="auth-submit-btn" style="width: 100%; padding: 18px; margin-top: 10px;" onclick="handleSubmitAuth()">Инициировать счет</button>
-                
-                <p id="toggle-mode-text" style="text-align: center; margin-top: 20px; font-size: 14px; color: var(--text-muted); cursor: pointer;" onclick="toggleAuthMode()">Уже есть аккаунт? Войти</p>
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <!-- Кнопка Входа/Кабинета -->
+                    <button id="nav-auth-btn" onclick="handleNavAuthClick()" class="px-3 sm:px-4 py-2.5 rounded-xl bg-indigo-500 text-white font-bold text-xs sm:text-sm shadow-md hover:bg-indigo-600 transition-all flex items-center gap-2 max-w-[110px] sm:max-w-none truncate">
+                        <i class="fa-solid fa-user"></i> <span id="nav-auth-text" class="truncate">Войти</span>
+                    </button>
+                    <button onclick="toggleTheme()" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:scale-105 hover:bg-white dark:hover:bg-slate-800 transition-all shadow-sm text-slate-600 dark:text-slate-300 shrink-0">
+                        <i id="theme-icon" class="fa-solid fa-moon text-lg"></i>
+                    </button>
+                </div>
             </div>
-            <div class="modal-map-container">
-                <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px; font-weight: 600;">Глобальный узел верификации:</div>
-                <div id="map"></div>
-            </div>
-        </div>
-    </div>
+        </nav>
 
-    <div class="modal-overlay" id="topup-modal">
-        <div class="action-modal-content" style="width: 520px; text-align: left;">
-            <span class="close-btn" onclick="closeTopUpModal()">&times;</span>
-            <h3 style="color:#fff; margin-bottom: 5px; font-size: 24px; text-align: center;">Пополнение счета</h3>
-            <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 25px; text-align: center;">Выберите сумму и способ оплаты</p>
+        <div class="max-w-[1400px] w-full mx-auto px-4 sm:px-6 pt-6 sm:pt-8 pb-12 flex flex-col xl:flex-row gap-6 sm:gap-8 flex-1">
             
-            <div class="input-group">
-                <label style="display:block; color:var(--text-muted); font-size:13px; margin-bottom:8px;">Сумма (USD)</label>
-                <input type="number" id="topup-amount" placeholder="Введите сумму..." value="100">
-            </div>
+            <aside class="w-full xl:w-80 flex-shrink-0">
+                <div class="glass p-5 sm:p-6 rounded-[2rem] xl:sticky xl:top-28 space-y-6 sm:space-y-8 shadow-xl shadow-slate-200/20 dark:shadow-black/20 border border-white/60 dark:border-white/10">
+                    
+                    <div class="sm:hidden flex items-center justify-between bg-slate-100/50 dark:bg-slate-800/50 p-3.5 rounded-xl border border-slate-200/50 dark:border-slate-700/50">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-clock text-indigo-500"></i>
+                            <span class="text-xs font-bold text-slate-500 dark:text-slate-400">Время в MD:</span>
+                        </div>
+                        <span id="chisinau-clock-mobile" class="text-xs font-black text-slate-800 dark:text-slate-200 font-mono">--:--</span>
+                    </div>
 
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 25px;">
-                <button class="btn btn-outline" style="padding: 10px; font-size: 13px;" onclick="setTopUpAmount(50)">$50</button>
-                <button class="btn btn-outline" style="padding: 10px; font-size: 13px;" onclick="setTopUpAmount(100)">$100</button>
-                <button class="btn btn-outline" style="padding: 10px; font-size: 13px;" onclick="setTopUpAmount(500)">$500</button>
-                <button class="btn btn-outline" style="padding: 10px; font-size: 13px;" onclick="setTopUpAmount(1000)">$1000</button>
-            </div>
+                    <div class="md:hidden relative group">
+                        <input type="text" id="search-input-mobile" onkeyup="document.getElementById('search-input').value = this.value; applyFilters()" placeholder="Поиск мест..." 
+                               class="w-full bg-white/60 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 rounded-xl py-3 px-4 pl-11 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all dark:text-white font-medium text-sm">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                    </div>
 
-            <label style="display:block; color:var(--text-muted); font-size:13px; margin-bottom:10px;">Способ оплаты / Сеть</label>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 30px;" id="payment-methods-grid">
-                <div class="pay-method-card active" onclick="selectPayMethod(this, 'Visa / Mastercard')" style="background: rgba(255,0,85,0.12); border: 1px solid var(--accent-1); border-radius: 16px; padding: 14px; cursor: pointer !important; text-align: center; transition: 0.3s;">
-                    <div style="font-weight: 600; color: #fff; font-size: 14px;">💳 Visa / MC</div>
-                    <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Банковская карта</div>
-                </div>
-                <div class="pay-method-card" onclick="selectPayMethod(this, 'Apple Pay')" style="background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: 16px; padding: 14px; cursor: pointer !important; text-align: center; transition: 0.3s;">
-                    <div style="font-weight: 600; color: #fff; font-size: 14px;"> Apple Pay</div>
-                    <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Быстрый платеж</div>
-                </div>
-                <div class="pay-method-card" onclick="selectPayMethod(this, 'Google Pay')" style="background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: 16px; padding: 14px; cursor: pointer !important; text-align: center; transition: 0.3s;">
-                    <div style="font-weight: 600; color: #fff; font-size: 14px;">G Google Pay</div>
-                    <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Быстрый платеж</div>
-                </div>
-                <div class="pay-method-card" onclick="selectPayMethod(this, 'USDT (TRC-20)')" style="background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: 16px; padding: 14px; cursor: pointer !important; text-align: center; transition: 0.3s;">
-                    <div style="font-weight: 600; color: #fff; font-size: 14px;">🌐 USDT (TRC20)</div>
-                    <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Крипто-сеть</div>
-                </div>
-            </div>
+                    <button onclick="getRandomPlace()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-black text-base shadow-lg shadow-indigo-500/25 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3">
+                        <i class="fa-solid fa-dice text-xl"></i> Мне повезёт!
+                    </button>
 
-            <button class="btn" style="width: 100%; padding: 16px;" onclick="executeTopUp()">Подтвердить пополнение</button>
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-[11px] font-black uppercase text-slate-400 tracking-[0.2em]">Выбор Района</h3>
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-1 gap-2.5" id="district-filters">
+                            <button onclick="setDistrict('all')" class="dist-btn w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center justify-between bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-700 border border-transparent text-xs sm:text-sm text-slate-700 dark:text-slate-200">
+                                <span class="flex items-center gap-3"><i class="fa-solid fa-map-location-dot w-5 text-center opacity-70"></i> Весь город</span>
+                            </button>
+                            <button onclick="setDistrict('Центр')" class="dist-btn w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center justify-between bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-700 border border-transparent text-xs sm:text-sm text-slate-700 dark:text-slate-200">
+                                <span class="flex items-center gap-3"><i class="fa-solid fa-landmark w-5 text-center text-indigo-500 opacity-80"></i> Центр</span>
+                            </button>
+                            <button onclick="setDistrict('Ботаника')" class="dist-btn w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center justify-between bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-700 border border-transparent text-xs sm:text-sm text-slate-700 dark:text-slate-200">
+                                <span class="flex items-center gap-3"><i class="fa-solid fa-tree-city w-5 text-center text-emerald-500 opacity-80"></i> Ботаника</span>
+                            </button>
+                            <button onclick="setDistrict('Рышкановка')" class="dist-btn w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center justify-between bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-700 border border-transparent text-xs sm:text-sm text-slate-700 dark:text-slate-200">
+                                <span class="flex items-center gap-3"><i class="fa-solid fa-gem w-5 text-center text-blue-500 opacity-80"></i> Рышкановка</span>
+                            </button>
+                            <button onclick="setDistrict('Буюканы')" class="dist-btn w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center justify-between bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-700 border border-transparent text-xs sm:text-sm text-slate-700 dark:text-slate-200">
+                                <span class="flex items-center gap-3"><i class="fa-solid fa-cloud-sun w-5 text-center text-orange-500 opacity-80"></i> Буюканы</span>
+                            </button>
+                            <button onclick="setDistrict('Чеканы')" class="dist-btn w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center justify-between bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-700 border border-transparent text-xs sm:text-sm text-slate-700 dark:text-slate-200">
+                                <span class="flex items-center gap-3"><i class="fa-solid fa-building w-5 text-center text-purple-500 opacity-80"></i> Чеканы</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <hr class="border-slate-200 dark:border-slate-800">
+
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-[11px] font-black uppercase text-slate-400 tracking-[0.2em]">Категории</h3>
+                            <button onclick="toggleOnlyOpen()" id="btn-only-open" class="text-[10px] font-bold px-3 py-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 transition-all flex items-center gap-1.5 text-slate-600 dark:text-slate-300">
+                                <i class="fa-solid fa-circle text-[8px] opacity-70"></i> Открытые
+                            </button>
+                        </div>
+                        
+                        <!-- ГЛАВНЫЕ КАТЕГОРИИ -->
+                        <div class="grid grid-cols-3 gap-2 mb-4">
+                            <button onclick="setMainCategory('relax')" id="btn-main-relax" class="cat-main-btn cat-btn-active flex flex-col items-center justify-center gap-2 p-3 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-indigo-400 text-slate-600 dark:text-slate-300">
+                                <i class="fa-solid fa-umbrella-beach text-lg sm:text-xl text-indigo-500 opacity-90"></i>
+                                <span class="text-[9px] sm:text-[10px] uppercase tracking-wider text-center leading-none mt-1">Отдых</span>
+                            </button>
+                            <button onclick="setMainCategory('edu')" id="btn-main-edu" class="cat-main-btn flex flex-col items-center justify-center gap-2 p-3 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-indigo-400 text-slate-600 dark:text-slate-300">
+                                <i class="fa-solid fa-graduation-cap text-lg sm:text-xl text-blue-500 opacity-90"></i>
+                                <span class="text-[9px] sm:text-[10px] uppercase tracking-wider text-center leading-none mt-1">Образование</span>
+                            </button>
+                            <button onclick="setMainCategory('bank')" id="btn-main-bank" class="cat-main-btn flex flex-col items-center justify-center gap-2 p-3 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-indigo-400 text-slate-600 dark:text-slate-300">
+                                <i class="fa-solid fa-building-columns text-lg sm:text-xl text-emerald-500 opacity-90"></i>
+                                <span class="text-[9px] sm:text-[10px] uppercase tracking-wider text-center leading-none mt-1">Банки</span>
+                            </button>
+                        </div>
+
+                        <!-- ПОДКАТЕГОРИИ ОТДЫХ -->
+                        <div id="subcats-relax" class="grid grid-cols-2 gap-3 subcats-group">
+                            <button onclick="setCategory('all')" id="btn-cat-all" class="cat-btn cat-btn-active flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-indigo-400 text-slate-600 dark:text-slate-300">
+                                <i class="fa-solid fa-layer-group text-xl sm:text-2xl text-indigo-500 opacity-90"></i>
+                                <span class="text-[10px] sm:text-xs uppercase tracking-wider">Все</span>
+                            </button>
+                            <button onclick="setCategory('food')" id="btn-cat-food" class="cat-btn flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-indigo-400 text-slate-600 dark:text-slate-300">
+                                <i class="fa-solid fa-utensils text-xl sm:text-2xl text-orange-500 opacity-90"></i>
+                                <span class="text-[10px] sm:text-xs uppercase tracking-wider">Еда</span>
+                            </button>
+                            <button onclick="setCategory('night')" id="btn-cat-night" class="cat-btn flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-indigo-400 text-slate-600 dark:text-slate-300">
+                                <i class="fa-solid fa-champagne-glasses text-xl sm:text-2xl text-pink-500 opacity-90"></i>
+                                <span class="text-[10px] sm:text-xs uppercase tracking-wider">Бары</span>
+                            </button>
+                            <button onclick="setCategory('coffee')" id="btn-cat-coffee" class="cat-btn flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-indigo-400 text-slate-600 dark:text-slate-300">
+                                <i class="fa-solid fa-mug-hot text-xl sm:text-2xl text-amber-600 opacity-90"></i>
+                                <span class="text-[10px] sm:text-xs uppercase tracking-wider">Кофе</span>
+                            </button>
+                            <button onclick="setCategory('shopping')" id="btn-cat-shopping" class="cat-btn flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-indigo-400 text-slate-600 dark:text-slate-300 col-span-2">
+                                <i class="fa-solid fa-bag-shopping text-xl sm:text-2xl text-blue-500 opacity-90"></i>
+                                <span class="text-[10px] sm:text-xs uppercase tracking-wider">Моллы и Шоппинг</span>
+                            </button>
+                        </div>
+
+                        <!-- ПОДКАТЕГОРИИ ОБРАЗОВАНИЕ -->
+                        <div id="subcats-edu" class="hidden grid grid-cols-2 gap-3 subcats-group">
+                            <button onclick="setCategory('university')" id="btn-cat-university" class="cat-btn flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-indigo-400 text-slate-600 dark:text-slate-300">
+                                <i class="fa-solid fa-building-columns text-xl sm:text-2xl text-blue-500 opacity-90"></i>
+                                <span class="text-[10px] sm:text-xs uppercase tracking-wider">Универы</span>
+                            </button>
+                            <button onclick="setCategory('library')" id="btn-cat-library" class="cat-btn flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-indigo-400 text-slate-600 dark:text-slate-300">
+                                <i class="fa-solid fa-book-open text-xl sm:text-2xl text-sky-500 opacity-90"></i>
+                                <span class="text-[10px] sm:text-xs uppercase tracking-wider">Библиотеки</span>
+                            </button>
+                        </div>
+
+                        <!-- ПОДКАТЕГОРИИ БАНКИ -->
+                        <div id="subcats-bank" class="hidden grid grid-cols-2 gap-3 subcats-group">
+                            <button onclick="setCategory('bank_branch')" id="btn-cat-bank_branch" class="cat-btn flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-indigo-400 text-slate-600 dark:text-slate-300">
+                                <i class="fa-solid fa-building-columns text-xl sm:text-2xl text-emerald-500 opacity-90"></i>
+                                <span class="text-[10px] sm:text-xs uppercase tracking-wider">Отделения</span>
+                            </button>
+                            <button onclick="setCategory('atm')" id="btn-cat-atm" class="cat-btn flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-indigo-400 text-slate-600 dark:text-slate-300">
+                                <i class="fa-solid fa-money-bill-wave text-xl sm:text-2xl text-emerald-400 opacity-90"></i>
+                                <span class="text-[10px] sm:text-xs uppercase tracking-wider">Банкоматы</span>
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </aside>
+
+            <main class="flex-1 min-w-0">
+                <div class="mb-6 sm:mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 glass px-6 sm:px-8 py-5 sm:py-6 rounded-[2rem] border border-white/60 dark:border-white/10">
+                    <div>
+                        <h2 class="text-2xl sm:text-4xl font-black mb-1.5 dark:text-white tracking-tight" id="grid-title">Все заведения</h2>
+                        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">Мы нашли <span id="places-count" class="font-black text-indigo-600 dark:text-indigo-400 text-sm sm:text-base bg-indigo-50 dark:bg-indigo-900/30 px-2 py-0.5 rounded-lg border border-indigo-100 dark:border-indigo-500/20">0</span> топовых мест для вас</p>
+                    </div>
+                </div>
+
+                <div class="mb-6 sm:mb-8 glass p-3 sm:p-5 rounded-[2rem] border border-white/60 dark:border-white/10 shadow-lg overflow-hidden relative group">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 px-2 gap-3 relative z-20">
+                        <h3 class="font-black text-base sm:text-lg flex items-center gap-2 text-slate-800 dark:text-slate-200">
+                            <i class="fa-solid fa-map-location-dot text-indigo-500"></i> Интерактивная карта Кишинева
+                        </h3>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <!-- Панель управления только для админа -->
+                            <div id="admin-controls-container" class="hidden flex items-center gap-2">
+                                <button id="admin-mode-toggle-btn" onclick="toggleAdminEditMode()" class="text-[10px] sm:text-xs bg-rose-500 text-white font-bold px-3.5 py-1.5 rounded-full shadow-md hover:bg-rose-600 transition-all flex items-center gap-1.5 animate-pulse">
+                                    <i class="fa-solid fa-shield-halved"></i> Режим админа: ВЫКЛ
+                                </button>
+                            </div>
+                            <button onclick="getUserLocation()" class="text-[10px] sm:text-xs bg-indigo-500 text-white font-bold px-3 py-1.5 rounded-full shadow-md hover:bg-indigo-600 transition-all flex items-center gap-1.5">
+                                <i class="fa-solid fa-location-crosshairs"></i> Мое местоположение
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="map" class="h-[300px] sm:h-[480px] w-full rounded-xl sm:rounded-2xl border border-slate-200/60 dark:border-slate-700/60 z-10 shadow-inner bg-slate-100 dark:bg-slate-900"></div>
+                </div>
+
+                <!-- Блок «Остались вопросы?» с ссылкой на Telegram -->
+                <div class="mb-8 p-6 sm:p-8 rounded-[2rem] bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white shadow-xl relative overflow-hidden flex flex-col sm:flex-row items-center justify-between gap-6">
+                    <div class="absolute -right-10 -bottom-10 text-9xl opacity-10 pointer-events-none">
+                        <i class="fa-solid fa-circle-question"></i>
+                    </div>
+                    <div class="relative z-10 text-center sm:text-left">
+                        <div class="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold mb-3 border border-white/20">
+                            <i class="fa-solid fa-headset"></i> Поддержка и сотрудничество
+                        </div>
+                        <h3 class="text-xl sm:text-2xl font-black mb-1">Остались вопросы или есть предложения?</h3>
+                        <p class="text-xs sm:text-sm text-white/80 font-medium max-w-xl">
+                            Хотите добавить свое заведение в гид или нашли неточность? Напишите мне в личные сообщения в Telegram, я на связи!
+                        </p>
+                    </div>
+                    <div class="relative z-10 shrink-0 w-full sm:w-auto">
+                        <a href="https://t.me/font1zadmi" target="_blank" class="w-full sm:w-auto px-6 py-4 bg-white text-slate-900 hover:bg-slate-100 font-black text-sm rounded-2xl shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3">
+                            <i class="fa-brands fa-telegram text-xl text-sky-500"></i> Написать @font1zadmi
+                        </a>
+                    </div>
+                </div>
+
+                <div id="places-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 sm:gap-6 pb-20 items-stretch">
+                </div>
+            </main>
         </div>
     </div>
-
-    <div class="modal-overlay" id="transfer-modal">
-        <div class="action-modal-content">
-            <span class="close-btn" onclick="closeTransferModal()">&times;</span>
-            <h3 style="color:#fff; margin-bottom: 10px; font-size: 24px;">Быстрый перевод</h3>
-            <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 25px;">Отправка средств по @карт-тегу получателя</p>
-            <div class="input-group">
-                <input type="text" id="transfer-recipient" placeholder="@тег получателя (например: @ivan)">
-            </div>
-            <div class="input-group">
-                <input type="number" id="transfer-amount" placeholder="Сумма в USD">
-            </div>
-            <button class="btn" style="width: 100%; padding: 16px;" onclick="executeTransfer()">Отправить перевод</button>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="shopper-modal">
-        <div class="action-modal-content" style="width: 550px;">
-            <span class="close-btn" onclick="closeShopperModal()">&times;</span>
-            <div style="width: 60px; height: 60px; background: rgba(255,0,85,0.1); border: 1px solid rgba(255,0,85,0.3); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 20px; color: var(--accent-1);">
-                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            </div>
-            <h3 style="color:#fff; margin-bottom: 10px; font-size: 24px;">Marketplace Scanner</h3>
-            <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 25px; line-height: 1.5;">Укажите товар. ИИ просканирует глобальные рынки для поиска лучшей цены и применит кэшбэк.</p>
-            <div class="input-group">
-                <input type="text" id="modal-search-input" placeholder="Например: MacBook Pro M3, Билеты в Дубай...">
-            </div>
-            <button class="btn" style="width: 100%; margin-bottom: 14px; padding: 16px;" onclick="runAiShopping()">Запустить сканирование сети</button>
-            <div id="modal-search-results"></div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="details-modal">
-        <div class="action-modal-content">
-            <span class="close-btn" onclick="closeDetailsModal()">&times;</span>
-            <h3 style="color:#fff; margin-bottom: 15px; font-size: 24px;">Реквизиты карты</h3>
-            <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); border-radius: 20px; padding: 20px; margin-bottom: 20px; text-align:left; position:relative; overflow:hidden;">
-                <div style="position:absolute; top:0; left:0; width:4px; height:100%; background:var(--accent-1);"></div>
-                <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 5px;">Номер карты:</p>
-                <p style="font-size: 22px; font-weight: 700; color: #fff; letter-spacing: 2px;">4049 8821 9012 4450</p>
-            </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px;">
-                <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); border-radius: 16px; padding: 15px; text-align:left;">
-                    <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 5px;">Срок:</p>
-                    <p style="font-size: 18px; font-weight: 700; color: #fff;">08/29</p>
-                </div>
-                <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); border-radius: 16px; padding: 15px; text-align:left;">
-                    <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 5px;">CVV:</p>
-                    <p style="font-size: 18px; font-weight: 700; color: var(--accent-1);">***</p>
-                </div>
-            </div>
-            <button class="btn btn-outline" style="width: 100%;" onclick="showToast('📋 Реквизиты скопированы в буфер обмена'); closeDetailsModal();">Скопировать данные</button>
-        </div>
-    </div>
-
-    <div class="toast-container" id="toast-container"></div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        let currentMode = 'register';
-        let map = null;
-        let cryptoDataCache = [];
-        let mainChartInstance = null;
-        let expensesPieInstance = null;
-        let selectedPaymentMethodName = 'Visa / Mastercard';
 
-        const cursor = document.getElementById('custom-cursor');
-        const glowCircle = document.getElementById('glow-circle');
 
-        window.addEventListener('mousemove', (e) => {
-            cursor.style.transform = `translate3d(${e.clientX - 7}px, ${e.clientY - 7}px, 0)`;
-            glowCircle.style.transform = `translate3d(${e.clientX - 350}px, ${e.clientY - 350}px, 0)`;
-        });
 
-        document.querySelectorAll('a, button, .dash-tab, .crypto-item, .card-container, .logo, .user-profile-info, .pay-method-card').forEach(el => {
-            el.addEventListener('mouseenter', () => { cursor.style.width = '24px'; cursor.style.height = '24px'; cursor.style.background = '#00ff88'; });
-            el.addEventListener('mouseleave', () => { cursor.style.width = '14px'; cursor.style.height = '14px'; cursor.style.background = 'var(--accent-1)'; });
-        });
 
-        function showToast(message) {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.innerHTML = `<span>⚡</span> ${message}`;
-            container.appendChild(toast);
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                setTimeout(() => toast.remove(), 300);
-            }, 3500);
+
+        // Инициализация Supabase
+        const SUPABASE_URL = 'https://kcozrtfnjtnlpiaqtfaw.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_14JmwmymGHTls2HonrUTKA_0EHTj6LI';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        const ADMIN_EMAIL = "gurtovoujenya@gmail.com";
+
+        let isRegisterMode = false;
+        let currentSession = null;
+        let userFavorites = [];
+        let isAdminEditMode = false;
+
+        function openAuthModal() {
+            document.getElementById('auth-modal').classList.remove('hidden');
+            document.getElementById('auth-error').classList.add('hidden');
+            document.getElementById('auth-success').classList.add('hidden');
         }
 
-        window.addEventListener('mousemove', (e) => {
-            const x = (e.clientX / window.innerWidth) - 0.5;
-            const y = (e.clientY / window.innerHeight) - 0.5;
-            const landingCard = document.getElementById('tilt-card');
-            const landingPage = document.getElementById('landing-page');
-            if (landingCard && landingPage.style.display !== 'none') {
-                landingCard.style.transform = `perspective(1200px) rotateX(${y * -40}deg) rotateY(${x * 40}deg) scale(1.05)`;
+        function closeAuthModal() {
+            document.getElementById('auth-modal').classList.add('hidden');
+        }
+
+        function openProfileModal() {
+            document.getElementById('profile-email-display').textContent = currentSession?.user?.email || '';
+            const isUserAdmin = currentSession && currentSession.user && currentSession.user.email === ADMIN_EMAIL;
+            const badgeLabel = document.getElementById('profile-badge-label');
+            if (isUserAdmin) {
+                badgeLabel.textContent = '👑 Главный Администратор';
+                badgeLabel.className = 'text-[10px] font-black uppercase tracking-widest text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-500/10 px-2.5 py-1 rounded-lg border border-rose-100 dark:border-rose-500/20 inline-block mb-1';
+            } else {
+                badgeLabel.textContent = 'VIP Вайбер';
+                badgeLabel.className = 'text-[10px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 px-2.5 py-1 rounded-lg border border-indigo-100 dark:border-indigo-500/20 inline-block mb-1';
             }
-        });
-        document.body.addEventListener('mouseleave', () => {
-            const landingCard = document.getElementById('tilt-card');
-            if (landingCard) landingCard.style.transform = `perspective(1200px) rotateX(0deg) rotateY(0deg) scale(1)`;
-        });
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, { threshold: 0.1 });
-        document.querySelectorAll('.acronym-card').forEach(card => observer.observe(card));
-
-        function initMap() {
-            if (map) return;
-            map = L.map('map', { zoomControl: false, attributionControl: false }).setView([50.1109, 8.6821], 4);
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
-            const icon = L.divIcon({
-                className: 'custom-div-icon',
-                html: "<div style='background-color:#00ff88; width:12px; height:12px; border-radius:50%; border:2px solid #fff; box-shadow:0 0 15px #00ff88; animation: pulse 2s infinite;'></div>",
-                iconSize: [12, 12],
-                iconAnchor: [6, 6]
-            });
-            L.marker([50.1109, 8.6821], { icon: icon }).addTo(map);
+            renderFavoritesList();
+            document.getElementById('profile-modal').classList.remove('hidden');
         }
 
-        function openModal(mode) {
-            currentMode = mode;
-            const modal = document.getElementById('auth-modal');
-            modal.classList.add('active');
-            document.getElementById('modal-title').innerText = mode === 'register' ? 'Идентификация (Новый)' : 'Идентификация (Вход)';
-            document.getElementById('username-group').style.display = mode === 'register' ? 'block' : 'none';
-            document.getElementById('auth-submit-btn').innerText = mode === 'register' ? 'Инициировать счет' : 'Получить доступ';
-            document.getElementById('toggle-mode-text').innerText = mode === 'register' ? 'Уже есть аккаунт? Войти' : 'Нет аккаунта? Зарегистрироваться';
-            setTimeout(initMap, 200);
+        function closeProfileModal() {
+            document.getElementById('profile-modal').classList.add('hidden');
         }
 
-        function closeModal() {
-            document.getElementById('auth-modal').classList.remove('active');
+        function handleNavAuthClick() {
+            if (currentSession && currentSession.user) {
+                openProfileModal();
+            } else {
+                openAuthModal();
+            }
         }
 
         function toggleAuthMode() {
-            openModal(currentMode === 'login' ? 'register' : 'login');
-        }
+            isRegisterMode = !isRegisterMode;
+            const title = document.getElementById('auth-title');
+            const subtitle = document.getElementById('auth-subtitle');
+            const submitBtn = document.getElementById('auth-submit-btn');
+            const switchBtn = document.getElementById('auth-switch-btn');
+            const iconHeader = document.getElementById('auth-icon-header');
 
-        // БАЗА ДАННЫХ (LocalStorage)
-        function getUsersDB() {
-            return JSON.parse(localStorage.getItem('aivora_users_db')) || [];
-        }
+            document.getElementById('auth-error').classList.add('hidden');
+            document.getElementById('auth-success').classList.add('hidden');
 
-        function saveUsersDB(users) {
-            localStorage.setItem('aivora_users_db', JSON.stringify(users));
-        }
-
-        function handleSubmitAuth() {
-            const email = document.getElementById('auth-email').value.trim();
-            const password = document.getElementById('auth-password').value.trim();
-            const users = getUsersDB();
-
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                showToast('❌ Ошибка: Введите корректный Email');
-                return;
-            }
-
-            const passwordRegex = /^(?=.*[A-Za-zА-Яа-я])(?=.*[\d\W_]).{8,}$/;
-            if (!passwordRegex.test(password)) {
-                showToast('❌ Ошибка: Пароль не менее 8 символов, буквы и цифры');
-                return;
-            }
-
-            if (currentMode === 'register') {
-                let tag = document.getElementById('reg-username').value.trim();
-                if (!tag.startsWith('@')) tag = '@' + tag;
-
-                if (tag.length < 3) {
-                    showToast('❌ Ошибка: Юзернейм (@тег) слишком короткий');
-                    return;
-                }
-
-                const existingUser = users.find(u => u.tag.toLowerCase() === tag.toLowerCase() || u.email === email);
-                if (existingUser) {
-                    showToast('❌ Ошибка: Такой юзернейм или Email уже занят!');
-                    return;
-                }
-
-                const newUser = {
-                    tag,
-                    email,
-                    password,
-                    balance: 12450.00,
-                    transactions: [
-                        { title: 'Защита AI Node', type: 'pos', amount: 45.00, desc: 'Кэшбэк • Сегодня' }
-                    ]
-                };
-                users.push(newUser);
-                saveUsersDB(users);
-                
-                localStorage.setItem('aivora_current_user', tag);
-                showToast(`🎉 Успешно! Добро пожаловать, ${tag}`);
-                closeModal();
-                updateUserUI(tag);
-                goToProfile();
-
+            if (isRegisterMode) {
+                title.textContent = 'Регистрация';
+                subtitle.textContent = 'Введите почту и пароль. Мы отправим письмо для подтверждения.';
+                submitBtn.textContent = 'Зарегистрироваться';
+                switchBtn.textContent = 'Уже есть аккаунт? Войти';
+                iconHeader.className = 'fa-solid fa-user-plus';
             } else {
-                const foundUser = users.find(u => u.email === email && u.password === password);
-                if (!foundUser) {
-                    showToast('❌ Ошибка: Неверный Email или пароль');
-                    return;
+                title.textContent = 'Вход в систему';
+                subtitle.textContent = 'Войдите, чтобы сохранять свои любимые места';
+                submitBtn.textContent = 'Войти';
+                switchBtn.textContent = 'Нет аккаунта? Зарегистрироваться';
+                iconHeader.className = 'fa-solid fa-right-to-bracket';
+            }
+        }
+
+        async function handleAuthSubmit(e) {
+            e.preventDefault();
+            const email = document.getElementById('auth-email').value;
+            const password = document.getElementById('auth-password').value;
+            const errEl = document.getElementById('auth-error');
+            const succEl = document.getElementById('auth-success');
+
+            errEl.classList.add('hidden');
+            succEl.classList.add('hidden');
+
+            try {
+                if (isRegisterMode) {
+                    const { data, error } = await supabaseClient.auth.signUp({ 
+                        email, 
+                        password,
+                        options: { emailRedirectTo: window.location.origin }
+                    });
+                    if (error) throw error;
+                    succEl.textContent = 'Регистрация успешна! Проверьте почту.';
+                    succEl.classList.remove('hidden');
+                } else {
+                    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+                    if (error) throw error;
+                    succEl.textContent = 'Успешный вход!';
+                    succEl.classList.remove('hidden');
+                    setTimeout(() => {
+                        closeAuthModal();
+                        checkUserSession();
+                    }, 1000);
                 }
-
-                localStorage.setItem('aivora_current_user', foundUser.tag);
-                showToast(`🎉 С возвращением, ${foundUser.tag}!`);
-                closeModal();
-                updateUserUI(foundUser.tag);
-                goToProfile();
+            } catch (err) {
+                errEl.textContent = err.message || 'Ошибка авторизации';
+                errEl.classList.remove('hidden');
             }
         }
 
-        function updateUserUI(tag) {
-            document.getElementById('nav-auth-btns').style.display = 'none';
-            document.getElementById('nav-user-profile').style.display = 'flex';
-            document.getElementById('user-name-display').innerText = tag;
-            document.getElementById('user-avatar-initials').innerText = tag.replace('@', '')[0].toUpperCase();
-            document.getElementById('landing-card-tag').innerText = tag;
-        }
-
-        function loadUserData() {
-            const currentUserTag = localStorage.getItem('aivora_current_user');
-            if (!currentUserTag) return;
-            const users = getUsersDB();
-            const user = users.find(u => u.tag.toLowerCase() === currentUserTag.toLowerCase());
-            if (user) {
-                document.getElementById('balance-display').innerText = `$${user.balance.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-                renderUserTransactions(user.transactions || []);
+        async function handleLogout() {
+            if (confirm('Выйти из аккаунта?')) {
+                await supabaseClient.auth.signOut();
+                closeProfileModal();
+                location.reload();
             }
         }
 
-        function renderUserTransactions(txs) {
-            const list = document.getElementById('transaction-list');
-            list.innerHTML = '';
-            if (!txs || txs.length === 0) {
-                list.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:20px;">Нет операций</div>';
+        async function loadUserFavorites() {
+            if (!currentSession || !currentSession.user) {
+                userFavorites = [];
                 return;
             }
-            txs.forEach(tx => {
-                const el = document.createElement('div');
-                el.className = 'tx-item';
-                const isPos = tx.type === 'pos';
-                el.innerHTML = `
-                    <div class="tx-info">
-                        <div class="tx-avatar" style="${isPos ? 'background: rgba(0,255,136,0.1); color: #00ff88; border-color: rgba(0,255,136,0.3);' : 'color:var(--text-main); border-color:var(--glass-border);'}">
-                            ${isPos ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 5-8 10-8 10z"></path></svg>' : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'}
+            try {
+                const { data, error } = await supabaseClient
+                    .from('favorites')
+                    .select('place_id')
+                    .eq('user_id', currentSession.user.id);
+                
+                if (error) {
+                    userFavorites = [];
+                } else {
+                    userFavorites = data ? data.map(item => item.place_id) : [];
+                }
+            } catch (e) {
+                userFavorites = [];
+            }
+            applyFilters();
+        }
+
+        async function toggleFavorite(placeId, event) {
+            if (event) event.stopPropagation();
+            
+            if (!currentSession || !currentSession.user) {
+                alert('Чтобы добавлять места в избранное, пожалуйста, войдите в аккаунт!');
+                openAuthModal();
+                return;
+            }
+
+            const userId = currentSession.user.id;
+            const isFav = userFavorites.includes(placeId);
+
+            try {
+                if (isFav) {
+                    const { error } = await supabaseClient
+                        .from('favorites')
+                        .delete()
+                        .eq('user_id', userId)
+                        .eq('place_id', placeId);
+                    if (error) throw error;
+                    userFavorites = userFavorites.filter(id => id !== placeId);
+                } else {
+                    const { error } = await supabaseClient
+                        .from('favorites')
+                        .insert([{ user_id: userId, place_id: placeId }]);
+                    if (error) throw error;
+                    userFavorites.push(placeId);
+                }
+                applyFilters();
+                if (!document.getElementById('profile-modal').classList.contains('hidden')) {
+                    renderFavoritesList();
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function renderFavoritesList() {
+            const container = document.getElementById('favorites-container');
+            const countEl = document.getElementById('fav-count');
+            const countBadge = document.getElementById('fav-count-badge');
+            
+            countEl.textContent = `${userFavorites.length} мест`;
+            countBadge.textContent = userFavorites.length;
+
+            if (userFavorites.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full py-8 text-center text-slate-400 text-xs font-medium bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-dashed border-slate-200 dark:border-slate-700">
+                        У вас пока нет сохраненных мест.<br>Нажимайте на сердечко на карточках заведений!
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '';
+            userFavorites.forEach(placeId => {
+                const p = places.find(item => item.id === placeId);
+                if (!p) return;
+
+                container.insertAdjacentHTML('beforeend', `
+                    <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3 transition-all hover:border-indigo-400">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br ${p.gradient} flex items-center justify-center text-lg shrink-0 text-white shadow-sm">${p.icon}</div>
+                            <div class="min-w-0">
+                                <h5 class="text-xs font-black truncate text-slate-800 dark:text-white">${p.name}</h5>
+                                <span class="text-[10px] text-slate-500 dark:text-slate-400 font-medium">${p.district}</span>
+                            </div>
                         </div>
-                        <div class="tx-details">
-                            <h4>${tx.title}</h4>
-                            <p>${tx.desc}</p>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <button onclick="showPlaceModalById('${p.id}'); closeProfileModal();" class="p-2 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500 hover:text-white text-xs transition-colors" title="Открыть">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                            <button onclick="toggleFavorite('${p.id}');" class="p-2 rounded-xl bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white text-xs transition-colors" title="Удалить">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
                         </div>
                     </div>
-                    <div class="tx-amount ${isPos ? 'pos' : 'neg'}">${isPos ? '+' : '-'}$${parseFloat(tx.amount).toFixed(2)}</div>
-                `;
-                list.appendChild(el);
+                `);
             });
         }
 
-        // НАВИГАЦИЯ МЕЖДУ СТРАНИЦАМИ
-        function goToLanding() {
-            document.getElementById('profile-page').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('profile-page').style.display = 'none';
-                document.getElementById('landing-page').style.display = 'block';
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }, 300);
-        }
+        async function checkUserSession() {
+            if (!supabaseClient) return;
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            currentSession = session;
+            const btnText = document.getElementById('nav-auth-btn');
+            const adminContainer = document.getElementById('admin-controls-container');
+            
+            if (session && session.user) {
+                btnText.textContent = session.user.email.split('@')[0];
+                await loadUserFavorites();
 
-        function goToProfile() {
-            document.getElementById('landing-page').style.display = 'none';
-            const profile = document.getElementById('profile-page');
-            profile.style.display = 'block';
-            setTimeout(() => profile.style.opacity = '1', 50);
-            loadUserData();
-            fetchCryptoMarket();
-        }
-
-        function logout() {
-            localStorage.removeItem('aivora_current_user');
-            document.getElementById('profile-page').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('profile-page').style.display = 'none';
-                document.getElementById('landing-page').style.display = 'block';
-                document.getElementById('nav-user-profile').style.display = 'none';
-                document.getElementById('nav-auth-btns').style.display = 'flex';
-                showToast('🔒 Сеанс завершен.');
-            }, 300);
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            const currentUser = localStorage.getItem('aivora_current_user');
-            if (currentUser) {
-                updateUserUI(currentUser);
+                if (session.user.email === ADMIN_EMAIL) {
+                    adminContainer.classList.remove('hidden');
+                } else {
+                    adminContainer.classList.add('hidden');
+                }
+            } else {
+                btnText.textContent = 'Войти';
+                userFavorites = [];
+                adminContainer.classList.add('hidden');
             }
+        }
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            await checkUserSession();
         });
 
-        function switchTab(btn, tabId) {
-            document.querySelectorAll('.dash-tab').forEach(t => t.classList.remove('active'));
-            if(btn) btn.classList.add('active');
+        const stdSched = (hours) => ({ 0: hours, 1: hours, 2: hours, 3: hours, 4: hours, 5: hours, 6: hours });
+
+        // ВНИМАНИЕ: Место на И. Крянгэ было удалено по просьбе.
+        // График Ла Плачинт изменен с 08:00-22:00 на более реальный 10:00-22:00.
+        // Макдак пофикшен.
+        const places = [
+
+{
+    name: "Shopping MallDova",
+    type: "shopping",
+    mainCat: "relax",
+    district: "Центр",
+    tags: ["Торговый центр", "Шоппинг", "Магазины"],
+    price: "$$",
+    rating: 4.5,
+    desc: "Популярный торговый центр в Кишиневе с магазинами, бутиками и развлечениями.",
+    entertainment: "Магазины одежды, фудкорт, кинотеатр и развлечения.",
+    priceRange: "200 - 1500 леев",
+    mapUrl: "https://maps.app.goo.gl/5nqgQnxE7DyH2Vy37",
+    lat: 47.00464383607566,
+    lng: 28.84072280739126,
+    gradient: "from-purple-900 to-slate-900",
+    icon: "<i class='fa-solid fa-bag-shopping text-pink-400'></i>",
+    schedule: { 
+        "0": "10:00-22:00", 
+        "1": "10:00-22:00", 
+        "2": "10:00-22:00", 
+        "3": "10:00-22:00", 
+        "4": "10:00-22:00", 
+        "5": "10:00-22:00", 
+        "6": "10:00-22:00" 
+    },
+    isPermanentlyClosed: false
+},
+{
+    name: "Sun City Shopping Mall",
+    type: "shopping",
+    mainCat: "relax",
+    district: "Центр",
+    tags: ["Торговый центр", "Шоппинг", "Магазины"],
+    price: "$$",
+    rating: 4.4,
+    desc: "Торговый центр в самом центре Кишинева с магазинами одежды, обуви и услуг.",
+    entertainment: "Магазины, бутики, супермаркет и услуги.",
+    priceRange: "200 - 1500 леев",
+    mapUrl: "https://maps.app.goo.gl/nN1b3qxeLcSF7n7z9",
+    lat: 47.02526427040789,
+    lng:  28.836766526443284,
+    gradient: "from-amber-900 to-slate-900",
+    icon: "<i class='fa-solid fa-store text-amber-400'></i>",
+    schedule: { 
+        "0": "09:00-20:00", 
+        "1": "09:00-21:00", 
+        "2": "09:00-21:00", 
+        "3": "09:00-20:00", 
+        "4": "09:00-21:00", 
+        "5": "09:00-21:00", 
+        "6": "09:00-20:00" 
+    },
+    isPermanentlyClosed: false
+},
+{
+    name: "Bonjour Café",
+    type: "cafe",
+    mainCat: "relax",
+    district: "Центр",
+    tags: ["Кафе", "Ресторан", "Завтраки", "Кофе"],
+    price: "$$",
+    rating: 4.6,
+    desc: "Уютное кафе в центре Кишинева возле Кафедрального парка и пешеходной улицы.",
+    entertainment: "Кофе, десерты, завтраки и блюда европейской кухни.",
+    priceRange: "150 - 600 леев",
+    mapUrl: "https://maps.app.goo.gl/2nUYmh51piYK6Zby6",
+    lat: 47.026757932711604,
+    lng: 28.835417774630244,
+    gradient: "from-rose-900 to-slate-900",
+    icon: "<i class='fa-solid fa-mug-hot text-rose-400'></i>",
+    schedule: { 
+        "0": "07:00-23:00", 
+        "1": "07:00-23:00", 
+        "2": "07:00-23:00", 
+        "3": "07:00-23:00", 
+        "4": "07:00-23:00", 
+        "5": "07:00-23:00", 
+        "6": "07:00-23:00" 
+    },
+    isPermanentlyClosed: false
+},
+{
+    name: "TONIGHT ASIA COCKTAIL CLUB",
+    type: "night",
+    mainCat: "relax",
+    district: "Центр",
+    tags: ["Клуб", "Бар", "Коктейли", "Ночная жизнь"],
+    price: "$$",
+    rating: 4.7,
+    desc: "Азиатский коктейльный клуб в центре Кишинева с атмосферой ночной жизни.",
+    entertainment: "Коктейли, музыка, бар и ночные развлечения.",
+    priceRange: "200 - 800 леев",
+    mapUrl: "https://maps.app.goo.gl/ZnpwQRnGUn5yCHu17",
+    lat: 47.02564137952349,
+    lng: 28.836868750421058,
+    gradient: "from-indigo-900 to-slate-900",
+    icon: "<i class='fa-solid fa-martini-glass-citrus text-indigo-400'></i>",
+    schedule: { 
+        "0": "00:00-24:00", 
+        "1": "00:00-24:00", 
+        "2": "00:00-24:00", 
+        "3": "00:00-24:00", 
+        "4": "00:00-24:00", 
+        "5": "00:00-24:00", 
+        "6": "00:00-24:00" 
+    },
+    isPermanentlyClosed: false
+},
+{
+    name: "CC UNIC",
+    type: "shopping",
+    mainCat: "relax",
+    district: "Центр",
+    tags: ["Торговый центр", "Шоппинг", "Магазины"],
+    price: "$$",
+    rating: 4.6,
+    desc: "Один из крупнейших и самых известных торговых центров в самом сердце Кишинёва.",
+    entertainment: "Бутики одежды, электроника, товары для дома, рестораны и кафе.",
+    priceRange: "200 - 2000 леев",
+    mapUrl: "https://maps.app.goo.gl/oVH1pfuoS5xjR5Hh7",
+    lat: 47.017048384463294,
+    lng: 28.845789589364916,
+    gradient: "from-blue-900 to-slate-900",
+    icon: "<i class='fa-solid fa-shop text-blue-400'></i>",
+    schedule: { 
+        "0": "09:00-21:00", 
+        "1": "09:00-21:00", 
+        "2": "09:00-21:00", 
+        "3": "09:00-21:00", 
+        "4": "09:00-21:00", 
+        "5": "09:00-21:00", 
+        "6": "09:00-21:00" 
+    },
+    isPermanentlyClosed: false
+},
+{
+    name: "Churchill's Whisky Bar",
+    type: "night",
+    mainCat: "relax",
+    district: "Центр",
+    tags: ["Бар", "Виски", "Атмосферно"],
+    price: "$$$",
+    rating: 4.7,
+    desc: "Элегантный бар с богатым выбором виски и благородной атмосферой.",
+    entertainment: "Элитный алкоголь, стильный интерьер, приятная музыка.",
+    priceRange: "300 - 800 леев",
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=Strada+Mitropolit+Gavriil+Banulescu-Bodoni+22+Chisinau",
+    lat: 47.02806766971394,
+    lng: 28.83475835401326,
+    gradient: "from-amber-900 to-slate-900",
+    icon: "<i class='fa-solid fa-glass-water text-amber-500'></i>",
+    schedule: { 
+        "0": "12:00-00:00", 
+        "1": "12:00-00:00", 
+        "2": "12:00-00:00", 
+        "3": "12:00-00:00", 
+        "4": "12:00-00:00", 
+        "5": "12:00-02:00", 
+        "6": "12:00-02:00" 
+    },
+    isPermanentlyClosed: false
+},
+{
+    name: "McDonald's (б-р Штефана чел Маре)",
+    type: "food",
+    mainCat: "relax",
+    district: "Центр",
+    tags: ["Фастфуд", "Популярное"],
+    price: "$",
+    rating: 4.5,
+    desc: "Главный McDonald's на центральном проспекте — б-р Штефана чел Маре ши Сфынт, 134/1.",
+    entertainment: "Два этажа, терраса, центр притяжения.",
+    priceRange: "80 - 150 леев",
+    mapUrl: "https://maps.app.goo.gl/oC6Sm9jg5E6dGUWp8",
+    lat: 47.02338488512773,
+    lng: 28.834782242774963,
+    gradient: "from-slate-800 to-slate-900",
+    icon: "<i class='fa-solid fa-burger text-yellow-500'></i>",
+    schedule: stdSched("07:00-02:00"),
+    isPermanentlyClosed: false
+},
+{
+    name: "Zaxi Fun & Finest",
+    type: "food",
+    mainCat: "relax",
+    district: "Центр",
+    tags: ["Азиатская", "Панорама"],
+    price: "$$$$",
+    rating: 4.8,
+    desc: "Панорамный ресторан на 8-м этаже отеля Radisson Blu Leogrand.",
+    entertainment: "Вид на ночной город, терраса, премиум-суши.",
+    priceRange: "400 - 1200 леев",
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=Zaxi+Fun+%26+Finest+Strada+Mitropolit+Varlaam+77+Chisinau",
+    lat: 47.02435030399935,
+    lng: 28.836799263954166,
+    gradient: "from-indigo-900 to-slate-900",
+    icon: "<i class='fa-solid fa-fish-fins text-white'></i>",
+    schedule: { "0": "17:00-00:00", "1": "17:00-00:00", "2": "17:00-00:00", "3": "17:00-00:00", "4": "17:00-01:00", "5": "17:00-02:00", "6": "17:00-02:00" },
+    isPermanentlyClosed: false
+},
+{
+    name: "La Plăcinte (ул. Пушкина)",
+    type: "food",
+    mainCat: "relax",
+    district: "Центр",
+    tags: ["Традиционная", "Молдавская"],
+    price: "$$",
+    rating: 4.6,
+    desc: "Ресторан национальной кухни рядом с Площадью.",
+    entertainment: "Традиционные плацинды, уютная атмосфера.",
+    priceRange: "150 - 350 леев",
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Strada+Alexandru+Puskin+33+Chisinau",
+    lat: 47.026515119210586,
+    lng: 28.837641477584842,
+    gradient: "from-amber-500 to-orange-600",
+    icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
+    schedule: stdSched("10:00-22:00"),
+    isPermanentlyClosed: false
+},
+{
+    name: "La Plăcinte (ул. Дософтей)",
+    type: "food",
+    mainCat: "relax",
+    district: "Центр",
+    tags: ["Традиционная", "Молдавская"],
+    price: "$$",
+    rating: 4.6,
+    desc: "Рядом с Театром оперы и балета.",
+    entertainment: "Уютный интерьер, национальная музыка.",
+    priceRange: "150 - 350 леев",
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Strada+Mitropolit+Dosoftei+100+Chisinau",
+    lat: 47.02772181931119,
+    lng: 28.833580613136295,
+    gradient: "from-amber-500 to-orange-600",
+    icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
+    schedule: stdSched("10:00-22:00"),
+    isPermanentlyClosed: false
+},
+{
+    name: "La Plăcinte (ул. М. Витязул)",
+    type: "food",
+    mainCat: "relax",
+    district: "Центр",
+    tags: ["Традиционная", "Молдавская"],
+    price: "$$",
+    rating: 4.5,
+    desc: "Точная точка по адресу ул. Михай Витязул, 14.",
+    entertainment: "Удобное расположение, шопинг и еда.",
+    priceRange: "150 - 350 леев",
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Strada+Mihai+Viteazul+14+Chisinau",
+    lat: 47.03851508675162,
+    lng: 28.82718086242676,
+    gradient: "from-amber-500 to-orange-600",
+    icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
+    schedule: stdSched("10:00-22:00"),
+    isPermanentlyClosed: false
+},
+{
+    name: "La Plăcinte (ул. Алба-Юлия)",
+    type: "food",
+    mainCat: "relax",
+    district: "Буюканы",
+    tags: ["Традиционная", "Молдавская"],
+    price: "$$",
+    rating: 4.3,
+    desc: "Улица Алба-Юлия, дом 21.",
+    entertainment: "Быстрое обслуживание, домашняя кухня.",
+    priceRange: "150 - 350 леев",
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Strada+Alba+Iulia+21+Chisinau",
+    lat: 47.033818,
+    lng: 28.778222,
+    gradient: "from-amber-500 to-orange-600",
+    icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
+    schedule: stdSched("10:00-22:00"),
+    isPermanentlyClosed: false
+},
+{
+    name: "La Plăcinte (Московский пр.)",
+    type: "food",
+    mainCat: "relax",
+    district: "Рышкановка",
+    tags: ["Традиционная", "Молдавская"],
+    price: "$$",
+    rating: 4.3,
+    desc: "Точное здание дома 9/1 на Московском проспекте.",
+    entertainment: "Отличный вид на проспект, просторный зал.",
+    priceRange: "150 - 350 леев",
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Bulevardul+Moscova+9%2F1+Chisinau",
+    lat: 47.049378,
+    lng: 28.862708,
+    gradient: "from-amber-500 to-orange-600",
+    icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
+    schedule: stdSched("10:00-22:00"),
+    isPermanentlyClosed: false
+},
+{
+    name: "La Plăcinte (ул. Киевская)",
+    type: "food",
+    mainCat: "relax",
+    district: "Рышкановка",
+    tags: ["Традиционная", "Молдавская"],
+    price: "$$",
+    rating: 4.4,
+    desc: "Точный адрес дома 12 по улице Киевской.",
+    entertainment: "Уютная веранда, приятная атмосфера.",
+    priceRange: "150 - 350 леев",
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Strada+Kiev+12+Chisinau",
+    lat: 47.042059,
+    lng: 28.860831,
+    gradient: "from-amber-500 to-orange-600",
+    icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
+    schedule: stdSched("10:00-22:00"),
+    isPermanentlyClosed: false
+},
+{
+    name: "La Plăcinte (б-р Мирча чел Бэтрын)",
+    type: "food",
+    mainCat: "relax",
+    district: "Чеканы",
+    tags: ["Традиционная", "Молдавская"],
+    price: "$$",
+    rating: 4.4,
+    desc: "Дом 12/5 по бульвару Мирча чел Бэтрын.",
+    entertainment: "Современный дизайн, отличные плацинды.",
+    priceRange: "150 - 350 леев",
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Bulevardul+Mircea+cel+Batran+12%2F5+Chisinau",
+    lat: 47.04435,
+    lng: 28.891194,
+    gradient: "from-amber-500 to-orange-600",
+    icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
+    schedule: stdSched("10:00-22:00"),
+    isPermanentlyClosed: false
+},
+{
+    name: "La Plăcinte (ул. Индепенденцей)",
+    type: "food",
+    mainCat: "relax",
+    district: "Ботаника",
+    tags: ["Традиционная", "Молдавская"],
+    price: "$$",
+    rating: 4.5,
+    desc: "Адрес дома 16/1 по улице Индепенденцей.",
+    entertainment: "Вкусная еда, быстрая подача.",
+    priceRange: "150 - 350 леев",
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Strada+Independentei+16%2F1+Chisinau",
+    lat: 46.981704,
+    lng: 28.849629,
+    gradient: "from-amber-500 to-orange-600",
+    icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
+    schedule: stdSched("10:00-22:00"),
+    isPermanentlyClosed: false
+},
+{
+    name: "La Plăcinte (б-р Дачия, 30/5)",
+    type: "food",
+    mainCat: "relax",
+    district: "Ботаника",
+    tags: ["Традиционная", "Молдавская"],
+    price: "$$",
+    rating: 4.5,
+    desc: "Точный адрес дома 30/5 по бульвару Дачия.",
+    entertainment: "Уютный зал, отличная кухня.",
+    priceRange: "150 - 350 леев",
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Bulevardul+Dacia+30%2F5+Chisinau",
+    lat: 46.98353,
+    lng: 28.860077,
+    gradient: "from-amber-500 to-orange-600",
+    icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
+    schedule: stdSched("10:00-22:00"),
+    isPermanentlyClosed: false
+},
+{
+    name: "La Plăcinte (Ворота Города)",
+    type: "food",
+    mainCat: "relax",
+    district: "Ботаника",
+    tags: ["Традиционная", "Молдавская"],
+    price: "$$",
+    rating: 4.3,
+    desc: "Точный адрес дома 48 у Ворот Города по бульвару Дачия, 2-й этаж.",
+    entertainment: "Панорамный вид, фирменные блюда.",
+    priceRange: "150 - 350 леев",
+    mapUrl: "https://maps.app.goo.gl/xTxN4W5K9mjmQCqz6",
+    lat: 46.976398,
+    lng: 28.870677,
+    gradient: "from-amber-500 to-orange-600",
+    icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
+    schedule: stdSched("10:00-22:00"),
+    isPermanentlyClosed: false
+},
+{
+    name: "La Plăcinte (ш. Хынчешть)",
+    type: "food",
+    mainCat: "relax",
+    district: "Телецентр",
+    tags: ["Традиционная", "Молдавская"],
+    price: "$$",
+    rating: 4.5,
+    desc: "Точный адрес дома 58 по шоссе Хынчешть.",
+    entertainment: "Уютная атмосфера, семейные обеды.",
+    priceRange: "150 - 350 леев",
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Soseaua+Hancesti+58+Chisinau",
+    lat: 47.003727,
+    lng: 28.817739,
+    gradient: "from-amber-500 to-orange-600",
+    icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
+    schedule: stdSched("10:00-22:00"),
+    isPermanentlyClosed: false
+},
+// НОВЫЕ ПРИМЕРЫ ДЛЯ БАНКОВ И ОБРАЗОВАНИЯ (ЧТОБЫ РАБОТАЛИ КАТЕГОРИИ)
+{
+    name: "Государственный Университет (USM)",
+    type: "university",
+    mainCat: "edu",
+    district: "Центр",
+    tags: ["Университет", "Образование", "USM"],
+    price: "Беспл.",
+    rating: 4.7,
+    desc: "Молдавский государственный университет, главный корпус.",
+    entertainment: "Учеба, библиотека, сквер, столовая.",
+    priceRange: "Учеба",
+    mapUrl: "https://maps.app.goo.gl/xxx",
+    lat: 47.017778,
+    lng: 28.824167,
+    gradient: "from-blue-600 to-slate-900",
+    icon: "<i class='fa-solid fa-building-columns text-white'></i>",
+    schedule: stdSched("08:00-18:00"),
+    isPermanentlyClosed: false
+},
+{
+    name: "Национальная Библиотека",
+    type: "library",
+    mainCat: "edu",
+    district: "Центр",
+    tags: ["Библиотека", "Книги", "Образование"],
+    price: "Беспл.",
+    rating: 4.8,
+    desc: "Национальная библиотека Республики Молдова.",
+    entertainment: "Читальный зал, архивы, тихая атмосфера.",
+    priceRange: "Бесплатно",
+    mapUrl: "https://maps.app.goo.gl/xxx",
+    lat: 47.0227,
+    lng: 28.8315,
+    gradient: "from-sky-600 to-slate-900",
+    icon: "<i class='fa-solid fa-book-open text-white'></i>",
+    schedule: stdSched("09:00-19:00"),
+    isPermanentlyClosed: false
+},
+{
+    name: "MAIB Главный офис",
+    type: "bank_branch",
+    mainCat: "bank",
+    district: "Центр",
+    tags: ["Банк", "MAIB", "Отделение"],
+    price: "Услуги",
+    rating: 4.5,
+    desc: "Главный филиал Moldova Agroindbank.",
+    entertainment: "Кредиты, переводы, обслуживание бизнеса.",
+    priceRange: "Комиссии банка",
+    mapUrl: "https://maps.app.goo.gl/xxx",
+    lat: 47.0245,
+    lng: 28.8322,
+    gradient: "from-emerald-600 to-slate-900",
+    icon: "<i class='fa-solid fa-money-check-dollar text-white'></i>",
+    schedule: stdSched("09:00-17:00"),
+    isPermanentlyClosed: false
+},
+{
+    name: "Банкомат MICB (24/7)",
+    type: "atm",
+    mainCat: "bank",
+    district: "Рышкановка",
+    tags: ["Банкомат", "MICB", "Наличные"],
+    price: "Беспл.",
+    rating: 4.2,
+    desc: "Круглосуточный банкомат Moldindconbank.",
+    entertainment: "Снятие наличных, пополнение счета.",
+    priceRange: "Без комиссий (свои)",
+    mapUrl: "https://maps.app.goo.gl/xxx",
+    lat: 47.0450,
+    lng: 28.8600,
+    gradient: "from-emerald-500 to-emerald-800",
+    icon: "<i class='fa-solid fa-money-bill-wave text-white'></i>",
+    schedule: { "0": "00:00-24:00", "1": "00:00-24:00", "2": "00:00-24:00", "3": "00:00-24:00", "4": "00:00-24:00", "5": "00:00-24:00", "6": "00:00-24:00" },
+    isPermanentlyClosed: false
+}
+        ];
+
+        places.forEach((p, i) => { p.id = p.id || ('place_' + i); });
+
+        let state = { mainCat: 'relax', category: 'all', district: 'all', search: '', onlyOpen: false };
+        let map = null;
+        let markersLayer = null;
+        let tileLayer = null;
+        let userMarker = null;
+
+        function getChisinauInfo() {
+            const now = new Date();
+            const chisinauString = now.toLocaleString("en-US", { timeZone: "Europe/Chisinau" });
+            const cDate = new Date(chisinauString);
             
-            ['overview', 'crypto', 'cards', 'analytics', 'settings'].forEach(id => {
-                const el = document.getElementById(`tab-${id}`);
-                if(el) el.style.display = 'none';
+            const day = cDate.getDay(); 
+            const hours = cDate.getHours();
+            const minutes = cDate.getMinutes();
+            const timeInMinutes = hours * 60 + minutes;
+
+            const dayNames = ["Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"];
+            const dayShort = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
+
+            const pad = (n) => String(n).padStart(2, '0');
+            const clockStr = `${pad(hours)}:${pad(minutes)}:${pad(cDate.getSeconds())}`;
+            const clockShort = `${pad(hours)}:${pad(minutes)}`;
+            const dateStr = `${pad(cDate.getDate())}.${pad(cDate.getMonth() + 1)}.${cDate.getFullYear()}`;
+
+            return { day, dayName: dayNames[day], dayShort: dayShort[day], hours, minutes, timeInMinutes, clockStr, clockShort, dateStr };
+        }
+
+        function checkOpenStatus(scheduleObj) {
+            const info = getChisinauInfo();
+            const todaySchedule = (scheduleObj && scheduleObj[info.day]) ? scheduleObj[info.day] : "10:00-22:00";
+
+            if (todaySchedule === "00:00-24:00" || todaySchedule === "24/7") {
+                return { isOpen: true, statusText: "Открыто 24/7", todayHours: "Круглосуточно", badgeBg: "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 border-emerald-500/30", dot: "<i class='fa-solid fa-circle text-[8px]'></i>" };
+            }
+
+            const [startStr, endStr] = todaySchedule.split("-");
+            const [sH, sM] = startStr.split(":").map(Number);
+            const [eH, eM] = endStr.split(":").map(Number);
+
+            const openMinutes = sH * 60 + sM;
+            let closeMinutes = eH * 60 + eM;
+
+            let isOpen = false;
+            if (closeMinutes <= openMinutes) {
+                if (info.timeInMinutes >= openMinutes || info.timeInMinutes < closeMinutes) isOpen = true;
+            } else {
+                if (info.timeInMinutes >= openMinutes && info.timeInMinutes < closeMinutes) isOpen = true;
+            }
+
+            return {
+                isOpen,
+                statusText: isOpen ? `Открыто (Сегодня: ${todaySchedule})` : `Закрыто (Сегодня: ${todaySchedule})`,
+                todayHours: `Сегодня: ${startStr} - ${endStr}`,
+                badgeBg: isOpen ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 border-emerald-500/30" : "bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400 border-rose-500/30",
+                dot: "<i class='fa-solid fa-circle text-[8px]'></i>"
+            };
+        }
+
+        function updateClockUI() {
+            const info = getChisinauInfo();
+            const clockEl = document.getElementById('chisinau-clock');
+            const clockElMobile = document.getElementById('chisinau-clock-mobile');
+            const dateEl = document.getElementById('chisinau-date');
+            
+            if (clockEl) clockEl.textContent = info.clockStr;
+            if (clockElMobile) clockElMobile.textContent = info.clockShort;
+            if (dateEl) dateEl.textContent = `${info.dateStr}, ${info.dayShort}`;
+        }
+
+        const isMobile = () => window.innerWidth < 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+        const mapStyleLight = 'https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}';
+        const mapStyleDark = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const icon = document.getElementById('theme-icon');
+            const isDark = html.classList.contains('dark');
+            
+            if (isDark) {
+                html.classList.remove('dark');
+                html.classList.add('light');
+                icon.className = 'fa-solid fa-moon text-lg text-slate-600';
+                if (tileLayer) {
+                    tileLayer.setUrl(mapStyleLight);
+                    tileLayer.getAttribution = function() { return '© Google Maps'; };
+                }
+            } else {
+                html.classList.remove('light');
+                html.classList.add('dark');
+                icon.className = 'fa-solid fa-sun text-lg text-amber-400';
+                if (tileLayer) {
+                    tileLayer.setUrl(mapStyleDark);
+                    tileLayer.getAttribution = function() { return '© <a href="https://carto.com/">CARTO</a>'; };
+                }
+            }
+            if (map) map.invalidateSize();
+        }
+
+        function showPlaceModalById(id) {
+            const p = places.find(pl => pl.id === id);
+            if (!p) return;
+            showPlaceModal(p);
+        }
+
+        function showPlaceModal(p) {
+            const status = checkOpenStatus(p.schedule);
+            const modal = document.getElementById('random-modal');
+            const content = document.getElementById('modal-content');
+            const mapBtn = document.getElementById('modal-map-btn');
+            const actionBtn = document.getElementById('modal-action-btn');
+
+            const isFav = userFavorites.includes(p.id);
+
+            content.innerHTML = `
+                <div class="p-5 rounded-2xl bg-gradient-to-br ${p.gradient} text-white flex items-center justify-between shadow-inner relative">
+                    <div class="min-w-0 pr-2">
+                        <span class="text-[10px] font-bold uppercase tracking-widest opacity-80 mb-1 block"><i class="fa-solid fa-map-pin"></i> ${p.district}</span>
+                        <h4 class="text-xl sm:text-2xl font-black break-words leading-tight">${p.name}</h4>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="toggleFavorite('${p.id}', event); showPlaceModalById('${p.id}');" class="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-lg ${isFav ? 'text-rose-400' : 'text-white'} hover:scale-110 transition-transform">
+                            <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
+                        </button>
+                        <div class="text-4xl opacity-90 shrink-0">${p.icon}</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 text-xs font-bold px-3.5 py-2 rounded-xl border ${status.badgeBg} shadow-sm">
+                    <span class="mt-0.5">${status.dot}</span>
+                    <span>${status.statusText}</span>
+                </div>
+                <p class="text-sm font-medium text-slate-700 dark:text-slate-300 leading-relaxed">${p.desc}</p>
+                <div class="bg-indigo-50 dark:bg-indigo-500/10 p-3.5 rounded-xl border border-indigo-100 dark:border-indigo-500/20 text-xs text-slate-700 dark:text-slate-300 shadow-sm">
+                    <b class="text-indigo-600 dark:text-indigo-400 block mb-1"><i class="fa-solid fa-gamepad"></i> Детали:</b> ${p.entertainment}
+                </div>
+                <div class="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 p-3.5 rounded-xl border border-emerald-100 dark:border-emerald-500/20 flex items-center justify-between shadow-sm">
+                    <span><i class="fa-solid fa-wallet"></i> Чек / Прайс:</span>
+                    <span>${p.priceRange}</span>
+                </div>
+            `;
+            mapBtn.href = p.mapUrl;
+                actionBtn.onclick = function() { closeRandomModal(); };
+                modal.classList.remove('hidden');
+        }
+
+        function closeRandomModal() {
+            document.getElementById('random-modal').classList.add('hidden');
+        }
+
+        function initMap() {
+            if (map) return;
+            const isDark = document.documentElement.classList.contains('dark');
+            const tileUrl = isDark ? mapStyleDark : mapStyleLight;
+
+            map = L.map('map', { zoomControl: false }).setView([47.0105, 28.8335], 13);
+            
+            tileLayer = L.tileLayer(tileUrl, {
+                maxZoom: 19,
+                attribution: isDark ? '© CARTO' : '© Google Maps'
+            }).addTo(map);
+
+            L.control.zoom({ position: 'bottomright' }).addTo(map);
+            markersLayer = L.layerGroup().addTo(map);
+        }
+
+        function getUserLocation() {
+            if (!navigator.geolocation) {
+                alert("Геолокация не поддерживается вашим браузером");
+                return;
+            }
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    
+                    if (userMarker) map.removeLayer(userMarker);
+
+                    const userIcon = L.divIcon({
+                        className: 'custom-user-pin',
+                        html: '<div class="user-location-ping"></div>',
+                        iconSize: [20, 20],
+                        iconAnchor: [10, 10]
+                    });
+
+                    userMarker = L.marker([lat, lng], { icon: userIcon }).addTo(map);
+                    userMarker.bindPopup("<div class='font-bold text-xs'>Вы здесь!</div>").openPopup();
+                    map.setView([lat, lng], 15);
+                },
+                () => {
+                    alert("Не удалось получить ваше местоположение. Проверьте разрешения.");
+                },
+                { enableHighAccuracy: true }
+            );
+        }
+
+        function renderMapMarkers(filteredPlaces) {
+    if (!map || !markersLayer) return;
+    markersLayer.clearLayers();
+
+    filteredPlaces.forEach(p => {
+        const isFav = userFavorites.includes(p.id);
+        
+        // Проверяем статус заведения (открыто/закрыто)
+        const status = checkOpenStatus(p.schedule);
+        // Цвет кружочка в зависимости от статуса: зеленый если открыто, красный если закрыто
+        const dotColorBg = status.isOpen ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]' : 'bg-rose-500';
+
+        // Формируем иконку маркера с добавлением мини-кружочка статуса в правом верхнем углу
+        const customIcon = L.divIcon({
+            className: 'custom-map-marker',
+            html: `
+                <div class="relative group/pin">
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-br ${p.gradient} text-white flex items-center justify-center text-sm shadow-xl border-2 border-white dark:border-slate-800 hover:scale-125 transition-transform cursor-pointer">
+                        ${p.icon}
+                    </div>
+                    <span class="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full ${dotColorBg} border-2 border-white dark:border-slate-900"></span>
+                </div>
+            `,
+            iconSize: [36, 36],
+            iconAnchor: [18, 18]
+        });
+
+        const marker = L.marker([p.lat, p.lng], { icon: customIcon });
+        marker.on('click', () => {
+            showPlaceModal(p);
+        });
+        markersLayer.addLayer(marker);
+    });
+}
+
+        function applyFilters() {
+            const searchInput = document.getElementById('search-input');
+            const searchInputMob = document.getElementById('search-input-mobile');
+            if (searchInput) state.search = searchInput.value.toLowerCase().trim();
+            if (searchInputMob && searchInputMob.value) state.search = searchInputMob.value.toLowerCase().trim();
+
+            const filtered = places.filter(p => {
+                if (p.isPermanentlyClosed) return false;
+
+                if (state.district !== 'all' && p.district !== state.district) return false;
+                
+                if (state.mainCat && p.mainCat !== state.mainCat) return false;
+
+                if (state.category !== 'all' && p.type !== state.category) return false;
+
+                if (state.onlyOpen) {
+                    const status = checkOpenStatus(p.schedule);
+                    if (!status.isOpen) return false;
+                }
+
+                if (state.search) {
+                    const matchName = p.name.toLowerCase().includes(state.search);
+                    const matchDesc = p.desc.toLowerCase().includes(state.search);
+                    const matchTags = p.tags.some(t => t.toLowerCase().includes(state.search));
+                    const matchDist = p.district.toLowerCase().includes(state.search);
+                    if (!matchName && !matchDesc && !matchTags && !matchDist) return false;
+                }
+
+                return true;
             });
 
-            const activeTab = document.getElementById(`tab-${tabId}`);
-            if(activeTab) {
-                activeTab.style.display = 'block';
-                if(tabId === 'overview') loadUserData();
-                if(tabId === 'analytics') initAnalyticsCharts();
-            }
+            renderPlacesGrid(filtered);
+            renderMapMarkers(filtered);
         }
 
-        async function fetchCryptoMarket() {
-            try {
-                const res = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=true');
-                const data = await res.json();
-                cryptoDataCache = data;
-                renderCryptoList(data);
-                if(data.length > 0) renderCryptoChart(0);
-            } catch (e) {
-                showToast('⚠️ Ошибка загрузки рынков');
-            }
-        }
+        function renderPlacesGrid(list) {
+            const grid = document.getElementById('places-grid');
+            const countEl = document.getElementById('places-count');
+            if (countEl) countEl.textContent = list.length;
 
-        function renderCryptoList(coins) {
-            const table = document.getElementById('crypto-market-list');
-            table.innerHTML = '';
-            coins.forEach((coin, index) => {
-                const isPos = coin.price_change_percentage_24h >= 0;
-                const changeClass = isPos ? 'pos' : 'neg';
-                const sign = isPos ? '+' : '';
-                const el = document.createElement('div');
-                el.className = 'crypto-item';
-                el.onclick = () => {
-                    document.querySelectorAll('.crypto-item').forEach(i => i.classList.remove('active'));
-                    el.classList.add('active');
-                    renderCryptoChart(index);
-                };
-                el.innerHTML = `
-                    <div class="crypto-info">
-                        <img src="${coin.image}" class="crypto-icon">
+            if (list.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full py-20 text-center glass rounded-[2rem] border border-white/40 dark:border-white/10">
+                        <div class="w-20 h-20 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-500 rounded-3xl flex items-center justify-center text-3xl mx-auto mb-4 shadow-inner">
+                            <i class="fa-solid fa-mug-hot"></i>
+                        </div>
+                        <h3 class="text-xl font-black mb-1 text-slate-800 dark:text-white">Ничего не найдено</h3>
+                        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">Попробуйте изменить параметры поиска или выбрать другой район.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = '';
+            list.forEach(p => {
+                const status = checkOpenStatus(p.schedule);
+                const isFav = userFavorites.includes(p.id);
+
+                const adminEditBtn = (currentSession && currentSession.user && currentSession.user.email === ADMIN_EMAIL && isAdminEditMode) ? `
+                    <button onclick="openAdminEditModal('${p.id}', event)" class="absolute top-4 left-4 z-20 px-3 py-1.5 rounded-xl bg-rose-500 text-white font-bold text-[10px] shadow-lg hover:scale-105 transition-all flex items-center gap-1.5">
+                        <i class="fa-solid fa-pen"></i> Изменить
+                    </button>
+                ` : '';
+
+                grid.insertAdjacentHTML('beforeend', `
+                    <div onclick="showPlaceModalById('${p.id}')" class="glass rounded-[2.5rem] p-5 sm:p-6 card-hover flex flex-col justify-between border border-white/60 dark:border-white/10 cursor-pointer relative overflow-hidden group">
+                        ${adminEditBtn}
                         <div>
-                            <div class="crypto-name">${coin.name}</div>
-                            <div class="crypto-symbol">${coin.symbol}</div>
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br ${p.gradient} flex items-center justify-center text-2xl text-white shadow-lg shadow-indigo-500/20 group-hover:scale-110 transition-transform">
+                                    ${p.icon}
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button onclick="toggleFavorite('${p.id}', event)" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800/80 flex items-center justify-center text-base ${isFav ? 'text-rose-500' : 'text-slate-400 dark:text-slate-500'} hover:scale-110 transition-transform">
+                                        <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
+                                    </button>
+                                    <span class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 font-black text-xs text-slate-700 dark:text-slate-300 shadow-sm flex items-center gap-1">
+                                        <i class="fa-solid fa-star text-amber-400 text-[10px]"></i> ${p.rating}
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-[10px] font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 px-2.5 py-1 rounded-md border border-indigo-100 dark:border-indigo-500/20">
+                                    <i class="fa-solid fa-location-dot"></i> ${p.district}
+                                </span>
+                                <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-md">
+                                    ${p.price}
+                                </span>
+                            </div>
+
+                            <h3 class="text-lg sm:text-xl font-black mb-2 text-slate-800 dark:text-white group-hover:text-indigo-500 transition-colors leading-tight">
+                                ${p.name}
+                            </h3>
+                            
+                            <p class="text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-400 line-clamp-2 mb-4">
+                                ${p.desc}
+                            </p>
+                        </div>
+
+                        <div class="space-y-3 pt-3 border-t border-slate-200/80 dark:border-slate-800/80">
+                            <div class="flex items-center gap-2 text-[11px] font-bold px-3 py-1.5 rounded-xl border ${status.badgeBg} shadow-sm">
+                                <span>${status.dot}</span>
+                                <span class="truncate">${status.statusText}</span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between pt-1">
+                                <span class="text-xs font-black text-emerald-600 dark:text-emerald-400"><i class="fa-solid fa-wallet"></i> ${p.priceRange}</span>
+                                <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400 group-hover:translate-x-1 transition-transform flex items-center gap-1">
+                                    Подробнее <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                                </span>
+                            </div>
                         </div>
                     </div>
-                    <div class="crypto-price-block">
-                        <div class="crypto-price">$${coin.current_price.toLocaleString('en-US', {maximumFractionDigits: 2})}</div>
-                        <div class="crypto-change ${changeClass}">${sign}${coin.price_change_percentage_24h.toFixed(2)}%</div>
-                    </div>
-                `;
-                table.appendChild(el);
-            });
-            if(table.firstChild) table.firstChild.classList.add('active');
-        }
-
-        function renderCryptoChart(index) {
-            const coin = cryptoDataCache[index];
-            if(!coin || !coin.sparkline_in_7d) return;
-            document.getElementById('chart-title-name').innerHTML = `<img src="${coin.image}" style="width:28px; height:28px; border-radius:50%;"> ${coin.name}`;
-            document.getElementById('chart-title-price').innerText = `$${coin.current_price.toLocaleString('en-US', {maximumFractionDigits: 4})}`;
-            
-            const prices = coin.sparkline_in_7d.price;
-            const labels = prices.map((_, i) => i);
-            const isPos = prices[prices.length - 1] >= prices[0];
-            const color = isPos ? '#00ff88' : '#ff0055';
-            
-            const ctx = document.getElementById('mainCryptoChart').getContext('2d');
-            if(mainChartInstance) mainChartInstance.destroy();
-
-            let gradient = ctx.createLinearGradient(0, 0, 0, 300);
-            gradient.addColorStop(0, isPos ? 'rgba(0, 255, 136, 0.3)' : 'rgba(255, 0, 85, 0.3)');
-            gradient.addColorStop(1, 'rgba(0,0,0,0)');
-
-            mainChartInstance = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: prices,
-                        borderColor: color,
-                        borderWidth: 2.5,
-                        backgroundColor: gradient,
-                        fill: true,
-                        tension: 0.4,
-                        pointRadius: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { display: false },
-                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9e8791' } }
-                    }
-                }
+                `);
             });
         }
 
-        function initAnalyticsCharts() {
-            const ctx = document.getElementById('expensesPieChart');
-            if(!ctx || expensesPieInstance) return;
-            expensesPieInstance = new Chart(ctx.getContext('2d'), {
-                type: 'doughnut',
-                data: {
-                    labels: ['Инвестиции', 'Технологии', 'Подписки', 'Прочее'],
-                    datasets: [{
-                        data: [45, 25, 20, 10],
-                        backgroundColor: ['#ff0055', '#ff2a6d', '#00ff88', '#9e8791'],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom', labels: { color: '#fff', font: { family: 'Space Grotesk' } } } }
-                }
+        function setDistrict(dist) {
+            state.district = dist;
+            document.querySelectorAll('.dist-btn').forEach(btn => {
+                btn.classList.remove('bg-gradient-to-r', 'from-indigo-500', 'to-purple-500', 'text-white', 'shadow-lg');
+                btn.classList.add('bg-white/60', 'dark:bg-slate-800/60', 'text-slate-700', 'dark:text-slate-200');
             });
+            event.currentTarget.classList.remove('bg-white/60', 'dark:bg-slate-800/60', 'text-slate-700', 'dark:text-slate-200');
+            event.currentTarget.classList.add('bg-gradient-to-r', 'from-indigo-500', 'to-purple-500', 'text-white', 'shadow-lg');
+
+            const distName = dist === 'all' ? 'Весь город' : dist;
+            document.getElementById('current-district-display').textContent = distName;
+            document.getElementById('grid-title').textContent = dist === 'all' ? 'Все заведения' : `Заведения: ${dist}`;
+
+            applyFilters();
         }
 
-        // УПРАВЛЕНИЕ ПОПОЛНЕНИЕМ
-        function openTopUpModal() { document.getElementById('topup-modal').classList.add('active'); }
-        function closeTopUpModal() { document.getElementById('topup-modal').classList.remove('active'); }
-        
-        function setTopUpAmount(val) {
-            document.getElementById('topup-amount').value = val;
+        function setMainCategory(mainCat) {
+            state.mainCat = mainCat;
+            state.category = 'all';
+
+            document.querySelectorAll('.cat-main-btn').forEach(btn => {
+                btn.classList.remove('cat-btn-active');
+            });
+            const activeMainBtn = document.getElementById(`btn-main-${mainCat}`);
+            if (activeMainBtn) activeMainBtn.classList.add('cat-btn-active');
+
+            document.querySelectorAll('.subcats-group').forEach(group => {
+                group.classList.add('hidden');
+            });
+            const targetSubcats = document.getElementById(`subcats-${mainCat}`);
+            if (targetSubcats) targetSubcats.classList.remove('hidden');
+
+            applyFilters();
         }
 
-        function selectPayMethod(el, name) {
-            document.querySelectorAll('.pay-method-card').forEach(card => {
-                card.style.background = 'rgba(255,255,255,0.03)';
-                card.style.borderColor = 'var(--glass-border)';
+        function setCategory(cat) {
+            state.category = cat;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.classList.remove('cat-btn-active');
             });
-            el.style.background = 'rgba(255,0,85,0.12)';
-            el.style.borderColor = 'var(--accent-1)';
-            selectedPaymentMethodName = name;
+            const activeBtn = document.getElementById(`btn-cat-${cat}`);
+            if (activeBtn) activeBtn.classList.add('cat-btn-active');
+
+            applyFilters();
         }
 
-        function executeTopUp() {
-            const amount = parseFloat(document.getElementById('topup-amount').value.trim());
-            if (isNaN(amount) || amount <= 0) {
-                showToast('❌ Введите корректную сумму пополнения');
-                return;
-            }
-
-            const currentUserTag = localStorage.getItem('aivora_current_user');
-            let users = getUsersDB();
-            let currentUser = users.find(u => u.tag.toLowerCase() === currentUserTag.toLowerCase());
-
-            if (!currentUser) {
-                showToast('❌ Ошибка: пользователь не авторизован');
-                return;
-            }
-
-            currentUser.balance += amount;
-            if (!currentUser.transactions) currentUser.transactions = [];
-            currentUser.transactions.unshift({
-                title: `Пополнение (${selectedPaymentMethodName})`,
-                type: 'pos',
-                amount: amount,
-                desc: 'Входящий • Только что'
-            });
-
-            saveUsersDB(users);
-            loadUserData();
-            closeTopUpModal();
-            showToast(`💳 Баланс успешно пополнен на $${amount.toFixed(2)} через ${selectedPaymentMethodName}!`);
-        }
-
-        function openTransferModal() { document.getElementById('transfer-modal').classList.add('active'); }
-        function closeTransferModal() { document.getElementById('transfer-modal').classList.remove('active'); }
-        function openShopperModal() { document.getElementById('shopper-modal').classList.add('active'); }
-        function closeShopperModal() { document.getElementById('shopper-modal').classList.remove('active'); }
-        function openDetailsModal() { document.getElementById('details-modal').classList.add('active'); }
-        function closeDetailsModal() { document.getElementById('details-modal').classList.remove('active'); }
-
-        function executeTransfer() {
-            let recipient = document.getElementById('transfer-recipient').value.trim();
-            const amount = parseFloat(document.getElementById('transfer-amount').value.trim());
-            
-            if(!recipient || isNaN(amount) || amount <= 0) {
-                showToast('❌ Заполните корректно получателя и сумму');
-                return;
-            }
-
-            if (!recipient.startsWith('@')) recipient = '@' + recipient;
-
-            const currentUserTag = localStorage.getItem('aivora_current_user');
-            let users = getUsersDB();
-            let currentUser = users.find(u => u.tag.toLowerCase() === currentUserTag.toLowerCase());
-
-            if (currentUser.balance < amount) {
-                showToast('❌ Недостаточно средств на балансе');
-                return;
-            }
-
-            currentUser.balance -= amount;
-            if (!currentUser.transactions) currentUser.transactions = [];
-            currentUser.transactions.unshift({
-                title: `Перевод: ${recipient}`,
-                type: 'neg',
-                amount: amount,
-                desc: 'Исходящий • Только что'
-            });
-
-            let recipientUser = users.find(u => u.tag.toLowerCase() === recipient.toLowerCase());
-            if (recipientUser) {
-                recipientUser.balance += amount;
-                if (!recipientUser.transactions) recipientUser.transactions = [];
-                recipientUser.transactions.unshift({
-                    title: `Перевод от: ${currentUser.tag}`,
-                    type: 'pos',
-                    amount: amount,
-                    desc: 'Входящий • Только что'
-                });
+        function toggleOnlyOpen() {
+            state.onlyOpen = !state.onlyOpen;
+            const btn = document.getElementById('btn-only-open');
+            if (state.onlyOpen) {
+                btn.classList.add('bg-emerald-500', 'text-white', 'border-transparent');
+                btn.classList.remove('bg-white/60', 'dark:bg-slate-800/60', 'text-slate-600', 'dark:text-slate-300');
             } else {
-                users.push({
-                    tag: recipient,
-                    email: recipient.replace('@', '') + '@aivora.net',
-                    password: 'password123',
-                    balance: amount,
-                    transactions: [{
-                        title: `Перевод от: ${currentUser.tag}`,
-                        type: 'pos',
-                        amount: amount,
-                        desc: 'Входящий • Только что'
-                    }]
-                });
+                btn.classList.remove('bg-emerald-500', 'text-white', 'border-transparent');
+                btn.classList.add('bg-white/60', 'dark:bg-slate-800/60', 'text-slate-600', 'dark:text-slate-300');
+            }
+            applyFilters();
+        }
+
+        function getRandomPlace() {
+            const filtered = places.filter(p => !p.isPermanentlyClosed);
+            if (filtered.length === 0) return;
+            const randomP = filtered[Math.floor(Math.random() * filtered.length)];
+            showPlaceModal(randomP);
+        }
+
+       function startApp(district) {
+    const welcome = document.getElementById('welcome-screen');
+    const mainApp = document.getElementById('main-app');
+
+    // Сохраняем выбранный район в состояние, если он передан и не равен 'all'
+    if (district && district !== 'all') {
+        state.district = district;
+        
+        // Обновляем текст в интерфейсе
+        const distName = district;
+        document.getElementById('current-district-display').textContent = distName;
+        document.getElementById('grid-title').textContent = `Заведения: ${district}`;
+
+        // Подсвечиваем нужную кнопку района в фильтрах
+        document.querySelectorAll('.dist-btn').forEach(btn => {
+            if (btn.textContent.trim() === district) {
+                btn.classList.remove('bg-white/60', 'dark:bg-slate-800/60', 'text-slate-700', 'dark:text-slate-200');
+                btn.classList.add('bg-gradient-to-r', 'from-indigo-500', 'to-purple-500', 'text-white', 'shadow-lg');
+            } else {
+                btn.classList.remove('bg-gradient-to-r', 'from-indigo-500', 'to-purple-500', 'text-white', 'shadow-lg');
+                btn.classList.add('bg-white/60', 'dark:bg-slate-800/60', 'text-slate-700', 'dark:text-slate-200');
+            }
+        });
+    }
+
+    welcome.style.opacity = '0';
+    welcome.style.transform = 'scale(1.05)';
+    setTimeout(() => {
+        welcome.style.display = 'none';
+        mainApp.classList.remove('hidden');
+        setTimeout(() => {
+            mainApp.classList.remove('opacity-0', 'translate-y-10');
+            initMap();
+            
+            applyFilters();
+            setInterval(updateClockUI, 1000);
+            updateClockUI();
+        }, 50);
+    }, 600);
+}
+
+        function toggleAdminEditMode() {
+            isAdminEditMode = !isAdminEditMode;
+            const btn = document.getElementById('admin-mode-toggle-btn');
+            if (isAdminEditMode) {
+                btn.innerHTML = `<i class="fa-solid fa-shield-halved"></i> Режим админа: ВКЛ`;
+                btn.classList.remove('bg-rose-500', 'hover:bg-rose-600');
+                btn.classList.add('bg-emerald-500', 'hover:bg-emerald-600');
+            } else {
+                btn.innerHTML = `<i class="fa-solid fa-shield-halved"></i> Режим админа: ВЫКЛ`;
+                btn.classList.remove('bg-emerald-500', 'hover:bg-emerald-600');
+                btn.classList.add('bg-rose-500', 'hover:bg-rose-600');
+            }
+            applyFilters();
+        }
+
+        function openAdminEditModal(placeId, event) {
+            if (event) event.stopPropagation();
+            const p = places.find(item => item.id === placeId);
+            if (!p) return;
+
+            document.getElementById('edit-place-id').value = p.id;
+            document.getElementById('edit-name').value = p.name;
+            document.getElementById('edit-district').value = p.district;
+            document.getElementById('edit-desc').value = p.desc;
+            document.getElementById('edit-price-range').value = p.priceRange;
+
+            document.getElementById('admin-edit-modal').classList.remove('hidden');
+        }
+
+        function closeAdminEditModal() {
+            document.getElementById('admin-edit-modal').classList.add('hidden');
+        }
+
+        function savePlaceEdit(event) {
+            event.preventDefault();
+            const id = document.getElementById('edit-place-id').value;
+            const name = document.getElementById('edit-name').value;
+            const district = document.getElementById('edit-district').value;
+            const desc = document.getElementById('edit-desc').value;
+            const priceRange = document.getElementById('edit-price-range').value;
+
+            const p = places.find(item => item.id === id);
+            if (p) {
+                p.name = name;
+                p.district = district;
+                p.desc = desc;
+                p.priceRange = priceRange;
             }
 
-            saveUsersDB(users);
-            loadUserData();
-            showToast(`💸 Перевод $${amount.toFixed(2)} на тег ${recipient} выполнен!`);
-            closeTransferModal();
+            closeAdminEditModal();
+            applyFilters();
+            alert('Место успешно обновлено!');
         }
 
-        function generateMockTransactions() {
-            showToast("🔄 Синхронизация с узлами...");
-            setTimeout(() => {
-                const currentUserTag = localStorage.getItem('aivora_current_user');
-                let users = getUsersDB();
-                let currentUser = users.find(u => u.tag.toLowerCase() === currentUserTag.toLowerCase());
-                if (!currentUser) return;
 
-                const names = ['Starbucks', 'Netflix', 'Binance', 'Apple Store'];
-                const amounts = [4.50, 15.99, 500.00, 1299.00];
-                const idx = Math.floor(Math.random() * names.length);
 
-                if (!currentUser.transactions) currentUser.transactions = [];
-                currentUser.transactions.unshift({
-                    title: names[idx],
-                    type: 'neg',
-                    amount: amounts[idx],
-                    desc: 'Покупка • Только что'
-                });
 
-                saveUsersDB(users);
-                renderUserTransactions(currentUser.transactions);
-                showToast("✅ Загружено");
-            }, 800);
-        }
 
-        function triggerBonus() {
-            const currentUserTag = localStorage.getItem('aivora_current_user');
-            let users = getUsersDB();
-            let currentUser = users.find(u => u.tag.toLowerCase() === currentUserTag.toLowerCase());
-            if(currentUser) {
-                currentUser.balance += 25.00;
-                if (!currentUser.transactions) currentUser.transactions = [];
-                currentUser.transactions.unshift({
-                    title: 'Бонус ИИ Ассистента',
-                    type: 'pos',
-                    amount: 25.00,
-                    desc: 'Награда • Только что'
-                });
-                saveUsersDB(users);
-                loadUserData();
-            }
-            showToast("🎁 Бонус ИИ +$25.00 зачислен!");
-        }
 
-        function toggleFreezeCard(btn) {
-            const isFrozen = btn.innerText.includes('Разморозить');
-            btn.innerHTML = isFrozen ? 'Заморозить' : 'Разморозить';
-            showToast(isFrozen ? "✅ Карта разморожена" : "❄️ Карта заморожена");
-        }
 
-        function runAiShopping() {
-            const query = document.getElementById('modal-search-input').value.trim();
-            if(!query) {
-                showToast('❌ Введите название товара');
-                return;
-            }
-            showToast('🔍 ИИ сканирует глобальные рынки...');
-            setTimeout(() => {
-                const resBox = document.getElementById('modal-search-results');
-                resBox.innerHTML = `
-                    <div style="background: rgba(0,255,136,0.1); border: 1px solid #00ff88; border-radius: 16px; padding: 15px; margin-top: 15px; text-align: left;">
-                        <p style="color: #00ff88; font-weight: 700; margin-bottom: 4px;">Лучшая цена найдена!</p>
-                        <p style="color: #fff; font-size: 14px; margin-bottom: 2px;">${query} — $949.00 (Экономия $150)</p>
-                        <p style="color: var(--text-muted); font-size: 12px;">Кэшбэк Aivora: 5% ($47.45) начислится мгновенно</p>
-                    </div>
-                `;
-            }, 1000);
-        }
+        
     </script>
 </body>
 </html>
