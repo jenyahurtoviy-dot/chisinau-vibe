@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Chisinau Vibe | Premium Guide</title>
+    <!-- Подключаем Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Подключаем FontAwesome для премиальных иконок вместо эмодзи -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -36,12 +39,12 @@
                         },
                         glowPulse: {
                             '0%, 100%': { 
-                                boxShadow: '0 0 25px rgba(245, 158, 11, 0.6), 0 0 50px rgba(236, 72, 153, 0.4)',
-                                borderColor: 'rgba(245, 158, 11, 0.8)'
+                                boxShadow: '0 0 25px rgba(99, 102, 241, 0.5), 0 0 50px rgba(168, 85, 247, 0.3)',
+                                borderColor: 'rgba(99, 102, 241, 0.8)'
                             },
                             '50%': { 
-                                boxShadow: '0 0 45px rgba(245, 158, 11, 0.9), 0 0 80px rgba(236, 72, 153, 0.7)',
-                                borderColor: 'rgba(236, 72, 153, 1)'
+                                boxShadow: '0 0 45px rgba(99, 102, 241, 0.8), 0 0 80px rgba(168, 85, 247, 0.6)',
+                                borderColor: 'rgba(168, 85, 247, 1)'
                             }
                         }
                     }
@@ -53,7 +56,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap');
         
         body { 
-            background-color: #f1f5f9;
+            background-color: #f8fafc;
             transition: background-color 0.5s ease;
             -webkit-tap-highlight-color: transparent;
         }
@@ -66,20 +69,20 @@
         ::-webkit-scrollbar-thumb:hover { background: #6366f1; }
         
         .glass {
-            background: rgba(255, 255, 255, 0.65);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 10px 40px -10px rgba(31, 38, 135, 0.08);
         }
         .dark .glass {
-            background: rgba(15, 23, 42, 0.65);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.4);
         }
 
         .gradient-text {
-            background: linear-gradient(135deg, #6366f1, #d946ef, #f59e0b);
+            background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-size: 200% 200%;
@@ -95,34 +98,39 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
+        .card-hover {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
         .card-hover:hover {
-            box-shadow: 0 20px 40px -5px rgba(99, 102, 241, 0.15);
-            border-color: rgba(99, 102, 241, 0.3);
+            transform: translateY(-4px);
+            box-shadow: 0 25px 50px -12px rgba(99, 102, 241, 0.15);
+            border-color: rgba(99, 102, 241, 0.4);
         }
         .dark .card-hover:hover {
-            box-shadow: 0 20px 40px -5px rgba(99, 102, 241, 0.25);
-            border-color: rgba(99, 102, 241, 0.4);
+            box-shadow: 0 25px 50px -12px rgba(99, 102, 241, 0.25);
+            border-color: rgba(99, 102, 241, 0.5);
         }
         
         .cat-btn-active {
             background: linear-gradient(135deg, #6366f1, #8b5cf6);
             color: white;
             border-color: transparent !important;
-            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
+            box-shadow: 0 12px 24px -8px rgba(99, 102, 241, 0.5);
         }
 
         .leaflet-popup-content-wrapper {
             background: rgba(255, 255, 255, 0.95) !important;
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255,255,255,0.5);
-            border-radius: 1.2rem !important;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.15) !important;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.8);
+            border-radius: 1.5rem !important;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important;
             color: #0f172a !important;
         }
         .dark .leaflet-popup-content-wrapper {
             background: rgba(15, 23, 42, 0.95) !important;
             border: 1px solid rgba(255,255,255,0.1);
             color: #f8fafc !important;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4) !important;
         }
         .leaflet-popup-tip {
             background: rgba(255, 255, 255, 0.95) !important;
@@ -134,14 +142,19 @@
         .leaflet-control-zoom a {
             background-color: var(--tw-bg-opacity, #fff) !important;
             color: #475569 !important;
-            border-radius: 8px !important;
-            margin-bottom: 4px;
-            border: none !important;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+            border-radius: 10px !important;
+            margin-bottom: 6px;
+            border: 1px solid rgba(0,0,0,0.05) !important;
+            box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.1) !important;
+            transition: all 0.2s;
         }
         .dark .leaflet-control-zoom a {
             background-color: #1e293b !important;
             color: #cbd5e1 !important;
+            border-color: rgba(255,255,255,0.05) !important;
+        }
+        .leaflet-control-zoom a:hover {
+            color: #6366f1 !important;
         }
 
         .user-location-ping {
@@ -153,7 +166,7 @@
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #3b82f6;
+            background-color: #6366f1;
             border-radius: 50%;
             animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
             opacity: 0.75;
@@ -162,7 +175,7 @@
             content: '';
             position: absolute;
             top: 4px; left: 4px; width: 12px; height: 12px;
-            background-color: #2563eb;
+            background-color: #4f46e5;
             border: 2px solid white;
             border-radius: 50%;
         }
@@ -170,27 +183,28 @@
 </head>
 <body class="text-slate-900 dark:text-slate-100 min-h-screen relative overflow-x-hidden" id="body">
 
-    <div class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[110] glass rounded-full px-3.5 py-2 sm:px-5 sm:py-2.5 flex items-center gap-2 sm:gap-3 cursor-help hover:scale-105 transition-transform shadow-lg" title="Людей сейчас ищут места">
-        <div class="relative flex h-2.5 w-2.5 sm:h-3 sm:w-3">
+    <div class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[110] glass rounded-full px-4 py-2.5 flex items-center gap-3 cursor-help hover:scale-105 transition-transform shadow-xl" title="Людей сейчас ищут места">
+        <div class="relative flex h-3 w-3">
           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-          <span class="relative inline-flex rounded-full h-2.5 w-2.5 sm:h-3 sm:w-3 bg-emerald-500"></span>
+          <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
         </div>
-        <div class="font-bold text-xs sm:text-sm tracking-wide">
-            <span id="online-count" class="text-emerald-600 dark:text-emerald-400 text-sm sm:text-lg transition-all duration-300">342</span> <span class="hidden sm:inline">онлайн</span>
+        <div class="font-bold text-xs sm:text-sm tracking-wide flex items-center gap-2">
+            <span id="online-count" class="text-emerald-600 dark:text-emerald-400 text-sm sm:text-lg transition-all duration-300">342</span> 
+            <span class="hidden sm:inline text-slate-500 dark:text-slate-400">онлайн</span>
         </div>
     </div>
 
     <div class="fixed inset-0 w-full h-full pointer-events-none z-[-1] overflow-hidden">
-        <div class="absolute top-[-10%] left-[-10%] w-[20rem] sm:w-[40rem] h-[20rem] sm:h-[40rem] bg-indigo-500 rounded-full mix-blend-multiply filter blur-[80px] sm:blur-[100px] opacity-20 dark:opacity-30 animate-blob"></div>
-        <div class="absolute top-[20%] right-[-10%] w-[18rem] sm:w-[35rem] h-[18rem] sm:h-[35rem] bg-fuchsia-500 rounded-full mix-blend-multiply filter blur-[80px] sm:blur-[100px] opacity-20 dark:opacity-30 animate-blob animation-delay-2000"></div>
-        <div class="absolute bottom-[-10%] left-[20%] w-[20rem] sm:w-[40rem] h-[20rem] sm:h-[40rem] bg-amber-500 rounded-full mix-blend-multiply filter blur-[80px] sm:blur-[100px] opacity-20 dark:opacity-30 animate-blob animation-delay-4000"></div>
+        <div class="absolute top-[-10%] left-[-10%] w-[20rem] sm:w-[40rem] h-[20rem] sm:h-[40rem] bg-indigo-500 rounded-full mix-blend-multiply filter blur-[80px] sm:blur-[120px] opacity-20 dark:opacity-30 animate-blob"></div>
+        <div class="absolute top-[20%] right-[-10%] w-[18rem] sm:w-[35rem] h-[18rem] sm:h-[35rem] bg-purple-500 rounded-full mix-blend-multiply filter blur-[80px] sm:blur-[120px] opacity-20 dark:opacity-30 animate-blob animation-delay-2000"></div>
+        <div class="absolute bottom-[-10%] left-[20%] w-[20rem] sm:w-[40rem] h-[20rem] sm:h-[40rem] bg-pink-500 rounded-full mix-blend-multiply filter blur-[80px] sm:blur-[120px] opacity-10 dark:opacity-20 animate-blob animation-delay-4000"></div>
     </div>
 
     <div id="welcome-screen" class="fixed inset-0 z-[100] bg-white/80 dark:bg-slate-950/80 backdrop-blur-3xl flex flex-col items-center justify-center transition-all duration-700 overflow-y-auto py-10">
         <div class="text-center max-w-4xl px-4 sm:px-6 w-full my-auto">
-            <div class="mb-4 sm:mb-6 animate-float inline-block">
-                <div class="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-indigo-500 to-fuchsia-500 rounded-2xl sm:rounded-3xl flex items-center justify-center text-4xl sm:text-5xl shadow-2xl shadow-indigo-500/30 rotate-12 mx-auto">
-                    🍷
+            <div class="mb-6 animate-float inline-block">
+                <div class="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-indigo-500 to-pink-500 rounded-3xl flex items-center justify-center text-white text-4xl shadow-2xl shadow-indigo-500/40 rotate-12 mx-auto">
+                    <i class="fa-solid fa-martini-glass-citrus -rotate-12"></i>
                 </div>
             </div>
             <h1 class="text-4xl sm:text-6xl md:text-8xl font-black mb-4 sm:mb-6 tracking-tighter text-slate-900 dark:text-white">
@@ -198,168 +212,180 @@
             </h1>
             <p class="text-base sm:text-xl md:text-2xl text-slate-500 dark:text-slate-400 mb-8 sm:mb-12 font-light">Выбери свой вайб на сегодня</p>
             
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6 mb-8 max-w-3xl mx-auto">
-                <button onclick="startApp('Центр')" class="group relative p-5 sm:p-8 rounded-2xl sm:rounded-[2rem] glass hover:-translate-y-1 sm:hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl hover:shadow-indigo-500/30 border border-white/50 dark:border-white/10 hover:border-indigo-500 text-left overflow-hidden">
-                    <div class="absolute -right-4 -bottom-4 text-5xl sm:text-7xl opacity-10 group-hover:scale-125 transition-transform duration-500">🏛️</div>
-                    <div class="text-3xl sm:text-4xl mb-2 sm:mb-4 group-hover:scale-110 transition-transform origin-left drop-shadow-md">🏛️</div>
-                    <div class="font-black text-lg sm:text-2xl mb-0.5 sm:mb-1">Центр</div>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 mb-8 max-w-3xl mx-auto">
+                <button onclick="startApp('Центр')" class="group relative p-6 sm:p-8 rounded-3xl glass hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl hover:shadow-indigo-500/20 border border-white/50 dark:border-white/10 hover:border-indigo-500 text-left overflow-hidden">
+                    <i class="fa-solid fa-landmark absolute -right-4 -bottom-4 text-6xl sm:text-8xl text-indigo-500 opacity-5 group-hover:scale-125 transition-transform duration-500"></i>
+                    <div class="text-3xl sm:text-4xl mb-3 sm:mb-4 text-indigo-500 group-hover:scale-110 transition-transform origin-left drop-shadow-md"><i class="fa-solid fa-landmark"></i></div>
+                    <div class="font-black text-lg sm:text-2xl mb-1 text-slate-800 dark:text-white">Центр</div>
                     <div class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">Сердце города</div>
                 </button>
-                <button onclick="startApp('Ботаника')" class="group relative p-5 sm:p-8 rounded-2xl sm:rounded-[2rem] glass hover:-translate-y-1 sm:hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl hover:shadow-emerald-500/30 border border-white/50 dark:border-white/10 hover:border-emerald-500 text-left overflow-hidden">
-                    <div class="absolute -right-4 -bottom-4 text-5xl sm:text-7xl opacity-10 group-hover:scale-125 transition-transform duration-500">🌳</div>
-                    <div class="text-3xl sm:text-4xl mb-2 sm:mb-4 group-hover:scale-110 transition-transform origin-left drop-shadow-md">🌳</div>
-                    <div class="font-black text-lg sm:text-2xl mb-0.5 sm:mb-1">Ботаника</div>
+                <button onclick="startApp('Ботаника')" class="group relative p-6 sm:p-8 rounded-3xl glass hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl hover:shadow-emerald-500/20 border border-white/50 dark:border-white/10 hover:border-emerald-500 text-left overflow-hidden">
+                    <i class="fa-solid fa-tree-city absolute -right-4 -bottom-4 text-6xl sm:text-8xl text-emerald-500 opacity-5 group-hover:scale-125 transition-transform duration-500"></i>
+                    <div class="text-3xl sm:text-4xl mb-3 sm:mb-4 text-emerald-500 group-hover:scale-110 transition-transform origin-left drop-shadow-md"><i class="fa-solid fa-tree-city"></i></div>
+                    <div class="font-black text-lg sm:text-2xl mb-1 text-slate-800 dark:text-white">Ботаника</div>
                     <div class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">Парки и уют</div>
                 </button>
-                <button onclick="startApp('Рышкановка')" class="group relative p-5 sm:p-8 rounded-2xl sm:rounded-[2rem] glass hover:-translate-y-1 sm:hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/30 border border-white/50 dark:border-white/10 hover:border-blue-500 text-left overflow-hidden">
-                    <div class="absolute -right-4 -bottom-4 text-5xl sm:text-7xl opacity-10 group-hover:scale-125 transition-transform duration-500">✨</div>
-                    <div class="text-3xl sm:text-4xl mb-2 sm:mb-4 group-hover:scale-110 transition-transform origin-left drop-shadow-md">✨</div>
-                    <div class="font-black text-lg sm:text-2xl mb-0.5 sm:mb-1">Рышкановка</div>
+                <button onclick="startApp('Рышкановка')" class="group relative p-6 sm:p-8 rounded-3xl glass hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20 border border-white/50 dark:border-white/10 hover:border-blue-500 text-left overflow-hidden">
+                    <i class="fa-solid fa-gem absolute -right-4 -bottom-4 text-6xl sm:text-8xl text-blue-500 opacity-5 group-hover:scale-125 transition-transform duration-500"></i>
+                    <div class="text-3xl sm:text-4xl mb-3 sm:mb-4 text-blue-500 group-hover:scale-110 transition-transform origin-left drop-shadow-md"><i class="fa-solid fa-gem"></i></div>
+                    <div class="font-black text-lg sm:text-2xl mb-1 text-slate-800 dark:text-white">Рышкановка</div>
                     <div class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">Стиль и жизнь</div>
                 </button>
-                <button onclick="startApp('Буюканы')" class="group relative p-5 sm:p-8 rounded-2xl sm:rounded-[2rem] glass hover:-translate-y-1 sm:hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl hover:shadow-orange-500/30 border border-white/50 dark:border-white/10 hover:border-orange-500 text-left overflow-hidden">
-                    <div class="absolute -right-4 -bottom-4 text-5xl sm:text-7xl opacity-10 group-hover:scale-125 transition-transform duration-500">🌅</div>
-                    <div class="text-3xl sm:text-4xl mb-2 sm:mb-4 group-hover:scale-110 transition-transform origin-left drop-shadow-md">🌅</div>
-                    <div class="font-black text-lg sm:text-2xl mb-0.5 sm:mb-1">Буюканы</div>
+                <button onclick="startApp('Буюканы')" class="group relative p-6 sm:p-8 rounded-3xl glass hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl hover:shadow-orange-500/20 border border-white/50 dark:border-white/10 hover:border-orange-500 text-left overflow-hidden">
+                    <i class="fa-solid fa-cloud-sun absolute -right-4 -bottom-4 text-6xl sm:text-8xl text-orange-500 opacity-5 group-hover:scale-125 transition-transform duration-500"></i>
+                    <div class="text-3xl sm:text-4xl mb-3 sm:mb-4 text-orange-500 group-hover:scale-110 transition-transform origin-left drop-shadow-md"><i class="fa-solid fa-cloud-sun"></i></div>
+                    <div class="font-black text-lg sm:text-2xl mb-1 text-slate-800 dark:text-white">Буюканы</div>
                     <div class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">Закаты и лес</div>
                 </button>
-                <button onclick="startApp('Чеканы')" class="group relative p-5 sm:p-8 rounded-2xl sm:rounded-[2rem] glass hover:-translate-y-1 sm:hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/30 border border-white/50 dark:border-white/10 hover:border-purple-500 text-left overflow-hidden">
-                    <div class="absolute -right-4 -bottom-4 text-5xl sm:text-7xl opacity-10 group-hover:scale-125 transition-transform duration-500">🏙️</div>
-                    <div class="text-3xl sm:text-4xl mb-2 sm:mb-4 group-hover:scale-110 transition-transform origin-left drop-shadow-md">🏙️</div>
-                    <div class="font-black text-lg sm:text-2xl mb-0.5 sm:mb-1">Чеканы</div>
+                <button onclick="startApp('Чеканы')" class="group relative p-6 sm:p-8 rounded-3xl glass hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/20 border border-white/50 dark:border-white/10 hover:border-purple-500 text-left overflow-hidden">
+                    <i class="fa-solid fa-building absolute -right-4 -bottom-4 text-6xl sm:text-8xl text-purple-500 opacity-5 group-hover:scale-125 transition-transform duration-500"></i>
+                    <div class="text-3xl sm:text-4xl mb-3 sm:mb-4 text-purple-500 group-hover:scale-110 transition-transform origin-left drop-shadow-md"><i class="fa-solid fa-building"></i></div>
+                    <div class="font-black text-lg sm:text-2xl mb-1 text-slate-800 dark:text-white">Чеканы</div>
                     <div class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">Аллеи и бары</div>
                 </button>
-                <button onclick="startApp('all')" class="group relative p-5 sm:p-8 rounded-2xl sm:rounded-[2rem] bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:-translate-y-1 sm:hover:-translate-y-2 transition-all duration-300 shadow-2xl hover:shadow-slate-900/50 dark:hover:shadow-white/50 text-left flex flex-col justify-center overflow-hidden col-span-2 md:col-span-1">
-                    <div class="absolute -right-4 -bottom-4 text-5xl sm:text-7xl opacity-10 group-hover:scale-125 transition-transform duration-500">🌍</div>
-                    <div class="font-black text-xl sm:text-3xl mb-0.5 sm:mb-1">🌍 Весь город</div>
-                    <div class="text-xs sm:text-sm opacity-80 mt-1 sm:mt-2 font-medium">Покажите мне всё!</div>
+                <button onclick="startApp('all')" class="group relative p-6 sm:p-8 rounded-3xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:-translate-y-2 transition-all duration-300 shadow-2xl hover:shadow-slate-900/40 dark:hover:shadow-white/30 text-left flex flex-col justify-center overflow-hidden col-span-2 md:col-span-1">
+                    <i class="fa-solid fa-map-location-dot absolute -right-4 -bottom-4 text-6xl sm:text-8xl opacity-10 group-hover:scale-125 transition-transform duration-500"></i>
+                    <div class="font-black text-xl sm:text-2xl mb-1 flex items-center gap-3">
+                        <i class="fa-solid fa-map-location-dot text-2xl"></i> Весь город
+                    </div>
+                    <div class="text-xs sm:text-sm opacity-80 mt-2 font-medium">Покажите мне всё!</div>
                 </button>
             </div>
         </div>
     </div>
 
-    <div id="random-modal" class="fixed inset-0 z-[150] bg-black/60 backdrop-blur-md hidden flex items-center justify-center p-4 transition-all">
-        <div class="glass max-w-md w-full p-6 rounded-3xl border border-white/20 shadow-2xl relative animate-fade-in-up">
-            <button onclick="closeRandomModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center font-black">✕</button>
-            <div class="text-center mb-4">
-                <span class="text-4xl">🎲</span>
-                <h3 class="text-2xl font-black mt-2">Ваш случайный выбор!</h3>
+    <div id="random-modal" class="fixed inset-0 z-[150] bg-slate-900/60 backdrop-blur-md hidden flex items-center justify-center p-4 transition-all">
+        <div class="glass max-w-md w-full p-8 rounded-[2rem] border border-white/20 shadow-2xl relative animate-fade-in-up">
+            <button onclick="closeRandomModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white flex items-center justify-center transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="text-center mb-6">
+                <div class="text-4xl text-indigo-500 mb-3"><i class="fa-solid fa-dice"></i></div>
+                <h3 class="text-2xl font-black">Ваш случайный выбор!</h3>
             </div>
-            <div id="modal-content" class="space-y-3"></div>
-            <div class="mt-6 flex gap-3">
-                <button onclick="getRandomPlace()" class="flex-1 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold rounded-xl shadow-lg hover:opacity-90">Крутить еще 🎲</button>
-                <a id="modal-map-btn" href="#" target="_blank" class="flex-1 py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold rounded-xl text-center shadow-lg">На карту 🗺️</a>
+            <div id="modal-content" class="space-y-4"></div>
+            <div class="mt-8 flex gap-3">
+                <button onclick="getRandomPlace()" class="flex-1 py-3.5 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-bold rounded-xl shadow-lg hover:shadow-indigo-500/30 transition-all flex justify-center items-center gap-2">
+                    Крутить еще <i class="fa-solid fa-dice ml-1"></i>
+                </button>
+                <a id="modal-map-btn" href="#" target="_blank" class="flex-1 py-3.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold rounded-xl text-center shadow-lg hover:scale-[1.02] transition-transform flex justify-center items-center gap-2">
+                    На карту <i class="fa-solid fa-location-arrow ml-1"></i>
+                </a>
             </div>
         </div>
     </div>
 
     <div id="main-app" class="opacity-0 translate-y-10 transition-all duration-1000 hidden min-h-screen flex flex-col">
         
-        <nav class="sticky top-0 w-full z-50 glass shadow-sm transition-colors duration-500 border-b border-white/20 dark:border-white/5">
-            <div class="max-w-[1400px] mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-2">
-                <div class="flex items-center gap-3 cursor-pointer" onclick="location.reload()">
-                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-[1rem] bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center text-white font-black text-xl sm:text-2xl shadow-lg shadow-purple-500/30 transform hover:rotate-12 transition-transform">MD</div>
+        <nav class="sticky top-0 w-full z-50 glass shadow-sm transition-colors duration-500 border-b border-white/40 dark:border-white/5">
+            <div class="max-w-[1400px] mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-4">
+                <div class="flex items-center gap-4 cursor-pointer" onclick="location.reload()">
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white text-xl sm:text-2xl shadow-lg shadow-indigo-500/30 transform hover:rotate-12 transition-transform">
+                        <i class="fa-solid fa-location-dot"></i>
+                    </div>
                     <div>
-                        <h1 class="text-lg sm:text-2xl font-black tracking-tight leading-none drop-shadow-sm">Chisinau<span class="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-orange-400">.Vibe</span></h1>
-                        <span id="current-district-display" class="text-[9px] sm:text-[10px] font-black text-indigo-500 dark:text-indigo-400 uppercase tracking-widest bg-indigo-500/10 px-1.5 sm:px-2 py-0.5 rounded-md mt-0.5 sm:mt-1 inline-block">Весь город</span>
+                        <h1 class="text-lg sm:text-2xl font-black tracking-tight leading-none text-slate-900 dark:text-white">
+                            Chisinau<span class="text-indigo-500">.Vibe</span>
+                        </h1>
+                        <span id="current-district-display" class="text-[9px] sm:text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest bg-indigo-500/10 px-2 py-0.5 rounded-md mt-1 inline-block">Весь город</span>
                     </div>
                 </div>
 
-                <div class="hidden sm:flex items-center gap-3 glass px-4 py-2 rounded-2xl border border-white/50 dark:border-white/10 shadow-sm">
-                    <span class="text-xl animate-pulse">🇲🇩</span>
+                <div class="hidden sm:flex items-center gap-3 bg-slate-100/50 dark:bg-slate-800/50 px-5 py-2.5 rounded-2xl border border-slate-200/50 dark:border-slate-700/50 shadow-inner">
+                    <i class="fa-solid fa-clock text-indigo-500 text-lg opacity-80"></i>
                     <div class="flex flex-col text-left leading-tight">
-                        <span id="chisinau-date" class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">--.--.----</span>
-                        <span id="chisinau-clock" class="text-sm font-black text-indigo-600 dark:text-indigo-400 font-mono tracking-wider">--:--:--</span>
+                        <span id="chisinau-date" class="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">--.--.----</span>
+                        <span id="chisinau-clock" class="text-sm font-black text-slate-800 dark:text-slate-200 font-mono tracking-wider">--:--:--</span>
                     </div>
                 </div>
                 
                 <div class="hidden md:flex flex-1 max-w-xl mx-6 relative group">
                     <input type="text" id="search-input" onkeyup="applyFilters()" placeholder="Найти место, например: Мясо, Вино, Zaxi..." 
-                           class="w-full bg-white/50 dark:bg-slate-900/50 backdrop-blur-md border border-slate-200 dark:border-slate-700 rounded-2xl py-3.5 px-6 pl-14 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all dark:text-white placeholder-slate-400/80 shadow-inner font-medium text-lg">
-                    <span class="absolute left-5 top-4 text-slate-400 group-focus-within:text-indigo-500 transition-colors text-lg">🔍</span>
+                           class="w-full bg-white/60 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-700 rounded-2xl py-3.5 px-6 pl-14 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all dark:text-white placeholder-slate-400 font-medium">
+                    <i class="fa-solid fa-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors"></i>
                 </div>
 
                 <div class="flex items-center gap-3">
-                    <button onclick="toggleTheme()" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-[1rem] bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:scale-105 hover:bg-white dark:hover:bg-slate-800 transition-all shadow-sm">
-                        <span id="theme-icon" class="text-lg sm:text-xl drop-shadow-sm">🌙</span>
+                    <button onclick="toggleTheme()" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:scale-105 hover:bg-white dark:hover:bg-slate-800 transition-all shadow-sm text-slate-600 dark:text-slate-300">
+                        <i id="theme-icon" class="fa-solid fa-moon text-lg"></i>
                     </button>
                 </div>
             </div>
         </nav>
 
-        <div class="max-w-[1400px] w-full mx-auto px-4 sm:px-6 pt-4 sm:pt-8 pb-12 flex flex-col xl:flex-row gap-6 sm:gap-8 flex-1">
+        <div class="max-w-[1400px] w-full mx-auto px-4 sm:px-6 pt-6 sm:pt-8 pb-12 flex flex-col xl:flex-row gap-6 sm:gap-8 flex-1">
             
             <aside class="w-full xl:w-80 flex-shrink-0">
-                <div class="glass p-5 sm:p-6 rounded-2xl sm:rounded-[2rem] xl:sticky xl:top-28 space-y-6 sm:space-y-8 shadow-xl shadow-slate-200/20 dark:shadow-black/20 border border-white/60 dark:border-white/10">
+                <div class="glass p-5 sm:p-6 rounded-[2rem] xl:sticky xl:top-28 space-y-6 sm:space-y-8 shadow-xl shadow-slate-200/20 dark:shadow-black/20 border border-white/60 dark:border-white/10">
                     
-                    <div class="sm:hidden flex items-center justify-between glass p-3 rounded-xl border border-white/50 dark:border-white/10">
+                    <div class="sm:hidden flex items-center justify-between bg-slate-100/50 dark:bg-slate-800/50 p-3.5 rounded-xl border border-slate-200/50 dark:border-slate-700/50">
                         <div class="flex items-center gap-2">
-                            <span class="text-lg">🇲🇩</span>
-                            <span class="text-xs font-bold text-slate-500">Время в Кишиневе:</span>
+                            <i class="fa-solid fa-clock text-indigo-500"></i>
+                            <span class="text-xs font-bold text-slate-500 dark:text-slate-400">Время в MD:</span>
                         </div>
-                        <span id="chisinau-clock-mobile" class="text-xs font-black text-indigo-600 dark:text-indigo-400 font-mono">--:--</span>
+                        <span id="chisinau-clock-mobile" class="text-xs font-black text-slate-800 dark:text-slate-200 font-mono">--:--</span>
                     </div>
 
                     <div class="md:hidden relative group">
                         <input type="text" id="search-input-mobile" onkeyup="document.getElementById('search-input').value = this.value; applyFilters()" placeholder="Поиск мест..." 
-                               class="w-full bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl py-3 px-4 pl-11 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all dark:text-white font-medium text-sm">
-                        <span class="absolute left-4 top-3 text-slate-400 text-sm">🔍</span>
+                               class="w-full bg-white/60 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 rounded-xl py-3 px-4 pl-11 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all dark:text-white font-medium text-sm">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
                     </div>
 
-                    <button onclick="getRandomPlace()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-amber-500 via-fuchsia-500 to-indigo-500 text-white font-black text-lg shadow-xl shadow-fuchsia-500/25 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 animate-pulse-fast">
-                        <span class="text-2xl">🎲</span> Мне повезёт!
+                    <button onclick="getRandomPlace()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-black text-base shadow-lg shadow-indigo-500/25 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3">
+                        <i class="fa-solid fa-dice text-xl"></i> Мне повезёт!
                     </button>
 
                     <div>
-                        <div class="flex items-center justify-between mb-3 sm:mb-4">
+                        <div class="flex items-center justify-between mb-4">
                             <h3 class="text-[11px] font-black uppercase text-slate-400 tracking-[0.2em]">Выбор Района</h3>
                         </div>
-                        <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-1 gap-2" id="district-filters">
-                            <button onclick="setDistrict('all')" class="dist-btn w-full text-left px-3.5 sm:px-5 py-2.5 sm:py-3.5 rounded-xl font-bold transition-all flex items-center justify-between bg-white/40 dark:bg-slate-800/40 hover:bg-white dark:hover:bg-slate-800 border border-transparent text-xs sm:text-base">
-                                <span class="flex items-center gap-2 sm:gap-3"><span class="text-base sm:text-xl">🌍</span> Весь город</span>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-1 gap-2.5" id="district-filters">
+                            <button onclick="setDistrict('all')" class="dist-btn w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center justify-between bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-700 border border-transparent text-xs sm:text-sm text-slate-700 dark:text-slate-200">
+                                <span class="flex items-center gap-3"><i class="fa-solid fa-map-location-dot w-5 text-center opacity-70"></i> Весь город</span>
                             </button>
-                            <button onclick="setDistrict('Центр')" class="dist-btn w-full text-left px-3.5 sm:px-5 py-2.5 sm:py-3.5 rounded-xl font-bold transition-all flex items-center justify-between bg-white/40 dark:bg-slate-800/40 hover:bg-white dark:hover:bg-slate-800 border border-transparent text-xs sm:text-base">
-                                <span class="flex items-center gap-2 sm:gap-3"><span class="text-base sm:text-xl">🏛️</span> Центр</span>
+                            <button onclick="setDistrict('Центр')" class="dist-btn w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center justify-between bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-700 border border-transparent text-xs sm:text-sm text-slate-700 dark:text-slate-200">
+                                <span class="flex items-center gap-3"><i class="fa-solid fa-landmark w-5 text-center text-indigo-500 opacity-80"></i> Центр</span>
                             </button>
-                            <button onclick="setDistrict('Ботаника')" class="dist-btn w-full text-left px-3.5 sm:px-5 py-2.5 sm:py-3.5 rounded-xl font-bold transition-all flex items-center justify-between bg-white/40 dark:bg-slate-800/40 hover:bg-white dark:hover:bg-slate-800 border border-transparent text-xs sm:text-base">
-                                <span class="flex items-center gap-2 sm:gap-3"><span class="text-base sm:text-xl">🌳</span> Ботаника</span>
+                            <button onclick="setDistrict('Ботаника')" class="dist-btn w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center justify-between bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-700 border border-transparent text-xs sm:text-sm text-slate-700 dark:text-slate-200">
+                                <span class="flex items-center gap-3"><i class="fa-solid fa-tree-city w-5 text-center text-emerald-500 opacity-80"></i> Ботаника</span>
                             </button>
-                            <button onclick="setDistrict('Рышкановка')" class="dist-btn w-full text-left px-3.5 sm:px-5 py-2.5 sm:py-3.5 rounded-xl font-bold transition-all flex items-center justify-between bg-white/40 dark:bg-slate-800/40 hover:bg-white dark:hover:bg-slate-800 border border-transparent text-xs sm:text-base">
-                                <span class="flex items-center gap-2 sm:gap-3"><span class="text-base sm:text-xl">✨</span> Рышкановка</span>
+                            <button onclick="setDistrict('Рышкановка')" class="dist-btn w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center justify-between bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-700 border border-transparent text-xs sm:text-sm text-slate-700 dark:text-slate-200">
+                                <span class="flex items-center gap-3"><i class="fa-solid fa-gem w-5 text-center text-blue-500 opacity-80"></i> Рышкановка</span>
                             </button>
-                            <button onclick="setDistrict('Буюканы')" class="dist-btn w-full text-left px-3.5 sm:px-5 py-2.5 sm:py-3.5 rounded-xl font-bold transition-all flex items-center justify-between bg-white/40 dark:bg-slate-800/40 hover:bg-white dark:hover:bg-slate-800 border border-transparent text-xs sm:text-base">
-                                <span class="flex items-center gap-2 sm:gap-3"><span class="text-base sm:text-xl">🌅</span> Буюканы</span>
+                            <button onclick="setDistrict('Буюканы')" class="dist-btn w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center justify-between bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-700 border border-transparent text-xs sm:text-sm text-slate-700 dark:text-slate-200">
+                                <span class="flex items-center gap-3"><i class="fa-solid fa-cloud-sun w-5 text-center text-orange-500 opacity-80"></i> Буюканы</span>
                             </button>
-                            <button onclick="setDistrict('Чеканы')" class="dist-btn w-full text-left px-3.5 sm:px-5 py-2.5 sm:py-3.5 rounded-xl font-bold transition-all flex items-center justify-between bg-white/40 dark:bg-slate-800/40 hover:bg-white dark:hover:bg-slate-800 border border-transparent text-xs sm:text-base">
-                                <span class="flex items-center gap-2 sm:gap-3"><span class="text-base sm:text-xl">🏙️</span> Чеканы</span>
+                            <button onclick="setDistrict('Чеканы')" class="dist-btn w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center justify-between bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-700 border border-transparent text-xs sm:text-sm text-slate-700 dark:text-slate-200">
+                                <span class="flex items-center gap-3"><i class="fa-solid fa-building w-5 text-center text-purple-500 opacity-80"></i> Чеканы</span>
                             </button>
                         </div>
                     </div>
 
-                    <hr class="border-slate-200 dark:border-slate-700">
+                    <hr class="border-slate-200 dark:border-slate-800">
 
                     <div>
-                        <div class="flex items-center justify-between mb-3 sm:mb-4">
+                        <div class="flex items-center justify-between mb-4">
                             <h3 class="text-[11px] font-black uppercase text-slate-400 tracking-[0.2em]">Категории</h3>
-                            <button onclick="toggleOnlyOpen()" id="btn-only-open" class="text-[10px] font-bold px-2 py-0.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50 hover:bg-emerald-500 hover:text-white transition-all">
-                                🟢 Только открытые
+                            <button onclick="toggleOnlyOpen()" id="btn-only-open" class="text-[10px] font-bold px-3 py-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:bg-emerald-500 hover:text-white hover:border-emerald-500 transition-all flex items-center gap-1.5 text-slate-600 dark:text-slate-300">
+                                <i class="fa-solid fa-circle text-[8px] opacity-70"></i> Открытые
                             </button>
                         </div>
-                        <div class="grid grid-cols-2 gap-2 sm:gap-3">
-                            <button onclick="setCategory('all')" id="btn-cat-all" class="cat-btn flex flex-col items-center justify-center gap-1.5 p-3 sm:p-4 rounded-xl sm:rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/40 dark:bg-slate-800/40 hover:border-indigo-500">
-                                <span class="text-xl sm:text-2xl drop-shadow-md">✨</span> 
+                        <div class="grid grid-cols-2 gap-3">
+                            <button onclick="setCategory('all')" id="btn-cat-all" class="cat-btn flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-indigo-400 text-slate-600 dark:text-slate-300">
+                                <i class="fa-solid fa-layer-group text-xl sm:text-2xl text-indigo-500 opacity-90"></i>
                                 <span class="text-[10px] sm:text-xs uppercase tracking-wider">Все</span>
                             </button>
-                            <button onclick="setCategory('food')" id="btn-cat-food" class="cat-btn flex flex-col items-center justify-center gap-1.5 p-3 sm:p-4 rounded-xl sm:rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/40 dark:bg-slate-800/40 hover:border-indigo-500">
-                                <span class="text-xl sm:text-2xl drop-shadow-md">🍽️</span> 
+                            <button onclick="setCategory('food')" id="btn-cat-food" class="cat-btn flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-indigo-400 text-slate-600 dark:text-slate-300">
+                                <i class="fa-solid fa-utensils text-xl sm:text-2xl text-orange-500 opacity-90"></i>
                                 <span class="text-[10px] sm:text-xs uppercase tracking-wider">Еда</span>
                             </button>
-                            <button onclick="setCategory('night')" id="btn-cat-night" class="cat-btn flex flex-col items-center justify-center gap-1.5 p-3 sm:p-4 rounded-xl sm:rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/40 dark:bg-slate-800/40 hover:border-indigo-500">
-                                <span class="text-xl sm:text-2xl drop-shadow-md">🥂</span> 
+                            <button onclick="setCategory('night')" id="btn-cat-night" class="cat-btn flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-indigo-400 text-slate-600 dark:text-slate-300">
+                                <i class="fa-solid fa-champagne-glasses text-xl sm:text-2xl text-pink-500 opacity-90"></i>
                                 <span class="text-[10px] sm:text-xs uppercase tracking-wider">Бары</span>
                             </button>
-                            <button onclick="setCategory('coffee')" id="btn-cat-coffee" class="cat-btn flex flex-col items-center justify-center gap-1.5 p-3 sm:p-4 rounded-xl sm:rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/40 dark:bg-slate-800/40 hover:border-indigo-500">
-                                <span class="text-xl sm:text-2xl drop-shadow-md">☕</span> 
+                            <button onclick="setCategory('coffee')" id="btn-cat-coffee" class="cat-btn flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-indigo-400 text-slate-600 dark:text-slate-300">
+                                <i class="fa-solid fa-mug-hot text-xl sm:text-2xl text-amber-600 opacity-90"></i>
                                 <span class="text-[10px] sm:text-xs uppercase tracking-wider">Кофе</span>
                             </button>
                         </div>
@@ -368,67 +394,79 @@
             </aside>
 
             <main class="flex-1 min-w-0">
-                <div class="mb-6 sm:mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-3 glass px-5 sm:px-8 py-4 sm:py-5 rounded-2xl sm:rounded-[2rem] border border-white/50 dark:border-white/10">
+                <div class="mb-6 sm:mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 glass px-6 sm:px-8 py-5 sm:py-6 rounded-[2rem] border border-white/60 dark:border-white/10">
                     <div>
-                        <h2 class="text-2xl sm:text-4xl font-black mb-1 dark:text-white tracking-tight" id="grid-title">Все заведения</h2>
-                        <p class="text-xs sm:text-base text-slate-500 dark:text-slate-400 font-medium">Мы нашли <span id="places-count" class="font-black text-indigo-500 text-sm sm:text-lg bg-indigo-100 dark:bg-indigo-900/30 px-2 py-0.5 rounded-lg">0</span> топовых мест для вас</p>
+                        <h2 class="text-2xl sm:text-4xl font-black mb-1.5 dark:text-white tracking-tight" id="grid-title">Все заведения</h2>
+                        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">Мы нашли <span id="places-count" class="font-black text-indigo-600 dark:text-indigo-400 text-sm sm:text-base bg-indigo-50 dark:bg-indigo-900/30 px-2 py-0.5 rounded-lg border border-indigo-100 dark:border-indigo-500/20">0</span> топовых мест для вас</p>
                     </div>
                 </div>
 
-                <div class="mb-6 sm:mb-8 glass p-2.5 sm:p-4 rounded-2xl sm:rounded-[2rem] border border-white/50 dark:border-white/10 shadow-xl overflow-hidden relative group">
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-2 sm:mb-3 px-2 gap-1.5 relative z-20">
-                        <h3 class="font-black text-base sm:text-lg flex items-center gap-2">📍 Интерактивная карта Кишинева</h3>
-                        <div class="flex items-center gap-2">
-                            <button onclick="getUserLocation()" class="text-[10px] sm:text-xs bg-indigo-500 text-white font-bold px-3 py-1 rounded-full shadow hover:bg-indigo-600 transition-all flex items-center gap-1">
-                                🎯 Мое местоположение
+                <div class="mb-6 sm:mb-8 glass p-3 sm:p-5 rounded-[2rem] border border-white/60 dark:border-white/10 shadow-lg overflow-hidden relative group">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 px-2 gap-3 relative z-20">
+                        <h3 class="font-black text-base sm:text-lg flex items-center gap-2 text-slate-800 dark:text-slate-200">
+                            <i class="fa-solid fa-map-location-dot text-indigo-500"></i> Интерактивная карта Кишинева
+                        </h3>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <button onclick="getUserLocation()" class="text-[10px] sm:text-xs bg-indigo-500 text-white font-bold px-3 py-1.5 rounded-full shadow-md hover:bg-indigo-600 transition-all flex items-center gap-1.5">
+                                <i class="fa-solid fa-location-crosshairs"></i> Мое местоположение
                             </button>
-                            <button id="admin-cabinet-btn" onclick="openAdminGate()" class="text-[10px] sm:text-xs bg-slate-800 dark:bg-white text-white dark:text-slate-900 font-bold px-3 py-1 rounded-full shadow hover:opacity-90 transition-all flex items-center gap-1">
-                                🛠️ Кабинет управляющего
+                            <button id="admin-cabinet-btn" onclick="openAdminGate()" class="text-[10px] sm:text-xs bg-slate-800 dark:bg-slate-100 text-white dark:text-slate-900 font-bold px-3 py-1.5 rounded-full shadow-md hover:opacity-90 transition-all flex items-center gap-1.5">
+                                <i class="fa-solid fa-hammer"></i> Кабинет управляющего
                             </button>
-                            <span class="hidden sm:inline text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-bold bg-white/50 dark:bg-slate-800/50 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full border border-slate-200 dark:border-slate-700 backdrop-blur-md">Нажми на иконку места для деталей</span>
+                            <span class="hidden sm:inline text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium bg-slate-100/80 dark:bg-slate-800/80 px-3 py-1.5 rounded-full border border-slate-200 dark:border-slate-700">Нажми на иконку места для деталей</span>
                         </div>
                     </div>
 
-                    <div id="admin-toolbar" class="hidden mb-2 sm:mb-3 px-3 py-2 rounded-xl border border-amber-400/60 bg-amber-500/10 dark:bg-amber-500/10 text-[11px] sm:text-xs font-bold flex flex-wrap items-center gap-2 relative z-20">
-                        <span class="text-amber-600 dark:text-amber-400">✏️ Режим редактирования включён — перетащи любую точку на карте, чтобы сдвинуть её</span>
-                        <button onclick="openAdminList()" class="ml-auto px-2.5 py-1 rounded-lg bg-indigo-500 text-white hover:bg-indigo-600 transition-all">📋 Список мест</button>
-                        <button onclick="exportPlacesCode()" class="px-2.5 py-1 rounded-lg bg-emerald-500 text-white hover:bg-emerald-600 transition-all">💾 Скопировать код</button>
-                        <button onclick="resetAdminOverrides()" class="px-2.5 py-1 rounded-lg bg-rose-500 text-white hover:bg-rose-600 transition-all">↺ Сбросить все правки</button>
-                        <button onclick="toggleAdminMode(false)" class="px-2.5 py-1 rounded-lg bg-slate-500 text-white hover:bg-slate-600 transition-all">✖ Выключить</button>
+                    <div id="admin-toolbar" class="hidden mb-3 px-4 py-3 rounded-xl border border-amber-400/50 bg-amber-50 dark:bg-amber-500/10 text-[11px] sm:text-xs font-bold flex flex-wrap items-center gap-2.5 relative z-20">
+                        <span class="text-amber-700 dark:text-amber-400 flex items-center gap-2">
+                            <i class="fa-solid fa-pen"></i> Режим редактирования включён — перетащи любую точку
+                        </span>
+                        <div class="ml-auto flex items-center gap-2">
+                            <button onclick="openAdminList()" class="px-3 py-1.5 rounded-lg bg-indigo-500 text-white hover:bg-indigo-600 transition-all flex items-center gap-1.5"><i class="fa-solid fa-list"></i> Список</button>
+                            <button onclick="exportPlacesCode()" class="px-3 py-1.5 rounded-lg bg-emerald-500 text-white hover:bg-emerald-600 transition-all flex items-center gap-1.5"><i class="fa-solid fa-floppy-disk"></i> Код</button>
+                            <button onclick="resetAdminOverrides()" class="px-3 py-1.5 rounded-lg bg-rose-500 text-white hover:bg-rose-600 transition-all flex items-center gap-1.5"><i class="fa-solid fa-rotate-left"></i> Сброс</button>
+                            <button onclick="toggleAdminMode(false)" class="px-3 py-1.5 rounded-lg bg-slate-500 text-white hover:bg-slate-600 transition-all flex items-center gap-1.5"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
                     </div>
 
-                    <div id="map" class="h-[280px] sm:h-[450px] w-full rounded-xl sm:rounded-2xl border border-white/40 dark:border-white/10 z-10 shadow-inner"></div>
+                    <div id="map" class="h-[300px] sm:h-[480px] w-full rounded-xl sm:rounded-2xl border border-slate-200/60 dark:border-slate-700/60 z-10 shadow-inner bg-slate-100 dark:bg-slate-900"></div>
                 </div>
 
-                <div id="places-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 pb-20 items-stretch">
+                <div id="places-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 sm:gap-6 pb-20 items-stretch">
                 </div>
             </main>
         </div>
     </div>
 
-    <!-- ===== Модалка входа в кабинет управляющего ===== -->
-    <div id="admin-gate-modal" class="hidden fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-        <div class="glass w-full max-w-sm rounded-2xl sm:rounded-[2rem] p-6 sm:p-8 border border-white/60 dark:border-white/10 shadow-2xl">
-            <h3 class="text-xl font-black mb-1 flex items-center gap-2">🔐 Кабинет управляющего</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400 font-medium mb-4">Введите пароль, чтобы включить режим редактирования точек на карте.</p>
-            <input id="admin-password-input" type="password" placeholder="Пароль" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 text-sm font-bold mb-2 outline-none focus:ring-2 focus:ring-indigo-500" onkeydown="if(event.key==='Enter') checkAdminPassword()">
-            <p id="admin-password-error" class="hidden text-rose-500 text-xs font-bold mb-2">Неверный пароль, попробуйте ещё раз.</p>
-            <div class="flex gap-2 mt-3">
-                <button onclick="closeAdminGate()" class="flex-1 py-2.5 rounded-xl bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-sm hover:opacity-80 transition-all">Отмена</button>
-                <button onclick="checkAdminPassword()" class="flex-1 py-2.5 rounded-xl bg-indigo-500 text-white font-bold text-sm hover:bg-indigo-600 transition-all">Войти</button>
+    <!-- Модалка входа в кабинет управляющего -->
+    <div id="admin-gate-modal" class="hidden fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity">
+        <div class="glass w-full max-w-sm rounded-[2rem] p-6 sm:p-8 border border-white/60 dark:border-white/10 shadow-2xl relative">
+            <h3 class="text-xl font-black mb-2 flex items-center gap-2 text-slate-800 dark:text-white">
+                <i class="fa-solid fa-lock text-indigo-500"></i> Кабинет управляющего
+            </h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 font-medium mb-5">Введите пароль, чтобы включить режим редактирования точек на карте.</p>
+            <input id="admin-password-input" type="password" placeholder="Пароль" class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm font-bold mb-2 outline-none focus:ring-2 focus:ring-indigo-500 transition-all shadow-inner" onkeydown="if(event.key==='Enter') checkAdminPassword()">
+            <p id="admin-password-error" class="hidden text-rose-500 text-xs font-bold mb-3 pl-1"><i class="fa-solid fa-circle-exclamation"></i> Неверный пароль.</p>
+            <div class="flex gap-3 mt-4">
+                <button onclick="closeAdminGate()" class="flex-1 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-sm hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">Отмена</button>
+                <button onclick="checkAdminPassword()" class="flex-1 py-3 rounded-xl bg-indigo-500 text-white font-bold text-sm hover:bg-indigo-600 shadow-md transition-all">Войти</button>
             </div>
         </div>
     </div>
 
-    <!-- ===== Модалка списка мест (редактирование иконки/координат вручную) ===== -->
-    <div id="admin-list-modal" class="hidden fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-        <div class="glass w-full max-w-2xl max-h-[85vh] flex flex-col rounded-2xl sm:rounded-[2rem] p-5 sm:p-7 border border-white/60 dark:border-white/10 shadow-2xl">
-            <div class="flex items-center justify-between mb-3">
-                <h3 class="text-lg sm:text-xl font-black flex items-center gap-2">📋 Все точки — ручная правка</h3>
-                <button onclick="closeAdminList()" class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center font-black hover:opacity-80">✕</button>
+    <!-- Модалка списка мест -->
+    <div id="admin-list-modal" class="hidden fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+        <div class="glass w-full max-w-2xl max-h-[85vh] flex flex-col rounded-[2rem] p-5 sm:p-7 border border-white/60 dark:border-white/10 shadow-2xl relative">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg sm:text-xl font-black flex items-center gap-2 text-slate-800 dark:text-white">
+                    <i class="fa-solid fa-clipboard-list text-indigo-500"></i> Ручная правка
+                </h3>
+                <button onclick="closeAdminList()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
-            <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium mb-3">Меняй смайлик или координаты вручную и жми «Сохранить» у нужной строки. Либо просто перетаскивай маркеры прямо на карте.</p>
-            <div id="admin-places-list" class="overflow-y-auto flex-1 space-y-2 pr-1"></div>
+            <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium mb-4">Меняй иконки HTML (например, <code class="bg-slate-200 dark:bg-slate-800 px-1 py-0.5 rounded">&lt;i class="fa-solid fa-burger"&gt;&lt;/i&gt;</code>) или координаты.</p>
+            <div id="admin-places-list" class="overflow-y-auto flex-1 space-y-2.5 pr-2 no-scrollbar"></div>
         </div>
     </div>
 
@@ -436,158 +474,97 @@
     <script>
         const stdSched = (hours) => ({ 0: hours, 1: hours, 2: hours, 3: hours, 4: hours, 5: hours, 6: hours });
 
-       // Координаты и адреса выверены вручную по Yandex/Google Maps (данные организаций, август 2026).
-       // Для каждого mapUrl используется точный поисковый запрос "Название + полный адрес + Кишинёв",
-       // что открывает в Google Картах именно точечную булавку конкретного здания/заведения.
       const places = [
     {
-        name: "McDonald's (б-р Штефана чел Маре, 134/1)",
+        name: "McDonald's (б-р Штефана чел Маре)",
         type: "food",
         district: "Центр",
-        tags: [
-            "Фастфуд",
-            "Популярное"
-        ],
+        tags: ["Фастфуд", "Популярное"],
         price: "$",
         rating: 4.5,
-        desc: "Главный McDonald's на центральном проспекте — б-р Штефана чел Маре ши Сфынт, 134/1, рядом с Площадью Великого Национального Собрания.",
-        entertainment: "Два этажа, терраса, самый популярный центр притяжения.",
+        desc: "Главный McDonald's на центральном проспекте — б-р Штефана чел Маре ши Сфынт, 134/1.",
+        entertainment: "Два этажа, терраса, центр притяжения.",
         priceRange: "80 - 150 леев",
         mapUrl: "https://www.google.com/maps/search/?api=1&query=McDonald%27s+Bulevardul+Stefan+cel+Mare+si+Sfant+134%2F1+Chisinau",
         lat: 47.02338488512773,
         lng: 28.834782242774963,
-        gradient: "from-yellow-400 to-red-600",
-        icon: "M",
-        schedule: {
-            "0": "07:00-01:00",
-            "1": "07:00-01:00",
-            "2": "07:00-01:00",
-            "3": "07:00-01:00",
-            "4": "07:00-01:00",
-            "5": "07:00-01:00",
-            "6": "07:00-01:00"
-        }
+        gradient: "from-slate-800 to-slate-900",
+        icon: "<i class='fa-solid fa-burger text-yellow-500'></i>",
+        schedule: stdSched("07:00-01:00")
     },
     {
-        name: "Zaxi Fun & Finest (ул. Митрополит Варлаам, 77)",
+        name: "Zaxi Fun & Finest",
         type: "food",
         district: "Центр",
-        tags: [
-            "Азиатская",
-            "Панорама"
-        ],
+        tags: ["Азиатская", "Панорама"],
         price: "$$$$",
         rating: 4.8,
-        desc: "Панорамный ресторан на 8-м этаже отеля Radisson Blu Leogrand, ул. Митрополит Варлаам, 77.",
-        entertainment: "Вид на весь ночной город, панорамная терраса, премиум-суши.",
+        desc: "Панорамный ресторан на 8-м этаже отеля Radisson Blu Leogrand.",
+        entertainment: "Вид на ночной город, терраса, премиум-суши.",
         priceRange: "400 - 1200 леев",
         mapUrl: "https://www.google.com/maps/search/?api=1&query=Zaxi+Fun+%26+Finest+Strada+Mitropolit+Varlaam+77+Chisinau",
         lat: 47.02435030399935,
         lng: 28.836799263954166,
-        gradient: "from-slate-800 to-zinc-900",
-        icon: "🍣",
-        schedule: {
-            "0": "17:00-00:00",
-            "1": "17:00-00:00",
-            "2": "17:00-00:00",
-            "3": "17:00-00:00",
-            "4": "17:00-01:00",
-            "5": "17:00-02:00",
-            "6": "17:00-02:00"
-        }
+        gradient: "from-indigo-900 to-slate-900",
+        icon: "<i class='fa-solid fa-fish-fins text-white'></i>",
+        schedule: { "0": "17:00-00:00", "1": "17:00-00:00", "2": "17:00-00:00", "3": "17:00-00:00", "4": "17:00-01:00", "5": "17:00-02:00", "6": "17:00-02:00" }
     },
     {
-        name: "La Plăcinte (ул. Александра Пушкина, 33)",
+        name: "La Plăcinte (ул. Пушкина)",
         type: "food",
         district: "Центр",
-        tags: [
-            "Традиционная",
-            "Молдавская"
-        ],
+        tags: ["Традиционная", "Молдавская"],
         price: "$$",
         rating: 4.6,
-        desc: "Ресторан национальной кухни рядом с Площадью Великого Национального Собрания, точный адрес: ул. Александра Пушкина, 33.",
-        entertainment: "Традиционные плацинды, уютная атмосфера, интерьер в молдавском стиле.",
+        desc: "Ресторан национальной кухни рядом с Площадью.",
+        entertainment: "Традиционные плацинды, уютная атмосфера.",
         priceRange: "150 - 350 леев",
         mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Strada+Alexandru+Puskin+33+Chisinau",
         lat: 47.026515119210586,
         lng: 28.837641477584842,
-        gradient: "from-amber-600 to-orange-700",
-        icon: "🥮",
-        schedule: {
-            "0": "08:00-22:00",
-            "1": "08:00-22:00",
-            "2": "08:00-22:00",
-            "3": "08:00-22:00",
-            "4": "08:00-22:00",
-            "5": "08:00-22:00",
-            "6": "08:00-22:00"
-        }
+        gradient: "from-amber-500 to-orange-600",
+        icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
+        schedule: stdSched("08:00-22:00")
     },
     {
-        name: "La Plăcinte (ул. Митрополит Дософтей, 100)",
+        name: "La Plăcinte (ул. Дософтей)",
         type: "food",
         district: "Центр",
-        tags: [
-            "Традиционная",
-            "Молдавская"
-        ],
+        tags: ["Традиционная", "Молдавская"],
         price: "$$",
         rating: 4.6,
-        desc: "Точное здание дома 100 по улице Митрополит Дософтей, рядом с Театром оперы и балета.",
+        desc: "Рядом с Театром оперы и балета.",
         entertainment: "Уютный интерьер, национальная музыка.",
         priceRange: "150 - 350 леев",
         mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Strada+Mitropolit+Dosoftei+100+Chisinau",
         lat: 47.02772181931119,
         lng: 28.833580613136295,
-        gradient: "from-amber-600 to-orange-700",
-        icon: "🥮",
-        schedule: {
-            "0": "08:00-22:00",
-            "1": "08:00-22:00",
-            "2": "08:00-22:00",
-            "3": "08:00-22:00",
-            "4": "08:00-22:00",
-            "5": "08:00-22:00",
-            "6": "08:00-22:00"
-        }
+        gradient: "from-amber-500 to-orange-600",
+        icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
+        schedule: stdSched("08:00-22:00")
     },
     {
-        name: "La Plăcinte (б-р Штефана чел Маре, 182)",
+        name: "La Plăcinte (б-р Штефана чел Маре)",
         type: "food",
         district: "Центр",
-        tags: [
-            "Традиционная",
-            "Молдавская"
-        ],
+        tags: ["Традиционная", "Молдавская"],
         price: "$$",
         rating: 4.4,
-        desc: "Филиал по конкретному номеру 182 на главном проспекте — б-р Штефана чел Маре ши Сфынт, 182.",
+        desc: "Филиал на главном проспекте.",
         entertainment: "Просторный зал, отличный сервис.",
         priceRange: "150 - 350 леев",
         mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Bulevardul+Stefan+cel+Mare+si+Sfant+182+Chisinau",
         lat: 47.031729,
         lng: 28.822778,
-        gradient: "from-amber-600 to-orange-700",
-        icon: "🥮",
-        schedule: {
-            "0": "08:00-22:00",
-            "1": "08:00-22:00",
-            "2": "08:00-22:00",
-            "3": "08:00-22:00",
-            "4": "08:00-22:00",
-            "5": "08:00-22:00",
-            "6": "08:00-22:00"
-        }
+        gradient: "from-amber-500 to-orange-600",
+        icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
+        schedule: stdSched("08:00-22:00")
     },
     {
-        name: "La Plăcinte (ул. Михай Витязул, 14)",
+        name: "La Plăcinte (ул. М. Витязул)",
         type: "food",
         district: "Центр",
-        tags: [
-            "Традиционная",
-            "Молдавская"
-        ],
+        tags: ["Традиционная", "Молдавская"],
         price: "$$",
         rating: 4.5,
         desc: "Точная точка по адресу ул. Михай Витязул, 14.",
@@ -596,269 +573,162 @@
         mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Strada+Mihai+Viteazul+14+Chisinau",
         lat: 47.03851508675162,
         lng: 28.82718086242676,
-        gradient: "from-amber-600 to-orange-700",
-        icon: "🥮",
-        schedule: {
-            "0": "08:00-22:00",
-            "1": "08:00-22:00",
-            "2": "08:00-22:00",
-            "3": "08:00-22:00",
-            "4": "08:00-22:00",
-            "5": "08:00-22:00",
-            "6": "08:00-22:00"
-        }
+        gradient: "from-amber-500 to-orange-600",
+        icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
+        schedule: stdSched("08:00-22:00")
     },
     {
-        name: "La Plăcinte (ул. Ион Крянгэ, 39)",
+        name: "La Plăcinte (ул. И. Крянгэ)",
         type: "food",
         district: "Буюканы",
-        tags: [
-            "Традиционная",
-            "Молдавская"
-        ],
+        tags: ["Традиционная", "Молдавская"],
         price: "$$",
         rating: 4.5,
-        desc: "Фиксированная точка дома 39 по улице Ион Крянгэ, сектор Буюканы.",
+        desc: "Фиксированная точка дома 39 по улице Ион Крянгэ.",
         entertainment: "Семейный зал, детское меню.",
         priceRange: "150 - 350 леев",
         mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Strada+Ion+Creanga+39+Chisinau",
         lat: 47.029561,
         lng: 28.800859,
-        gradient: "from-amber-600 to-orange-700",
-        icon: "🥮",
-        schedule: {
-            "0": "08:00-22:00",
-            "1": "08:00-22:00",
-            "2": "08:00-22:00",
-            "3": "08:00-22:00",
-            "4": "08:00-22:00",
-            "5": "08:00-22:00",
-            "6": "08:00-22:00"
-        }
+        gradient: "from-amber-500 to-orange-600",
+        icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
+        schedule: stdSched("08:00-22:00")
     },
     {
-        name: "La Plăcinte (ул. Алба-Юлия, 21)",
+        name: "La Plăcinte (ул. Алба-Юлия)",
         type: "food",
         district: "Буюканы",
-        tags: [
-            "Традиционная",
-            "Молдавская"
-        ],
+        tags: ["Традиционная", "Молдавская"],
         price: "$$",
         rating: 4.3,
-        desc: "Точный адрес дома 21 по улице Алба-Юлия (уточнено: не 196/3, а именно дом 21, где фактически расположен ресторан).",
+        desc: "Улица Алба-Юлия, дом 21.",
         entertainment: "Быстрое обслуживание, домашняя кухня.",
         priceRange: "150 - 350 леев",
         mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Strada+Alba+Iulia+21+Chisinau",
         lat: 47.033818,
         lng: 28.778222,
-        gradient: "from-amber-600 to-orange-700",
-        icon: "🥮",
-        schedule: {
-            "0": "08:00-22:00",
-            "1": "08:00-22:00",
-            "2": "08:00-22:00",
-            "3": "08:00-22:00",
-            "4": "08:00-22:00",
-            "5": "08:00-22:00",
-            "6": "08:00-22:00"
-        }
+        gradient: "from-amber-500 to-orange-600",
+        icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
+        schedule: stdSched("08:00-22:00")
     },
     {
-        name: "La Plăcinte (Московский проспект, 9/1)",
+        name: "La Plăcinte (Московский пр.)",
         type: "food",
         district: "Рышкановка",
-        tags: [
-            "Традиционная",
-            "Молдавская"
-        ],
+        tags: ["Традиционная", "Молдавская"],
         price: "$$",
         rating: 4.3,
-        desc: "Точное здание дома 9/1 на Московском проспекте, сектор Рышкановка.",
+        desc: "Точное здание дома 9/1 на Московском проспекте.",
         entertainment: "Отличный вид на проспект, просторный зал.",
         priceRange: "150 - 350 леев",
         mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Bulevardul+Moscova+9%2F1+Chisinau",
         lat: 47.049378,
         lng: 28.862708,
-        gradient: "from-amber-600 to-orange-700",
-        icon: "🥮",
-        schedule: {
-            "0": "08:00-22:00",
-            "1": "08:00-22:00",
-            "2": "08:00-22:00",
-            "3": "08:00-22:00",
-            "4": "08:00-22:00",
-            "5": "08:00-22:00",
-            "6": "08:00-22:00"
-        }
+        gradient: "from-amber-500 to-orange-600",
+        icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
+        schedule: stdSched("08:00-22:00")
     },
     {
-        name: "La Plăcinte (ул. Киевская, 12)",
+        name: "La Plăcinte (ул. Киевская)",
         type: "food",
         district: "Рышкановка",
-        tags: [
-            "Традиционная",
-            "Молдавская"
-        ],
+        tags: ["Традиционная", "Молдавская"],
         price: "$$",
         rating: 4.4,
-        desc: "Точный адрес дома 12 по улице Киевской, летняя веранда.",
+        desc: "Точный адрес дома 12 по улице Киевской.",
         entertainment: "Уютная веранда, приятная атмосфера.",
         priceRange: "150 - 350 леев",
         mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Strada+Kiev+12+Chisinau",
         lat: 47.042059,
         lng: 28.860831,
-        gradient: "from-amber-600 to-orange-700",
-        icon: "🥮",
-        schedule: {
-            "0": "08:00-22:00",
-            "1": "08:00-22:00",
-            "2": "08:00-22:00",
-            "3": "08:00-22:00",
-            "4": "08:00-22:00",
-            "5": "08:00-22:00",
-            "6": "08:00-22:00"
-        }
+        gradient: "from-amber-500 to-orange-600",
+        icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
+        schedule: stdSched("08:00-22:00")
     },
     {
-        name: "La Plăcinte (б-р Мирча чел Бэтрын, 12/5)",
+        name: "La Plăcinte (б-р Мирча чел Бэтрын)",
         type: "food",
         district: "Чеканы",
-        tags: [
-            "Традиционная",
-            "Молдавская"
-        ],
+        tags: ["Традиционная", "Молдавская"],
         price: "$$",
         rating: 4.4,
-        desc: "Точное местоположение дома 12/5 по бульвару Мирча чел Бэтрын, рядом с отелем Platinum (уточнено: не 24/1, а именно 12/5).",
+        desc: "Дом 12/5 по бульвару Мирча чел Бэтрын.",
         entertainment: "Современный дизайн, отличные плацинды.",
         priceRange: "150 - 350 леев",
         mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Bulevardul+Mircea+cel+Batran+12%2F5+Chisinau",
         lat: 47.04435,
         lng: 28.891194,
-        gradient: "from-amber-600 to-orange-700",
-        icon: "🥮",
-        schedule: {
-            "0": "08:00-22:00",
-            "1": "08:00-22:00",
-            "2": "08:00-22:00",
-            "3": "08:00-22:00",
-            "4": "08:00-22:00",
-            "5": "08:00-22:00",
-            "6": "08:00-22:00"
-        }
+        gradient: "from-amber-500 to-orange-600",
+        icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
+        schedule: stdSched("08:00-22:00")
     },
     {
-        name: "La Plăcinte (ул. Индепенденцей, 16/1)",
+        name: "La Plăcinte (ул. Индепенденцей)",
         type: "food",
         district: "Ботаника",
-        tags: [
-            "Традиционная",
-            "Молдавская"
-        ],
+        tags: ["Традиционная", "Молдавская"],
         price: "$$",
         rating: 4.5,
-        desc: "Точный адрес дома 16/1 по улице Индепенденцей, сектор Ботаника.",
+        desc: "Адрес дома 16/1 по улице Индепенденцей.",
         entertainment: "Вкусная еда, быстрая подача.",
         priceRange: "150 - 350 леев",
         mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Strada+Independentei+16%2F1+Chisinau",
         lat: 46.981704,
         lng: 28.849629,
-        gradient: "from-amber-600 to-orange-700",
-        icon: "🥮",
-        schedule: {
-            "0": "08:00-22:00",
-            "1": "08:00-22:00",
-            "2": "08:00-22:00",
-            "3": "08:00-22:00",
-            "4": "08:00-22:00",
-            "5": "08:00-22:00",
-            "6": "08:00-22:00"
-        }
+        gradient: "from-amber-500 to-orange-600",
+        icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
+        schedule: stdSched("08:00-22:00")
     },
     {
         name: "La Plăcinte (б-р Дачия, 30/5)",
         type: "food",
         district: "Ботаника",
-        tags: [
-            "Традиционная",
-            "Молдавская"
-        ],
+        tags: ["Традиционная", "Молдавская"],
         price: "$$",
         rating: 4.5,
-        desc: "Точный адрес дома 30/5 по бульвару Дачия (уточнено: не 30/1, а именно 30/5), есть небольшая детская площадка.",
+        desc: "Точный адрес дома 30/5 по бульвару Дачия.",
         entertainment: "Уютный зал, отличная кухня.",
         priceRange: "150 - 350 леев",
         mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Bulevardul+Dacia+30%2F5+Chisinau",
         lat: 46.98353,
         lng: 28.860077,
-        gradient: "from-amber-600 to-orange-700",
-        icon: "🥮",
-        schedule: {
-            "0": "08:00-22:00",
-            "1": "08:00-22:00",
-            "2": "08:00-22:00",
-            "3": "08:00-22:00",
-            "4": "08:00-22:00",
-            "5": "08:00-22:00",
-            "6": "08:00-22:00"
-        }
+        gradient: "from-amber-500 to-orange-600",
+        icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
+        schedule: stdSched("08:00-22:00")
     },
     {
-        name: "La Plăcinte (б-р Дачия, 48)",
+        name: "La Plăcinte (Ворота Города)",
         type: "food",
         district: "Ботаника",
-        tags: [
-            "Традиционная",
-            "Молдавская"
-        ],
+        tags: ["Традиционная", "Молдавская"],
         price: "$$",
         rating: 4.3,
-        desc: "Точный адрес дома 48 у Ворот Города (Poarta Orașului) по бульвару Дачия, 2-й этаж (уточнено: не 47, а именно 48).",
-        entertainment: "Отличный панорамный вид, фирменные блюда.",
+        desc: "Точный адрес дома 48 у Ворот Города по бульвару Дачия, 2-й этаж.",
+        entertainment: "Панорамный вид, фирменные блюда.",
         priceRange: "150 - 350 леев",
         mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Bulevardul+Dacia+48+Chisinau",
         lat: 46.976398,
         lng: 28.870677,
-        gradient: "from-amber-600 to-orange-700",
-        icon: "🥮",
-        schedule: {
-            "0": "08:00-22:00",
-            "1": "08:00-22:00",
-            "2": "08:00-22:00",
-            "3": "08:00-22:00",
-            "4": "08:00-22:00",
-            "5": "08:00-22:00",
-            "6": "08:00-22:00"
-        }
+        gradient: "from-amber-500 to-orange-600",
+        icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
+        schedule: stdSched("08:00-22:00")
     },
     {
-        name: "La Plăcinte (шоссе Хынчешть, 58)",
+        name: "La Plăcinte (ш. Хынчешть)",
         type: "food",
         district: "Телецентр",
-        tags: [
-            "Традиционная",
-            "Молдавская"
-        ],
+        tags: ["Традиционная", "Молдавская"],
         price: "$$",
         rating: 4.5,
-        desc: "Точный адрес дома 58 по шоссе Хынчешть, сектор Телецентр.",
+        desc: "Точный адрес дома 58 по шоссе Хынчешть.",
         entertainment: "Уютная атмосфера, семейные обеды.",
         priceRange: "150 - 350 леев",
         mapUrl: "https://www.google.com/maps/search/?api=1&query=La+Placinte+Soseaua+Hancesti+58+Chisinau",
         lat: 47.003727,
         lng: 28.817739,
-        gradient: "from-amber-600 to-orange-700",
-        icon: "🥮",
-        schedule: {
-            "0": "08:00-22:00",
-            "1": "08:00-22:00",
-            "2": "08:00-22:00",
-            "3": "08:00-22:00",
-            "4": "08:00-22:00",
-            "5": "08:00-22:00",
-            "6": "08:00-22:00"
-        }
+        gradient: "from-amber-500 to-orange-600",
+        icon: "<i class='fa-solid fa-wheat-awn text-white'></i>",
+        schedule: stdSched("08:00-22:00")
     }
 ];
 
@@ -870,16 +740,7 @@
         let tileLayer = null;
         let userMarker = null;
 
-        /* ============================================================
-           КАБИНЕТ УПРАВЛЯЮЩЕГО
-           Позволяет вручную перетаскивать точки на карте и менять
-           их иконки (смайлики). Правки хранятся в localStorage
-           браузера — то есть сохраняются только на этом устройстве.
-           Кнопка «Скопировать код» формирует готовый JS-массив
-           places, который можно вставить в файл вместо старого,
-           чтобы изменения стали постоянными для всех посетителей.
-           ============================================================ */
-        const ADMIN_PASSWORD = "chisinau2026"; // ⚠️ смени на свой пароль перед публикацией
+        const ADMIN_PASSWORD = "chisinau2026"; 
         const ADMIN_STORAGE_KEY = "cv_admin_overrides_v1";
         let adminMode = false;
 
@@ -937,8 +798,9 @@
         function toggleAdminMode(on) {
             adminMode = on;
             document.getElementById('admin-toolbar').classList.toggle('hidden', !on);
-            document.getElementById('admin-cabinet-btn').classList.toggle('cat-btn-active', on);
-            applyFilters(); // перерисует маркеры с учётом draggable
+            document.getElementById('admin-cabinet-btn').classList.toggle('bg-indigo-600', on);
+            document.getElementById('admin-cabinet-btn').classList.toggle('text-white', on);
+            applyFilters();
             if (!on) closeAdminList();
         }
 
@@ -954,17 +816,19 @@
         function renderAdminList() {
             const container = document.getElementById('admin-places-list');
             container.innerHTML = places.map(p => `
-                <div class="flex items-center gap-2 p-2.5 rounded-xl bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
-                    <input id="icon-${p.id}" value="${p.icon}" maxlength="4" class="w-12 text-center text-xl rounded-lg border border-slate-300 dark:border-slate-600 bg-transparent py-1.5" />
+                <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <input id="icon-${p.id}" value='${p.icon.replace(/'/g, "&apos;")}' class="w-20 text-center text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 py-2 outline-none focus:border-indigo-500" />
                     <div class="flex-1 min-w-0">
-                        <p class="text-xs font-bold truncate">${p.name}</p>
-                        <div class="flex gap-1 mt-1">
-                            <input id="lat-${p.id}" type="number" step="0.000001" value="${p.lat}" class="w-24 text-[10px] rounded-lg border border-slate-300 dark:border-slate-600 bg-transparent px-1.5 py-1" />
-                            <input id="lng-${p.id}" type="number" step="0.000001" value="${p.lng}" class="w-24 text-[10px] rounded-lg border border-slate-300 dark:border-slate-600 bg-transparent px-1.5 py-1" />
+                        <p class="text-sm font-bold text-slate-800 dark:text-slate-200 truncate">${p.name}</p>
+                        <div class="flex gap-2 mt-1.5">
+                            <input id="lat-${p.id}" type="number" step="0.000001" value="${p.lat}" class="w-24 text-[11px] rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-2 py-1 outline-none" />
+                            <input id="lng-${p.id}" type="number" step="0.000001" value="${p.lng}" class="w-24 text-[11px] rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 px-2 py-1 outline-none" />
                         </div>
                     </div>
-                    <button onclick="saveAdminListRow('${p.id}')" class="text-[10px] font-bold px-2.5 py-1.5 rounded-lg bg-emerald-500 text-white hover:bg-emerald-600 transition-all whitespace-nowrap">Сохранить</button>
-                    <button onclick="focusPlaceOnMap('${p.id}')" class="text-[10px] font-bold px-2.5 py-1.5 rounded-lg bg-indigo-500 text-white hover:bg-indigo-600 transition-all whitespace-nowrap">На карте</button>
+                    <div class="flex flex-col gap-1.5">
+                        <button onclick="saveAdminListRow('${p.id}')" class="text-[10px] font-bold px-3 py-1.5 rounded-md bg-emerald-500 text-white hover:bg-emerald-600 transition-all">Сохранить</button>
+                        <button onclick="focusPlaceOnMap('${p.id}')" class="text-[10px] font-bold px-3 py-1.5 rounded-md bg-indigo-500 text-white hover:bg-indigo-600 transition-all">На карте</button>
+                    </div>
                 </div>
             `).join('');
         }
@@ -994,7 +858,7 @@
                 places.map(({id, ...rest}) => rest), null, 4
             ).replace(/"([a-zA-Z_]+)":/g, '$1:') + ';';
             navigator.clipboard.writeText(code).then(() => {
-                alert('Готовый код массива places скопирован в буфер обмена!\n\nВставь его в файл сайта вместо старого const places = [...], чтобы изменения стали постоянными для всех посетителей (сейчас они сохранены только в этом браузере).');
+                alert('Готовый код массива places скопирован в буфер обмена!');
             }).catch(() => {
                 prompt('Скопируй код вручную (Ctrl+C):', code);
             });
@@ -1028,7 +892,7 @@
             const todaySchedule = (scheduleObj && scheduleObj[info.day]) ? scheduleObj[info.day] : "10:00-22:00";
 
             if (todaySchedule === "00:00-24:00" || todaySchedule === "24/7") {
-                return { isOpen: true, statusText: "Открыто 24/7", todayHours: "Круглосуточно", badgeBg: "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30", dot: "🟢" };
+                return { isOpen: true, statusText: "Открыто 24/7", todayHours: "Круглосуточно", badgeBg: "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 border-emerald-500/30", dot: "<i class='fa-solid fa-circle text-[8px]'></i>" };
             }
 
             const [startStr, endStr] = todaySchedule.split("-");
@@ -1049,8 +913,8 @@
                 isOpen,
                 statusText: isOpen ? `Открыто (до ${endStr})` : `Закрыто (откроется в ${startStr})`,
                 todayHours: `${startStr} - ${endStr}`,
-                badgeBg: isOpen ? "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30" : "bg-rose-500/20 text-rose-600 dark:text-rose-400 border-rose-500/30",
-                dot: isOpen ? "🟢" : "🔴"
+                badgeBg: isOpen ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 border-emerald-500/30" : "bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400 border-rose-500/30",
+                dot: isOpen ? "<i class='fa-solid fa-circle text-[8px]'></i>" : "<i class='fa-solid fa-circle text-[8px]'></i>"
             };
         }
 
@@ -1078,7 +942,7 @@
             if (isDark) {
                 html.classList.remove('dark');
                 html.classList.add('light');
-                icon.textContent = '🌙';
+                icon.className = 'fa-solid fa-moon text-lg text-slate-600';
                 if (tileLayer) {
                     tileLayer.setUrl(mapStyleLight);
                     tileLayer.getAttribution = function() { return '© Google Maps'; };
@@ -1086,7 +950,7 @@
             } else {
                 html.classList.remove('light');
                 html.classList.add('dark');
-                icon.textContent = '☀️';
+                icon.className = 'fa-solid fa-sun text-lg text-amber-400';
                 if (tileLayer) {
                     tileLayer.setUrl(mapStyleDark);
                     tileLayer.getAttribution = function() { return '© <a href="https://carto.com/">CARTO</a>'; };
@@ -1114,23 +978,26 @@
             const mapBtn = document.getElementById('modal-map-btn');
 
             content.innerHTML = `
-                <div class="p-4 rounded-2xl bg-gradient-to-br ${random.gradient} text-white flex items-center justify-between">
+                <div class="p-5 rounded-2xl bg-gradient-to-br ${random.gradient} text-white flex items-center justify-between shadow-inner">
                     <div>
-                        <span class="text-xs font-bold uppercase tracking-widest opacity-80">${random.district}</span>
+                        <span class="text-[10px] font-bold uppercase tracking-widest opacity-80 mb-1 block"><i class="fa-solid fa-map-pin"></i> ${random.district}</span>
                         <h4 class="text-2xl font-black">${random.name}</h4>
                     </div>
-                    <span class="text-4xl">${random.icon}</span>
+                    <div class="text-4xl opacity-90">${random.icon}</div>
                 </div>
-                <div class="flex items-center gap-2 text-xs font-bold px-3 py-1.5 rounded-xl border ${status.badgeBg}">
-                    <span>${status.dot}</span>
+                <div class="flex items-center gap-2 text-xs font-bold px-3.5 py-2 rounded-xl border ${status.badgeBg} shadow-sm">
+                    <span class="mt-0.5">${status.dot}</span>
                     <span>${status.statusText}</span>
-                    <span class="ml-auto opacity-70">Сегодня: ${status.todayHours}</span>
+                    <span class="ml-auto opacity-70"><i class="fa-regular fa-clock"></i> ${status.todayHours}</span>
                 </div>
-                <p class="text-sm font-medium opacity-90">${random.desc}</p>
-                <div class="bg-indigo-500/10 p-3 rounded-xl border border-indigo-500/20 text-xs">
-                    <b>🎯 Развлечения:</b> ${random.entertainment}
+                <p class="text-sm font-medium text-slate-700 dark:text-slate-300 leading-relaxed">${random.desc}</p>
+                <div class="bg-indigo-50 dark:bg-indigo-500/10 p-3.5 rounded-xl border border-indigo-100 dark:border-indigo-500/20 text-xs text-slate-700 dark:text-slate-300 shadow-sm">
+                    <b class="text-indigo-600 dark:text-indigo-400 block mb-1"><i class="fa-solid fa-gamepad"></i> Развлечения:</b> ${random.entertainment}
                 </div>
-                <div class="text-xs font-bold text-emerald-500">💰 Средний чек: ${random.priceRange}</div>
+                <div class="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 p-3.5 rounded-xl border border-emerald-100 dark:border-emerald-500/20 flex items-center justify-between shadow-sm">
+                    <span><i class="fa-solid fa-wallet"></i> Средний чек:</span>
+                    <span>${random.priceRange}</span>
+                </div>
             `;
             mapBtn.href = random.mapUrl;
 
@@ -1156,7 +1023,7 @@
                     });
 
                     userMarker = L.marker([lat, lng], { icon: userIcon }).addTo(map);
-                    userMarker.bindPopup("<b>Вы находитесь здесь 📍</b>").openPopup();
+                    userMarker.bindPopup("<b>Вы находитесь здесь <i class='fa-solid fa-street-view'></i></b>").openPopup();
                     map.setView([lat, lng], 14);
                 }, error => {
                     alert("Не удалось получить геопозицию. Убедитесь, что разрешили доступ к местоположению на вашем устройстве.");
@@ -1193,13 +1060,13 @@
 
             placesToRender.forEach(p => {
                 const status = checkOpenStatus(p.schedule);
-                const iconSize = isMobile() ? [38, 38] : [48, 48];
+                const iconSize = isMobile() ? [38, 38] : [46, 46];
                 const customIcon = L.divIcon({
                     className: 'bg-transparent',
                     html: `
-                        <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-lg sm:text-2xl shadow-xl border-2 sm:border-4 ${adminMode ? 'border-dashed border-indigo-500 animate-pulse' : (status.isOpen ? 'border-emerald-400' : 'border-slate-400')} bg-gradient-to-br ${p.gradient} hover:scale-110 transition-transform duration-300 relative" style="${adminMode ? 'cursor:grab;' : ''}">
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-lg sm:text-xl shadow-lg border-[3px] ${adminMode ? 'border-dashed border-indigo-500 animate-pulse' : (status.isOpen ? 'border-emerald-400' : 'border-slate-300 dark:border-slate-600')} bg-gradient-to-br ${p.gradient} hover:scale-110 transition-transform duration-300 relative" style="${adminMode ? 'cursor:grab;' : ''}">
                             ${p.icon}
-                            <span class="absolute -top-1 -right-1 text-xs">${status.dot}</span>
+                            <span class="absolute -top-1 -right-1 text-xs ${status.isOpen ? 'text-emerald-500' : 'text-slate-400'} bg-white dark:bg-slate-900 rounded-full w-4 h-4 flex items-center justify-center border border-slate-200 dark:border-slate-700 shadow-sm">${status.dot}</span>
                         </div>
                     `,
                     iconSize: iconSize,
@@ -1215,29 +1082,31 @@
                         p.lat = pos.lat;
                         p.lng = pos.lng;
                         saveAdminOverride(p.id, { lat: p.lat, lng: p.lng });
-                        marker.bindPopup(`<div style="font-family:'Outfit',sans-serif;font-size:12px;font-weight:800;">✅ ${p.name}<br/>Новая позиция сохранена</div>`, { closeButton: true }).openPopup();
+                        marker.bindPopup(`<div style="font-family:'Outfit',sans-serif;font-size:12px;font-weight:800;color:#334155"><i class="fa-solid fa-check text-emerald-500"></i> ${p.name}<br/>Новая позиция сохранена</div>`, { closeButton: true }).openPopup();
                     });
                 }
                 
                 const popupContent = `
-                    <div style="font-family: 'Outfit', sans-serif; padding: 2px; min-width: 220px;">
-                        <h4 style="font-weight: 900; font-size: 16px; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;">
-                            <div class="w-7 h-7 rounded-full bg-gradient-to-br ${p.gradient} flex items-center justify-center text-xs shadow-md" style="color:white; display:flex; align-items:center; justify-content:center;">
+                    <div style="font-family: 'Outfit', sans-serif; padding: 4px; min-width: 220px;">
+                        <h4 style="font-weight: 900; font-size: 16px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px;">
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-br ${p.gradient} flex items-center justify-center text-sm shadow-md">
                                 ${p.icon}
                             </div> 
-                            <span style="color: var(--tw-text-opacity, #334155);">${p.name}</span>
+                            <span style="color: var(--tw-text-opacity, #1e293b);">${p.name}</span>
                         </h4>
-                        <div style="margin-bottom: 6px; font-size: 11px; font-weight: 800; color: ${status.isOpen ? '#059669' : '#e11d48'}; background: ${status.isOpen ? 'rgba(16, 185, 129, 0.15)' : 'rgba(244, 63, 94, 0.15)'}; padding: 3px 8px; border-radius: 6px; display: flex; justify-content: space-between;">
-                            <span>${status.dot} ${status.statusText}</span>
-                            <span>⏰ ${status.todayHours}</span>
+                        <div style="margin-bottom: 8px; font-size: 11px; font-weight: 800; color: ${status.isOpen ? '#059669' : '#e11d48'}; background: ${status.isOpen ? 'rgba(16, 185, 129, 0.1)' : 'rgba(244, 63, 94, 0.1)'}; padding: 4px 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid ${status.isOpen ? 'rgba(16,185,129,0.2)' : 'rgba(244,63,94,0.2)'}">
+                            <span style="display:flex; align-items:center; gap:4px;">${status.dot} ${status.statusText}</span>
+                            <span style="opacity:0.8"><i class="fa-solid fa-clock"></i> ${status.todayHours}</span>
                         </div>
-                        <p style="font-size: 12px; color: #64748b; margin-bottom: 6px;"><b>Район:</b> ${p.district}</p>
-                        <p style="font-size: 13px; margin-bottom: 6px; line-height: 1.3;">${p.desc}</p>
-                        <div style="background: rgba(99, 102, 241, 0.1); padding: 6px 8px; border-radius: 8px; margin-bottom: 6px;">
-                            <p style="font-size: 12px; margin: 0; line-height: 1.3;"><b>🎯 Развлечения:</b> ${p.entertainment}</p>
+                        <p style="font-size: 12px; color: #64748b; margin-bottom: 8px;"><i class="fa-solid fa-map-pin"></i> <b>Район:</b> ${p.district}</p>
+                        <p style="font-size: 13px; margin-bottom: 10px; line-height: 1.4; color: #334155;">${p.desc}</p>
+                        <div style="background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99,102,241,0.1); padding: 8px 10px; border-radius: 10px; margin-bottom: 8px;">
+                            <p style="font-size: 12px; margin: 0; line-height: 1.4; color: #475569;"><b style="color:#4f46e5"><i class="fa-solid fa-gamepad"></i> Развлечения:</b> ${p.entertainment}</p>
                         </div>
-                        <p style="font-size: 12px; font-weight: 800; color: #10b981; margin: 0 0 8px 0; background: rgba(16, 185, 129, 0.1); padding: 4px 8px; border-radius: 6px;">💰 Цены: ${p.priceRange}</p>
-                        <a href="${p.mapUrl}" target="_blank" style="display: block; text-align: center; background: #0f172a; color: white; padding: 6px 8px; border-radius: 8px; font-size: 11px; font-weight: bold; text-decoration: none;">🗺️ Открыть на Google Карте</a>
+                        <p style="font-size: 12px; font-weight: 800; color: #059669; margin: 0 0 10px 0; background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16,185,129,0.1); padding: 6px 10px; border-radius: 8px; display:flex; justify-content:space-between;"><span><i class="fa-solid fa-wallet"></i> Цены:</span> <span>${p.priceRange}</span></p>
+                        <a href="${p.mapUrl}" target="_blank" style="display: flex; align-items:center; justify-content:center; gap:6px; background: #0f172a; color: white; padding: 8px 10px; border-radius: 10px; font-size: 12px; font-weight: bold; text-decoration: none; transition: background 0.2s;">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i> Открыть на Google Карте
+                        </a>
                     </div>
                 `;
 
@@ -1264,7 +1133,7 @@
                 if (current < 120) current = 120;
                 if (current > 550) current = 550;
                 
-                el.style.transform = 'scale(1.3)';
+                el.style.transform = 'scale(1.2)';
                 el.style.color = '#10b981';
                 el.textContent = current;
                 
@@ -1307,10 +1176,10 @@
             const btn = document.getElementById('btn-only-open');
             if (state.onlyOpen) {
                 btn.classList.add('bg-emerald-500', 'text-white', 'border-emerald-500');
-                btn.classList.remove('bg-white/50', 'dark:bg-slate-800/50');
+                btn.classList.remove('bg-white/60', 'dark:bg-slate-800/60', 'text-slate-600', 'dark:text-slate-300');
             } else {
                 btn.classList.remove('bg-emerald-500', 'text-white', 'border-emerald-500');
-                btn.classList.add('bg-white/50', 'dark:bg-slate-800/50');
+                btn.classList.add('bg-white/60', 'dark:bg-slate-800/60', 'text-slate-600', 'dark:text-slate-300');
             }
             applyFilters();
         }
@@ -1320,11 +1189,11 @@
             
             document.querySelectorAll('.cat-btn').forEach(btn => {
                 btn.classList.remove('cat-btn-active');
-                btn.classList.add('bg-white/40', 'dark:bg-slate-800/40', 'text-slate-600', 'dark:text-slate-300');
+                btn.classList.add('bg-white/60', 'dark:bg-slate-800/60', 'text-slate-600', 'dark:text-slate-300');
             });
             const activeBtn = document.getElementById(`btn-cat-${cat}`);
             activeBtn.classList.add('cat-btn-active');
-            activeBtn.classList.remove('bg-white/40', 'dark:bg-slate-800/40', 'text-slate-600', 'dark:text-slate-300');
+            activeBtn.classList.remove('bg-white/60', 'dark:bg-slate-800/60', 'text-slate-600', 'dark:text-slate-300');
             
             applyFilters();
         }
@@ -1335,11 +1204,15 @@
             const buttons = document.querySelectorAll('.dist-btn');
             buttons.forEach(btn => {
                 btn.classList.remove('bg-indigo-500', 'text-white', 'shadow-lg', 'shadow-indigo-500/30', 'scale-[1.02]');
-                btn.classList.add('bg-white/40', 'dark:bg-slate-800/40', 'text-slate-700', 'dark:text-slate-200');
+                btn.classList.add('bg-white/60', 'dark:bg-slate-800/60', 'text-slate-700', 'dark:text-slate-200');
+                // Очистка цветов иконок в неактивном состоянии
+                const icon = btn.querySelector('i');
+                if(icon) icon.classList.remove('text-white');
                 
                 if(btn.textContent.includes(dist === 'all' ? 'Весь город' : dist)) {
-                    btn.classList.remove('bg-white/40', 'dark:bg-slate-800/40', 'text-slate-700', 'dark:text-slate-200');
+                    btn.classList.remove('bg-white/60', 'dark:bg-slate-800/60', 'text-slate-700', 'dark:text-slate-200');
                     btn.classList.add('bg-indigo-500', 'text-white', 'shadow-lg', 'shadow-indigo-500/30', 'scale-[1.02]');
+                    if(icon) icon.classList.add('text-white');
                 }
             });
 
@@ -1351,10 +1224,10 @@
             const title = document.getElementById('grid-title');
             
             if(state.district === 'all') {
-                display.textContent = '🌍 Весь Кишинев';
+                display.innerHTML = '<i class="fa-solid fa-earth-europe"></i> Весь Кишинев';
                 title.textContent = state.category === 'all' ? 'Все заведения' : 'Результаты поиска';
             } else {
-                display.textContent = `📍 ${state.district}`;
+                display.innerHTML = `<i class="fa-solid fa-map-pin"></i> ${state.district}`;
                 title.textContent = `Вайб: ${state.district}`;
             }
         }
@@ -1385,7 +1258,7 @@
             const grid = document.getElementById('places-grid');
             const countEl = document.getElementById('places-count');
             
-            countEl.style.transform = 'scale(1.3)';
+            countEl.style.transform = 'scale(1.2)';
             countEl.textContent = placesToRender.length;
             setTimeout(() => countEl.style.transform = 'scale(1)', 200);
 
@@ -1393,11 +1266,11 @@
             
             if(placesToRender.length === 0) {
                 grid.innerHTML = `
-                    <div class="col-span-full glass rounded-2xl sm:rounded-[2rem] p-8 sm:p-16 text-center flex flex-col items-center justify-center border border-dashed border-slate-300 dark:border-slate-700">
-                        <div class="text-5xl sm:text-7xl mb-4 opacity-40 animate-pulse">🏜️</div>
-                        <h3 class="text-xl sm:text-3xl font-black mb-2">Упс, ничего не найдено</h3>
-                        <p class="text-slate-500 text-sm sm:text-lg">Попробуйте изменить фильтры или сбросить выбор.</p>
-                        <button onclick="document.getElementById('search-input').value=''; state.onlyOpen=false; applyFilters()" class="mt-4 sm:mt-6 px-5 py-2.5 bg-indigo-500 text-white font-bold text-sm sm:text-base rounded-xl shadow-lg hover:bg-indigo-600 transition-colors">Сбросить поиск</button>
+                    <div class="col-span-full glass rounded-[2rem] p-8 sm:p-16 text-center flex flex-col items-center justify-center border border-dashed border-slate-300 dark:border-slate-700">
+                        <div class="text-5xl sm:text-6xl mb-4 text-slate-400 opacity-60"><i class="fa-solid fa-ghost"></i></div>
+                        <h3 class="text-xl sm:text-2xl font-black mb-2 text-slate-800 dark:text-slate-200">Упс, ничего не найдено</h3>
+                        <p class="text-slate-500 text-sm sm:text-base">Попробуйте изменить фильтры или сбросить выбор.</p>
+                        <button onclick="document.getElementById('search-input').value=''; state.onlyOpen=false; applyFilters()" class="mt-5 px-6 py-3 bg-indigo-500 text-white font-bold text-sm sm:text-base rounded-xl shadow-lg hover:bg-indigo-600 transition-colors flex items-center gap-2"><i class="fa-solid fa-rotate-right"></i> Сбросить поиск</button>
                     </div>`;
                 return;
             }
@@ -1406,71 +1279,73 @@
                 const status = checkOpenStatus(p.schedule);
                 const info = getChisinauInfo();
 
-                const tagsHtml = p.tags.map(t => `<span class="bg-white/30 dark:bg-black/40 backdrop-blur-md border border-white/40 dark:border-white/10 text-slate-700 dark:text-white text-[9px] sm:text-[10px] uppercase font-bold px-2 py-0.5 rounded-md shadow-sm">${t}</span>`).join('');
+                const tagsHtml = p.tags.map(t => `<span class="bg-white/40 dark:bg-black/40 backdrop-blur-md border border-white/40 dark:border-white/10 text-slate-800 dark:text-slate-200 text-[10px] uppercase font-bold px-2.5 py-1 rounded-lg shadow-sm">${t}</span>`).join('');
                 
                 const isTopLeader = index === 0 && p.rating >= 4.8;
-                const topGlowClass = isTopLeader ? 'animate-glow border-2 border-amber-400 dark:border-amber-400 shadow-[0_0_30px_rgba(245,158,11,0.4)]' : 'border border-white/60 dark:border-white/10';
+                const topGlowClass = isTopLeader ? 'animate-glow border-2 border-indigo-400 dark:border-indigo-500 shadow-[0_0_30px_rgba(99,102,241,0.2)]' : 'border border-white/60 dark:border-white/10 shadow-lg';
                 
                 const topBadge = isTopLeader ? `
-                    <div class="absolute -top-3 left-4 sm:left-6 bg-gradient-to-r from-amber-500 to-pink-500 text-white font-black text-[10px] sm:text-xs px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full shadow-lg z-30 flex items-center gap-1 uppercase tracking-wider">
-                        ⭐ Выбор редакции
+                    <div class="absolute -top-3 left-6 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-black text-[10px] sm:text-xs px-3 py-1 rounded-full shadow-lg z-30 flex items-center gap-1.5 uppercase tracking-wider">
+                        <i class="fa-solid fa-star text-amber-300"></i> Выбор редакции
                     </div>
                 ` : '';
 
                 const cardHtml = `
-                    <div class="glass rounded-2xl sm:rounded-[2rem] p-4 sm:p-6 relative flex flex-col justify-between card-hover transition-all duration-300 ${topGlowClass}">
+                    <div class="glass rounded-[2rem] p-5 sm:p-6 relative flex flex-col justify-between card-hover ${topGlowClass}">
                         ${topBadge}
                         <div>
-                            <div class="h-28 sm:h-36 rounded-xl sm:rounded-2xl bg-gradient-to-br ${p.gradient} p-4 sm:p-5 flex flex-col justify-between relative overflow-hidden mb-4 sm:mb-5 shadow-inner">
-                                <div class="absolute -right-4 -bottom-4 sm:-right-6 sm:-bottom-6 text-6xl sm:text-7xl opacity-20 transform rotate-12">${p.icon}</div>
+                            <div class="h-32 sm:h-40 rounded-2xl bg-gradient-to-br ${p.gradient} p-4 sm:p-5 flex flex-col justify-between relative overflow-hidden mb-5 shadow-inner">
+                                <div class="absolute -right-4 -bottom-6 text-7xl sm:text-8xl opacity-10 transform -rotate-12">${p.icon}</div>
                                 <div class="flex justify-between items-center relative z-10">
-                                    <span class="bg-white/20 backdrop-blur-md text-white text-[10px] sm:text-xs font-black px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full border border-white/20 shadow-sm">${p.district}</span>
-                                    <div class="flex items-center gap-1 bg-black/30 backdrop-blur-md text-white text-[10px] sm:text-xs font-bold px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full shadow-sm">
-                                        ⭐ ${p.rating}
+                                    <span class="bg-white/20 backdrop-blur-md text-white text-[10px] sm:text-xs font-black px-3 py-1 rounded-full border border-white/20 shadow-sm flex items-center gap-1.5"><i class="fa-solid fa-map-pin"></i> ${p.district}</span>
+                                    <div class="flex items-center gap-1.5 bg-black/40 backdrop-blur-md text-white text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-full border border-white/10 shadow-sm">
+                                        <i class="fa-solid fa-star text-amber-400"></i> ${p.rating}
                                     </div>
                                 </div>
-                                <div class="relative z-10 flex flex-wrap gap-1 items-center mt-auto">
+                                <div class="relative z-10 flex flex-wrap gap-1.5 items-center mt-auto">
                                     ${tagsHtml}
                                 </div>
                             </div>
 
-                            <div class="mb-3 sm:mb-4">
-                                <div class="flex items-center justify-between mb-1">
-                                    <h3 class="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5 sm:gap-2">
-                                        <span>${p.icon}</span> ${p.name}
+                            <div class="mb-4">
+                                <!-- ИСПРАВЛЕНИЕ: добавлены min-w-0 и break-words для удержания заголовка в рамке и переноса длинного текста -->
+                                <div class="flex items-center justify-between gap-2 mb-2">
+                                    <h3 class="min-w-0 flex-1 text-xl sm:text-2xl font-black tracking-tight text-slate-800 dark:text-white flex items-center gap-2.5">
+                                        <span class="text-xl opacity-90 shrink-0">${p.icon}</span> 
+                                        <span class="break-words leading-snug">${p.name}</span>
                                     </h3>
-                                    <span class="font-black text-indigo-600 dark:text-indigo-400 text-xs sm:text-sm tracking-wider">${p.price}</span>
+                                    <span class="font-black text-indigo-600 dark:text-indigo-400 text-sm tracking-wider ml-1 bg-indigo-50 dark:bg-indigo-500/10 px-2 py-0.5 rounded-lg border border-indigo-100 dark:border-indigo-500/20 shrink-0">${p.price}</span>
                                 </div>
 
-                                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold border ${status.badgeBg} backdrop-blur-md mb-2">
-                                    <span>${status.dot}</span>
+                                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold border ${status.badgeBg} backdrop-blur-md mb-3 shadow-sm">
+                                    <span class="mt-0.5">${status.dot}</span>
                                     <span>${status.statusText}</span>
                                 </div>
 
-                                <p class="text-slate-600 dark:text-slate-300 text-xs sm:text-sm font-medium leading-relaxed">${p.desc}</p>
+                                <p class="text-slate-600 dark:text-slate-300 text-sm font-medium leading-relaxed">${p.desc}</p>
                             </div>
 
-                            <div class="space-y-1.5 sm:space-y-2 mb-4 sm:mb-6 text-[11px] sm:text-xs font-medium">
-                                <div class="bg-amber-500/10 dark:bg-amber-900/20 p-2.5 sm:p-3 rounded-xl border border-amber-500/20 flex items-center justify-between">
-                                    <span class="font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1">
-                                        ⏰ Сегодня (${info.dayShort}):
+                            <div class="space-y-2 mb-6 text-xs font-medium">
+                                <div class="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center justify-between shadow-sm">
+                                    <span class="font-bold text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
+                                        <i class="fa-regular fa-clock text-indigo-500"></i> Сегодня (${info.dayShort}):
                                     </span>
-                                    <span class="text-slate-700 dark:text-slate-200 font-bold">${status.todayHours}</span>
+                                    <span class="text-slate-800 dark:text-slate-200 font-bold">${status.todayHours}</span>
                                 </div>
-                                <div class="bg-indigo-500/10 dark:bg-indigo-900/20 p-2.5 sm:p-3 rounded-xl border border-indigo-500/20">
-                                    <span class="font-bold text-indigo-600 dark:text-indigo-400 block mb-0.5">🎯 Развлечения:</span>
-                                    <span class="text-slate-600 dark:text-slate-300">${p.entertainment}</span>
+                                <div class="bg-indigo-50/50 dark:bg-indigo-900/10 p-3 rounded-xl border border-indigo-100 dark:border-indigo-500/20 shadow-sm">
+                                    <span class="font-bold text-indigo-600 dark:text-indigo-400 block mb-1 flex items-center gap-1.5"><i class="fa-solid fa-gamepad"></i> Развлечения:</span>
+                                    <span class="text-slate-700 dark:text-slate-300 leading-relaxed">${p.entertainment}</span>
                                 </div>
-                                <div class="bg-emerald-500/10 dark:bg-emerald-900/20 p-2.5 sm:p-3 rounded-xl border border-emerald-500/20 flex items-center justify-between">
-                                    <span class="font-bold text-emerald-600 dark:text-emerald-400">💰 Средний чек:</span>
-                                    <span class="text-slate-700 dark:text-slate-200 font-bold">${p.priceRange}</span>
+                                <div class="bg-emerald-50/50 dark:bg-emerald-900/10 p-3 rounded-xl border border-emerald-100 dark:border-emerald-500/20 flex items-center justify-between shadow-sm">
+                                    <span class="font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5"><i class="fa-solid fa-wallet"></i> Средний чек:</span>
+                                    <span class="text-slate-800 dark:text-slate-200 font-black">${p.priceRange}</span>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="pt-3 sm:pt-4 border-t border-slate-200/60 dark:border-slate-800/60 flex items-center gap-3 mt-auto">
-                            <a href="${p.mapUrl}" target="_blank" class="flex-1 py-2.5 sm:py-3 px-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs sm:text-sm rounded-xl text-center shadow-md hover:opacity-90 transition-all flex items-center justify-center gap-2 hover:scale-[1.02]">
-                                <span>🗺️</span> Google Карты
+                        <div class="pt-4 border-t border-slate-200/80 dark:border-slate-700/80 mt-auto">
+                            <a href="${p.mapUrl}" target="_blank" class="w-full py-3 px-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-sm rounded-xl text-center shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-location-arrow"></i> Google Карты
                             </a>
                         </div>
                     </div>
