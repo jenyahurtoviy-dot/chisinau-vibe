@@ -275,10 +275,9 @@
 
 
 </head>
-<body class="text-slate-900 dark:text-slate-100 min-h-screen relative overflow-x-hidden" id="body">
-    <script>
-    document.write('<style id="boot-gate-style">#language-screen,#welcome-screen{display:none !important;}#main-app{display:none !important;}</style>');
-    </script>
+<body class="text-slate-900 dark:text-slate-100 min-h-screen relative overflow-x-hidden" id="body" style="visibility: hidden;">
+    <!-- Блокировка первого кадра до окончания проверки сессии. Это не зависит от загрузки Tailwind. -->
+    <style id="boot-gate-style">#language-screen,#welcome-screen,#main-app{display:none !important;}</style>
 
     <script>
         // ============ I18N (RU / RO) ============
@@ -483,15 +482,20 @@
             document.getElementById('welcome-screen')?.classList.add('hidden');
             document.getElementById('main-app')?.classList.add('hidden');
             screen.classList.remove('hidden');
+            screen.style.display = 'flex';
             screen.style.opacity = '0';
-            requestAnimationFrame(() => { screen.style.opacity = '1'; });
+            requestAnimationFrame(() => {
+                screen.style.opacity = '1';
+                // Снимаем блокировку всей страницы только когда экран выбора языка уже готов.
+                document.body.style.visibility = 'visible';
+            });
         }
 
         function showWelcomeScreen() {
             const welcome = document.getElementById('welcome-screen');
             if (!welcome) return;
             welcome.classList.remove('hidden');
-            welcome.style.display = '';
+            welcome.style.display = 'flex';
             welcome.style.opacity = '0';
             requestAnimationFrame(() => {
                 welcome.style.transition = 'opacity 0.4s ease';
@@ -565,7 +569,7 @@
         </div>
     </div>
 
-    <div class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[110] glass rounded-full px-4 py-2.5 flex items-center gap-3 cursor-help hover:scale-105 transition-transform shadow-xl" title="Людей сейчас ищут места" data-i18n-title="online_now_title">
+    <div id="online-status" class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[110] glass rounded-full px-4 py-2.5 flex items-center gap-3 cursor-help hover:scale-105 transition-transform shadow-xl" style="display: none;" title="Людей сейчас ищут места" data-i18n-title="online_now_title">
         <div class="relative flex h-3 w-3">
           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
           <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
@@ -582,7 +586,7 @@
         <div class="absolute bottom-[-10%] left-[20%] w-[20rem] sm:w-[40rem] h-[20rem] sm:h-[40rem] bg-slate-600 dark:bg-slate-300 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[80px] sm:blur-[120px] opacity-10 dark:opacity-[0.1] animate-blob animation-delay-4000"></div>
     </div>
 
-   <div id="language-screen" class="hidden fixed inset-0 z-[200] bg-slate-50/95 dark:bg-slate-950/95 backdrop-blur-3xl flex items-center justify-center p-4 sm:p-6 transition-opacity duration-300">
+   <div id="language-screen" class="hidden fixed inset-0 z-[200] bg-slate-50/95 dark:bg-slate-950/95 backdrop-blur-3xl flex items-center justify-center p-4 sm:p-6 transition-opacity duration-300" style="display: none; position: fixed; inset: 0; z-index: 2147483647; background: #f8fafc; align-items: center; justify-content: center;">
         <div class="w-full max-w-md rounded-[2rem] glass border border-white/60 dark:border-white/10 p-7 sm:p-9 text-center shadow-2xl">
             <div class="w-16 h-16 mx-auto mb-5 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-600 text-white flex items-center justify-center text-2xl shadow-lg">
                 <i class="fa-solid fa-language"></i>
@@ -596,7 +600,7 @@
         </div>
     </div>
 
-   <div id="welcome-screen" class="hidden fixed inset-0 z-[100] bg-white/90 dark:bg-slate-950/90 backdrop-blur-3xl flex flex-col items-center justify-start pt-8 sm:justify-center sm:pt-0 transition-all duration-700 overflow-y-auto py-10 px-4">
+   <div id="welcome-screen" class="hidden fixed inset-0 z-[100] bg-white/90 dark:bg-slate-950/90 backdrop-blur-3xl flex flex-col items-center justify-start pt-8 sm:justify-center sm:pt-0 transition-all duration-700 overflow-y-auto py-10 px-4" style="display: none;">
     <div class="text-center max-w-4xl w-full my-auto sm:my-auto">
         <div class="mb-6 mt-4 sm:mt-18 animate-float inline-block">
             <div class="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-slate-800 to-slate-600 rounded-3xl flex items-center justify-center text-white text-4xl shadow-2xl shadow-slate-800/40 rotate-12 mx-auto">
@@ -868,7 +872,7 @@
         </div>
     </div>
 
-    <div id="main-app" class="opacity-0 translate-y-10 transition-all duration-1000 hidden min-h-screen flex flex-col">
+    <div id="main-app" class="opacity-0 translate-y-10 transition-all duration-1000 hidden min-h-screen flex flex-col" style="display: none;">
         
         <nav class="sticky top-0 w-full z-50 glass shadow-sm transition-colors duration-500 border-b border-white/40 dark:border-white/5">
             <div class="max-w-[1400px] mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-4">
@@ -1736,6 +1740,7 @@
             if (currentSession && currentSession.user) {
                 const homeDistrict = currentSession.user.user_metadata?.home_district || 'all';
                 startApp(homeDistrict, true);
+                document.body.style.visibility = 'visible';
             } else {
                 showLanguageScreen();
             }
@@ -3021,6 +3026,8 @@
         welcome.classList.add('hidden');
         welcome.style.display = 'none';
         mainApp.classList.remove('hidden', 'opacity-0', 'translate-y-10');
+        mainApp.style.display = 'flex';
+        document.getElementById('online-status').style.display = 'flex';
         initMap();
         applyFilters();
         setInterval(updateClockUI, 1000);
@@ -3033,6 +3040,8 @@
     setTimeout(() => {
         welcome.style.display = 'none';
         mainApp.classList.remove('hidden');
+        mainApp.style.display = 'flex';
+        document.getElementById('online-status').style.display = 'flex';
         setTimeout(() => {
             mainApp.classList.remove('opacity-0', 'translate-y-10');
             initMap();
