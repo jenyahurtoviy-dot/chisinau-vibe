@@ -4,6 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Chisinau Vibe | Premium Guide</title>
+    <script>
+        // Раннее определение темы по времени в Кишиневе — выполняется ДО отрисовки страницы,
+        // чтобы не было "вспышки" не той темы на телефоне при загрузке.
+        (function () {
+            try {
+                var chStr = new Date().toLocaleString("en-US", { timeZone: "Europe/Chisinau" });
+                var h = new Date(chStr).getHours();
+                var shouldBeDark = (h >= 20 || h < 6);
+                var root = document.documentElement;
+                root.classList.remove('light', 'dark');
+                root.classList.add(shouldBeDark ? 'dark' : 'light');
+            } catch (e) {
+                // если что-то пошло не так — остаёмся со светлой темой по умолчанию
+            }
+        })();
+    </script>
     <!-- Подключаем Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <!-- Подключаем FontAwesome для премиальных иконок вместо эмодзи -->
@@ -136,6 +152,9 @@
            просто инвертированные в тёмную палитру фильтром */
         .dark #map .leaflet-tile-pane {
             filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(0.9) saturate(0.65);
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+            will-change: filter;
         }
 
         .leaflet-control-zoom a {
@@ -1564,41 +1583,56 @@
         const mapStyleDark = mapStyleLight;
 
         function toggleTheme() {
-            const html = document.documentElement;
-            const icon = document.getElementById('theme-icon');
-            const isDark = html.classList.contains('dark');
-            
-            if (isDark) {
-                html.classList.remove('dark');
-                html.classList.add('light');
-                icon.className = 'fa-solid fa-moon text-lg text-slate-600';
-            } else {
-                html.classList.remove('light');
-                html.classList.add('dark');
-                icon.className = 'fa-solid fa-sun text-lg text-amber-400';
+            try {
+                const html = document.documentElement;
+                const icon = document.getElementById('theme-icon');
+                const isDark = html.classList.contains('dark');
+
+                if (isDark) {
+                    html.classList.remove('dark');
+                    html.classList.add('light');
+                    if (icon) icon.className = 'fa-solid fa-moon text-lg text-slate-600';
+                } else {
+                    html.classList.remove('light');
+                    html.classList.add('dark');
+                    if (icon) icon.className = 'fa-solid fa-sun text-lg text-amber-400';
+                }
+
+                const mapEl = document.getElementById('map');
+                if (map && mapEl && mapEl.offsetParent !== null) {
+                    setTimeout(() => { if (map) map.invalidateSize(); }, 350);
+                }
+            } catch (e) {
+                // не даём переключению темы уронить остальной скрипт
             }
-            if (map) map.invalidateSize();
         }
 
         // Автоматическая смена темы по времени в Кишиневе:
         // с 06:00 до 19:59 — светлая, с 20:00 до 05:59 — тёмная.
         function applyAutoTheme() {
-            const info = getChisinauInfo();
-            const shouldBeDark = (info.hours >= 20 || info.hours < 6);
-            const html = document.documentElement;
-            const icon = document.getElementById('theme-icon');
-            const isDark = html.classList.contains('dark');
+            try {
+                const info = getChisinauInfo();
+                const shouldBeDark = (info.hours >= 20 || info.hours < 6);
+                const html = document.documentElement;
+                const icon = document.getElementById('theme-icon');
+                const isDark = html.classList.contains('dark');
 
-            if (shouldBeDark && !isDark) {
-                html.classList.remove('light');
-                html.classList.add('dark');
-                if (icon) icon.className = 'fa-solid fa-sun text-lg text-amber-400';
-                if (map) map.invalidateSize();
-            } else if (!shouldBeDark && isDark) {
-                html.classList.remove('dark');
-                html.classList.add('light');
-                if (icon) icon.className = 'fa-solid fa-moon text-lg text-slate-600';
-                if (map) map.invalidateSize();
+                if (shouldBeDark !== isDark) {
+                    html.classList.remove(shouldBeDark ? 'light' : 'dark');
+                    html.classList.add(shouldBeDark ? 'dark' : 'light');
+                    if (map && document.getElementById('map') && document.getElementById('map').offsetParent !== null) {
+                        setTimeout(() => { if (map) map.invalidateSize(); }, 350);
+                    }
+                }
+
+                // Иконка всегда синхронизируется с фактическим состоянием темы
+                if (icon) {
+                    icon.className = shouldBeDark
+                        ? 'fa-solid fa-sun text-lg text-amber-400'
+                        : 'fa-solid fa-moon text-lg text-slate-600';
+                }
+            } catch (e) {
+                // не даём авто-теме уронить остальной скрипт
             }
         }
 
