@@ -562,9 +562,12 @@
         }
 
         function formatPriceRange(value) {
-            const translated = tr(value);
+            const rawValue = String(value || '');
             const currency = currentLang === 'ro' ? 'lei' : (currentLang === 'en' ? 'MDL' : 'леев');
-            return translated.replace(/\s*леев/iu, ` ${currency}`);
+            if (rawValue.includes('леев')) {
+                return `${rawValue.split('леев').join('').trim()} ${currency}`;
+            }
+            return tr(rawValue);
         }
 
         function translatePageText(root = document.body) {
