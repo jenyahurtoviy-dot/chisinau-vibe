@@ -329,52 +329,6 @@
         </div>
     </div>
 
-    <!-- Модальное окно Редактирования места (Только для Админа) -->
-    <div id="admin-edit-modal" class="hidden fixed inset-0 z-[150] bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 transition-all">
-        <div class="glass max-w-md w-full p-6 sm:p-8 rounded-[2rem] border border-slate-800/30 shadow-2xl relative animate-fade-in-up max-h-[90vh] overflow-y-auto no-scrollbar">
-            <button onclick="closeAdminEditModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white flex items-center justify-center transition-colors z-10">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-            <div class="flex items-center gap-3 mb-5">
-                <div class="w-10 h-10 rounded-xl bg-slate-800 dark:ring-1 dark:ring-white/15 text-white flex items-center justify-center text-lg shadow-md shadow-slate-800/30">
-                    <i class="fa-solid fa-pen-to-square"></i>
-                </div>
-                <div>
-                    <h3 class="text-xl font-black text-slate-900 dark:text-white">Редактирование места</h3>
-                    <span class="text-[10px] font-bold text-black dark:text-slate-300 uppercase tracking-wider">Панель администратора</span>
-                </div>
-            </div>
-            
-            <form id="admin-edit-form" onsubmit="savePlaceEdit(event)" class="space-y-4">
-                <input type="hidden" id="edit-place-id">
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Название заведения</label>
-                    <input type="text" id="edit-name" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm font-bold outline-none focus:ring-2 focus:ring-slate-800 dark:text-white">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Район</label>
-                    <input type="text" id="edit-district" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm font-bold outline-none focus:ring-2 focus:ring-slate-800 dark:text-white">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Описание</label>
-                    <textarea id="edit-desc" rows="3" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm font-medium outline-none focus:ring-2 focus:ring-slate-800 dark:text-white"></textarea>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1">Средний чек</label>
-                    <input type="text" id="edit-price-range" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm font-bold outline-none focus:ring-2 focus:ring-slate-800 dark:text-white">
-                </div>
-                <div class="grid grid-cols-2 gap-3 pt-2">
-                    <button type="button" onclick="closeAdminEditModal()" class="py-3 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold rounded-xl text-center text-xs hover:bg-slate-300 transition-colors">
-                        Отмена
-                    </button>
-                    <button type="submit" class="py-3 bg-slate-800 dark:ring-1 dark:ring-white/15 text-white font-bold rounded-xl text-center text-xs shadow-lg shadow-slate-800/30 hover:bg-black transition-all">
-                        Сохранить
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <!-- Модальное окно авторизации и регистрации -->
     <div id="auth-modal" class="hidden fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity">
         <div class="glass w-full max-w-md rounded-[2rem] p-6 sm:p-8 border border-white/60 dark:border-white/10 shadow-2xl relative">
@@ -415,95 +369,118 @@
     </div>
 
     <!-- Красивое отдельное окно Личного кабинета / Аккаунта -->
-    <div id="profile-modal" class="hidden fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md transition-opacity">
-        <div class="glass w-full max-w-xl rounded-[2.5rem] p-6 sm:p-8 border border-white/60 dark:border-white/10 shadow-2xl relative max-h-[90vh] overflow-y-auto animate-fade-in-up">
-            <button onclick="closeProfileModal()" class="absolute top-6 right-6 w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white flex items-center justify-center transition-colors shadow-sm">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-            
-            <!-- Шапка профиля -->
-            <div class="flex flex-col sm:flex-row items-center gap-5 mb-8 pb-6 border-b border-slate-200/80 dark:border-slate-800 text-center sm:text-left">
-                <div class="relative">
-                    <div class="w-20 h-20 rounded-3xl bg-gradient-to-tr from-slate-800 via-slate-700 to-slate-600 flex items-center justify-center text-white text-3xl font-black shadow-xl shadow-slate-800/30 ring-4 ring-white/50 dark:ring-slate-800/50">
+    <div id="profile-modal" class="hidden fixed inset-0 z-[9999] bg-slate-50 dark:bg-slate-950 overflow-y-auto no-scrollbar">
+        <!-- Обложка / шапка страницы аккаунта -->
+        <div class="relative h-56 sm:h-64 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700 dark:from-slate-950 dark:via-slate-900 dark:to-black overflow-hidden">
+            <div class="absolute -top-20 -right-20 w-72 h-72 bg-white/10 rounded-full blur-3xl"></div>
+            <div class="absolute -bottom-24 -left-10 w-72 h-72 bg-slate-400/10 rounded-full blur-3xl"></div>
+
+            <!-- Верхняя навигация -->
+            <div class="relative z-10 flex items-center justify-between px-4 sm:px-8 pt-5">
+                <button onclick="closeProfileModal()" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/15 text-white flex items-center justify-center transition-all">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <h2 class="text-white font-black text-sm sm:text-base uppercase tracking-widest opacity-90">Мой аккаунт</h2>
+                <button onclick="handleLogout()" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/10 hover:bg-rose-500 backdrop-blur-md border border-white/15 text-white flex items-center justify-center transition-all" title="Выйти">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Контейнер контента, наезжающий на обложку -->
+        <div class="max-w-2xl mx-auto px-4 sm:px-6 -mt-16 sm:-mt-20 pb-16 relative z-10">
+
+            <!-- Аватар и основная инфа -->
+            <div class="flex flex-col items-center text-center mb-8 animate-fade-in-up">
+                <div class="relative mb-4">
+                    <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-[2rem] bg-gradient-to-tr from-slate-800 via-slate-700 to-slate-600 flex items-center justify-center text-white text-4xl sm:text-5xl font-black shadow-2xl shadow-slate-900/40 ring-4 ring-white dark:ring-slate-950">
                         <i class="fa-solid fa-user-astronaut"></i>
                     </div>
-                    <span class="absolute bottom-0 right-0 w-5 h-5 bg-emerald-500 border-2 border-white dark:border-slate-900 rounded-full"></span>
+                    <span class="absolute bottom-1 right-1 w-6 h-6 bg-emerald-500 border-4 border-white dark:border-slate-950 rounded-full"></span>
                 </div>
-                <div class="min-w-0 flex-1">
-                    <span id="profile-badge-label" class="text-[10px] font-black uppercase tracking-widest text-black dark:text-slate-300 bg-slate-100 dark:bg-slate-800/10 px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-800/20 inline-block mb-1">VIP Вайбер</span>
-                    <h3 id="profile-email-display" class="text-lg sm:text-xl font-black text-slate-900 dark:text-white truncate">user@example.com</h3>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">Управление аккаунтом и сохраненными локациями</p>
-                </div>
+                <span id="profile-badge-label" class="text-[10px] font-black uppercase tracking-widest text-black dark:text-slate-300 bg-slate-100 dark:bg-slate-800/60 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 inline-block mb-2">VIP Вайбер</span>
+                <h3 id="profile-email-display" class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white truncate max-w-full">user@example.com</h3>
+                <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium mt-1">Управление аккаунтом и сохраненными локациями</p>
             </div>
 
             <!-- Статистика / Данные пользователя -->
-            <div class="grid grid-cols-2 gap-3 mb-6">
-                <div class="p-4 rounded-2xl bg-slate-100/50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 flex items-center gap-3.5">
-                    <div class="w-10 h-10 rounded-xl bg-slate-800 dark:ring-1 dark:ring-white/15 text-white flex items-center justify-center text-lg shrink-0 shadow-md shadow-slate-800/20">
+            <div class="grid grid-cols-2 gap-3 mb-6 animate-fade-in-up">
+                <div class="p-5 rounded-[1.75rem] glass border border-white/60 dark:border-white/10 flex items-center gap-3.5 shadow-lg">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-700 dark:ring-1 dark:ring-white/15 text-white flex items-center justify-center text-lg shrink-0 shadow-md shadow-slate-800/20">
                         <i class="fa-solid fa-heart"></i>
                     </div>
-                    <div>
-                        <div id="fav-count-badge" class="text-lg font-black text-slate-800 dark:text-white">0</div>
+                    <div class="min-w-0">
+                        <div id="fav-count-badge" class="text-xl font-black text-slate-800 dark:text-white">0</div>
                         <div class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">В избранном</div>
                     </div>
                 </div>
-                <div class="p-4 rounded-2xl bg-emerald-50/50 dark:bg-slate-800/40 border border-emerald-100 dark:border-slate-700 flex items-center gap-3.5">
-                    <div class="w-10 h-10 rounded-xl bg-emerald-500 text-white flex items-center justify-center text-lg shrink-0 shadow-md shadow-emerald-500/20">
+                <div class="p-5 rounded-[1.75rem] glass border border-white/60 dark:border-white/10 flex items-center gap-3.5 shadow-lg">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 text-white flex items-center justify-center text-lg shrink-0 shadow-md shadow-emerald-500/20">
                         <i class="fa-solid fa-shield-halved"></i>
                     </div>
-                    <div>
-                        <div class="text-sm font-black text-emerald-600 dark:text-emerald-400">Активен</div>
+                    <div class="min-w-0">
+                        <div class="text-base font-black text-emerald-600 dark:text-emerald-400">Активен</div>
                         <div class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Статус сессии</div>
                     </div>
                 </div>
             </div>
 
             <!-- Ваш район -->
-            <div class="mb-6">
-                <div class="flex items-center justify-between mb-3 px-1">
+            <div class="mb-6 p-5 sm:p-6 rounded-[1.75rem] glass border border-white/60 dark:border-white/10 shadow-lg animate-fade-in-up">
+                <div class="flex items-center justify-between mb-4">
                     <h4 class="text-xs font-black uppercase text-slate-400 tracking-wider flex items-center gap-2">
                         <i class="fa-solid fa-location-dot text-slate-800 dark:text-slate-300"></i> Ваш район
                     </h4>
-                    <span id="home-district-saved-badge" class="hidden text-[10px] font-bold text-emerald-500"><i class="fa-solid fa-check"></i> Сохранено</span>
+                    <span id="home-district-saved-badge" class="hidden text-[10px] font-bold text-emerald-500 items-center gap-1">
+                        <i class="fa-solid fa-circle-check"></i> Сохранено
+                    </span>
                 </div>
-                <div class="flex flex-col sm:flex-row gap-2.5">
-                    <select id="home-district-select" class="flex-1 px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm font-bold outline-none focus:ring-2 focus:ring-slate-800 transition-all shadow-inner dark:text-white">
-                        <option value="all">Весь город</option>
-                        <option value="Центр">Центр</option>
-                        <option value="Ботаника">Ботаника</option>
-                        <option value="Рышкановка">Рышкановка</option>
-                        <option value="Буюканы">Буюканы</option>
-                        <option value="Чеканы">Чеканы</option>
-                    </select>
-                    <button onclick="saveHomeDistrict()" class="px-5 py-3 rounded-xl bg-slate-800 dark:ring-1 dark:ring-white/15 text-white font-bold text-xs shadow-lg hover:bg-black transition-all shrink-0">
-                        Сохранить
+                <div id="home-district-grid" class="grid grid-cols-3 gap-2.5">
+                    <button onclick="selectHomeDistrict('all', event)" data-district="all" class="home-dist-btn flex flex-col items-center justify-center gap-1.5 p-3.5 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-400 text-slate-600 dark:text-slate-300">
+                        <i class="fa-solid fa-earth-europe text-lg text-slate-700 dark:text-slate-300 opacity-90"></i>
+                        <span class="text-[10px] sm:text-[11px] font-extrabold uppercase text-slate-800 dark:text-white text-center leading-tight">Весь город</span>
+                    </button>
+                    <button onclick="selectHomeDistrict('Центр', event)" data-district="Центр" class="home-dist-btn flex flex-col items-center justify-center gap-1.5 p-3.5 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-400 text-slate-600 dark:text-slate-300">
+                        <i class="fa-solid fa-landmark text-lg text-slate-700 dark:text-slate-300 opacity-90"></i>
+                        <span class="text-[10px] sm:text-[11px] font-extrabold uppercase text-slate-800 dark:text-white text-center leading-tight">Центр</span>
+                    </button>
+                    <button onclick="selectHomeDistrict('Ботаника', event)" data-district="Ботаника" class="home-dist-btn flex flex-col items-center justify-center gap-1.5 p-3.5 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-400 text-slate-600 dark:text-slate-300">
+                        <i class="fa-solid fa-leaf text-lg text-slate-700 dark:text-slate-300 opacity-90"></i>
+                        <span class="text-[10px] sm:text-[11px] font-extrabold uppercase text-slate-800 dark:text-white text-center leading-tight">Ботаника</span>
+                    </button>
+                    <button onclick="selectHomeDistrict('Рышкановка', event)" data-district="Рышкановка" class="home-dist-btn flex flex-col items-center justify-center gap-1.5 p-3.5 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-400 text-slate-600 dark:text-slate-300">
+                        <i class="fa-solid fa-water text-lg text-slate-700 dark:text-slate-300 opacity-90"></i>
+                        <span class="text-[10px] sm:text-[11px] font-extrabold uppercase text-slate-800 dark:text-white text-center leading-tight">Рышкановка</span>
+                    </button>
+                    <button onclick="selectHomeDistrict('Буюканы', event)" data-district="Буюканы" class="home-dist-btn flex flex-col items-center justify-center gap-1.5 p-3.5 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-400 text-slate-600 dark:text-slate-300">
+                        <i class="fa-solid fa-tree text-lg text-slate-700 dark:text-slate-300 opacity-90"></i>
+                        <span class="text-[10px] sm:text-[11px] font-extrabold uppercase text-slate-800 dark:text-white text-center leading-tight">Буюканы</span>
+                    </button>
+                    <button onclick="selectHomeDistrict('Чеканы', event)" data-district="Чеканы" class="home-dist-btn flex flex-col items-center justify-center gap-1.5 p-3.5 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-400 text-slate-600 dark:text-slate-300">
+                        <i class="fa-solid fa-building text-lg text-slate-700 dark:text-slate-300 opacity-90"></i>
+                        <span class="text-[10px] sm:text-[11px] font-extrabold uppercase text-slate-800 dark:text-white text-center leading-tight">Чеканы</span>
                     </button>
                 </div>
-                <p class="text-[10px] text-slate-400 mt-2 px-1">Этот район будет открываться первым при входе в аккаунт. На сайте вы всегда можете смотреть и выбирать любой другой район.</p>
+                <p class="text-[10px] text-slate-400 mt-3 px-1">Этот район будет открываться первым при входе в аккаунт. На сайте вы всегда можете смотреть и выбирать любой другой район.</p>
             </div>
 
             <!-- Список избранного -->
-            <div class="mb-6">
-                <div class="flex items-center justify-between mb-3 px-1">
+            <div class="mb-6 p-5 sm:p-6 rounded-[1.75rem] glass border border-white/60 dark:border-white/10 shadow-lg animate-fade-in-up">
+                <div class="flex items-center justify-between mb-4">
                     <h4 class="text-xs font-black uppercase text-slate-400 tracking-wider flex items-center gap-2">
                         <i class="fa-solid fa-bookmark text-slate-800 dark:text-slate-300"></i> Сохраненные заведения
                     </h4>
                     <span id="fav-count" class="text-xs font-bold text-slate-500">0 мест</span>
                 </div>
-                <div id="favorites-container" class="space-y-2.5 max-h-[260px] overflow-y-auto pr-1">
+                <div id="favorites-container" class="space-y-2.5 max-h-[320px] overflow-y-auto pr-1">
                     <!-- Сюда динамически добавятся карточки избранного -->
                 </div>
             </div>
 
-            <!-- Нижняя панель действий -->
-            <div class="pt-4 border-t border-slate-200/80 dark:border-slate-800 flex flex-col sm:flex-row justify-between items-center gap-3">
-                <button onclick="handleLogout()" class="w-full sm:w-auto px-5 py-3 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-500 hover:text-white font-bold text-xs transition-all flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-right-from-bracket"></i> Выйти из аккаунта
-                </button>
-                <button onclick="closeProfileModal()" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs shadow-lg hover:scale-105 transition-all">
-                    Готово
-                </button>
-            </div>
+            <!-- Нижняя кнопка -->
+            <button onclick="closeProfileModal()" class="w-full py-4 rounded-2xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-sm shadow-lg hover:scale-[1.02] transition-all animate-fade-in-up">
+                Вернуться на сайт
+            </button>
         </div>
     </div>
 
@@ -691,11 +668,6 @@
                         </h3>
                         <div class="flex flex-wrap items-center gap-2">
                             <!-- Панель управления только для админа -->
-                            <div id="admin-controls-container" class="hidden flex items-center gap-2">
-                                <button id="admin-mode-toggle-btn" onclick="toggleAdminEditMode()" class="text-[10px] sm:text-xs bg-rose-500 text-white font-bold px-3.5 py-1.5 rounded-full shadow-md hover:bg-rose-600 transition-all flex items-center gap-1.5 animate-pulse">
-                                    <i class="fa-solid fa-shield-halved"></i> Режим админа: ВЫКЛ
-                                </button>
-                            </div>
                             <button onclick="getUserLocation()" class="text-[10px] sm:text-xs bg-slate-800 dark:ring-1 dark:ring-white/15 text-white font-bold px-3 py-1.5 rounded-full shadow-md hover:bg-black transition-all flex items-center gap-1.5">
                                 <i class="fa-solid fa-location-crosshairs"></i> Мое местоположение
                             </button>
@@ -744,12 +716,9 @@
         const SUPABASE_KEY = 'sb_publishable_14JmwmymGHTls2HonrUTKA_0EHTj6LI';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        const ADMIN_EMAIL = "gurtovoujenya@gmail.com";
-
         let isRegisterMode = false;
         let currentSession = null;
         let userFavorites = [];
-        let isAdminEditMode = false;
 
         function openAuthModal() {
             document.getElementById('auth-modal').classList.remove('hidden');
@@ -763,22 +732,20 @@
 
         function openProfileModal() {
             document.getElementById('profile-email-display').textContent = currentSession?.user?.email || '';
-            const isUserAdmin = currentSession && currentSession.user && currentSession.user.email === ADMIN_EMAIL;
             const badgeLabel = document.getElementById('profile-badge-label');
-            if (isUserAdmin) {
-                badgeLabel.textContent = '👑 Главный Администратор';
-                badgeLabel.className = 'text-[10px] font-black uppercase tracking-widest text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-500/10 px-2.5 py-1 rounded-lg border border-rose-100 dark:border-rose-500/20 inline-block mb-1';
-            } else {
-                badgeLabel.textContent = 'VIP Вайбер';
-                badgeLabel.className = 'text-[10px] font-black uppercase tracking-widest text-black dark:text-slate-300 bg-slate-100 dark:bg-slate-800/10 px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-800/20 inline-block mb-1';
-            }
+            badgeLabel.textContent = 'VIP Вайбер';
+            badgeLabel.className = 'text-[10px] font-black uppercase tracking-widest text-black dark:text-slate-300 bg-slate-100 dark:bg-slate-800/60 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 inline-block mb-2';
             renderFavoritesList();
             populateHomeDistrictSelect();
-            document.getElementById('profile-modal').classList.remove('hidden');
+            const modal = document.getElementById('profile-modal');
+            modal.classList.remove('hidden');
+            modal.scrollTop = 0;
+            document.body.style.overflow = 'hidden'; // блокируем скролл фона, пока открыта "страница" аккаунта
         }
 
         function closeProfileModal() {
             document.getElementById('profile-modal').classList.add('hidden');
+            document.body.style.overflow = '';
         }
 
         function handleNavAuthClick() {
@@ -962,18 +929,24 @@
             });
         }
 
+        // Подсвечивает текущий сохранённый район в виде плиток вместо обычного select
         function populateHomeDistrictSelect() {
-            const select = document.getElementById('home-district-select');
-            if (!select) return;
-            select.value = currentSession?.user?.user_metadata?.home_district || 'all';
+            const saved = currentSession?.user?.user_metadata?.home_district || 'all';
+            document.querySelectorAll('.home-dist-btn').forEach(btn => {
+                const isActive = btn.dataset.district === saved;
+                btn.classList.toggle('cat-btn-active', isActive);
+            });
         }
 
-        async function saveHomeDistrict() {
+        // Клик по плитке района — сразу подсвечивает выбор и сохраняет в Supabase
+        async function selectHomeDistrict(value, event) {
             if (!currentSession || !currentSession.user) return;
-            const select = document.getElementById('home-district-select');
-            const badge = document.getElementById('home-district-saved-badge');
-            const value = select.value;
 
+            document.querySelectorAll('.home-dist-btn').forEach(btn => {
+                btn.classList.toggle('cat-btn-active', btn.dataset.district === value);
+            });
+
+            const badge = document.getElementById('home-district-saved-badge');
             try {
                 const { data, error } = await supabaseClient.auth.updateUser({ data: { home_district: value } });
                 if (error) throw error;
@@ -981,7 +954,11 @@
                     currentSession.user = data.user;
                 }
                 badge.classList.remove('hidden');
-                setTimeout(() => badge.classList.add('hidden'), 2000);
+                badge.classList.add('flex');
+                setTimeout(() => {
+                    badge.classList.add('hidden');
+                    badge.classList.remove('flex');
+                }, 2000);
             } catch (err) {
                 alert('Не удалось сохранить район: ' + (err.message || 'ошибка'));
             }
@@ -992,21 +969,13 @@
             const { data: { session } } = await supabaseClient.auth.getSession();
             currentSession = session;
             const btnText = document.getElementById('nav-auth-btn');
-            const adminContainer = document.getElementById('admin-controls-container');
-            
+
             if (session && session.user) {
                 btnText.textContent = session.user.email.split('@')[0];
                 await loadUserFavorites();
-
-                if (session.user.email === ADMIN_EMAIL) {
-                    adminContainer.classList.remove('hidden');
-                } else {
-                    adminContainer.classList.add('hidden');
-                }
             } else {
                 btnText.textContent = 'Войти';
                 userFavorites = [];
-                adminContainer.classList.add('hidden');
             }
         }
 
@@ -1711,8 +1680,18 @@
         // иначе считаем по средней скорости пешехода ~5 км/ч (запасной вариант "по прямой")
         function formatDistance(meters, seconds) {
             const distText = meters < 1000 ? `${Math.round(meters / 10) * 10} м` : `${(meters / 1000).toFixed(1)} км`;
-            const mins = typeof seconds === 'number' ? Math.max(1, Math.round(seconds / 60)) : Math.max(1, Math.round(meters / 83.3));
-            return { distText, walkText: `${mins} мин пешком` };
+            const totalMins = typeof seconds === 'number' ? Math.max(1, Math.round(seconds / 60)) : Math.max(1, Math.round(meters / 83.3));
+
+            let walkText;
+            if (totalMins >= 60) {
+                const hours = Math.floor(totalMins / 60);
+                const mins = totalMins % 60;
+                walkText = mins > 0 ? `${hours} ч ${mins} мин пешком` : `${hours} ч пешком`;
+            } else {
+                walkText = `${totalMins} мин пешком`;
+            }
+
+            return { distText, walkText };
         }
 
         // Возвращает инфо о расстоянии до места: реальный маршрут (ORS), если уже посчитан,
@@ -2121,15 +2100,8 @@
                 const status = checkOpenStatus(p.schedule);
                 const isFav = userFavorites.includes(p.id);
 
-                const adminEditBtn = (currentSession && currentSession.user && currentSession.user.email === ADMIN_EMAIL && isAdminEditMode) ? `
-                    <button onclick="openAdminEditModal('${p.id}', event)" class="absolute top-4 left-4 z-20 px-3 py-1.5 rounded-xl bg-rose-500 text-white font-bold text-[10px] shadow-lg hover:scale-105 transition-all flex items-center gap-1.5">
-                        <i class="fa-solid fa-pen"></i> Изменить
-                    </button>
-                ` : '';
-
                 grid.insertAdjacentHTML('beforeend', `
                     <div onclick="showPlaceModalById('${p.id}')" class="glass rounded-[2.5rem] p-5 sm:p-6 card-hover flex flex-col justify-between border border-white/60 dark:border-white/10 cursor-pointer relative overflow-hidden group">
-                        ${adminEditBtn}
                         <div>
                             <div class="flex items-center justify-between mb-4">
                                 <div class="w-14 h-14 rounded-2xl bg-gradient-to-br ${p.gradient} flex items-center justify-center text-2xl text-white shadow-lg shadow-slate-800/20 group-hover:scale-110 transition-transform">
@@ -2303,68 +2275,6 @@
         }, 50);
     }, 600);
 }
-
-        function toggleAdminEditMode() {
-            isAdminEditMode = !isAdminEditMode;
-            const btn = document.getElementById('admin-mode-toggle-btn');
-            if (isAdminEditMode) {
-                btn.innerHTML = `<i class="fa-solid fa-shield-halved"></i> Режим админа: ВКЛ`;
-                btn.classList.remove('bg-rose-500', 'hover:bg-rose-600');
-                btn.classList.add('bg-emerald-500', 'hover:bg-emerald-600');
-            } else {
-                btn.innerHTML = `<i class="fa-solid fa-shield-halved"></i> Режим админа: ВЫКЛ`;
-                btn.classList.remove('bg-emerald-500', 'hover:bg-emerald-600');
-                btn.classList.add('bg-rose-500', 'hover:bg-rose-600');
-            }
-            applyFilters();
-        }
-
-        function openAdminEditModal(placeId, event) {
-            if (event) event.stopPropagation();
-            const p = places.find(item => item.id === placeId);
-            if (!p) return;
-
-            document.getElementById('edit-place-id').value = p.id;
-            document.getElementById('edit-name').value = p.name;
-            document.getElementById('edit-district').value = p.district;
-            document.getElementById('edit-desc').value = p.desc;
-            document.getElementById('edit-price-range').value = p.priceRange;
-
-            document.getElementById('admin-edit-modal').classList.remove('hidden');
-        }
-
-        function closeAdminEditModal() {
-            document.getElementById('admin-edit-modal').classList.add('hidden');
-        }
-
-        function savePlaceEdit(event) {
-            event.preventDefault();
-            const id = document.getElementById('edit-place-id').value;
-            const name = document.getElementById('edit-name').value;
-            const district = document.getElementById('edit-district').value;
-            const desc = document.getElementById('edit-desc').value;
-            const priceRange = document.getElementById('edit-price-range').value;
-
-            const p = places.find(item => item.id === id);
-            if (p) {
-                p.name = name;
-                p.district = district;
-                p.desc = desc;
-                p.priceRange = priceRange;
-            }
-
-            closeAdminEditModal();
-            applyFilters();
-            alert('Место успешно обновлено!');
-        }
-
-
-
-
-
-
-
-        
     </script>
 </body>
 </html>
