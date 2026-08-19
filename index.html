@@ -116,6 +116,26 @@
             color: #e2e8f0;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.42);
         }
+        /* На первом экране все языки равны: одинаковая спокойная кнопка без акцента. */
+        .language-start-choice {
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+            border: 1px solid #cbd5e1;
+            color: #334155;
+            box-shadow: 0 5px 14px rgba(15, 23, 42, 0.08);
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .language-start-choice:hover {
+            border-color: #64748b;
+            box-shadow: 0 8px 18px rgba(15, 23, 42, 0.14);
+            transform: translateY(-2px);
+        }
+        .dark .language-start-choice {
+            background: linear-gradient(135deg, #334155, #1e293b);
+            border-color: #475569;
+            color: #e2e8f0;
+            box-shadow: 0 5px 14px rgba(0, 0, 0, 0.25);
+        }
+        .dark .language-start-choice:hover { border-color: #94a3b8; }
 
         /* Район под логотипом читается как отдельная стеклянная плашка. */
         #current-district-display {
@@ -746,12 +766,12 @@
             <div class="w-16 h-16 mx-auto mb-5 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-600 text-white flex items-center justify-center text-2xl shadow-lg">
                 <i class="fa-solid fa-language"></i>
             </div>
-            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">Alege limba</h1>
-            <p class="mt-2 text-sm text-slate-500 dark:text-slate-400 font-medium">Выберите язык сайта</p>
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">Choose your language</h1>
+            <p class="mt-2 text-sm text-slate-500 dark:text-slate-400 font-medium">Română · Русский · English</p>
             <div class="grid grid-cols-3 gap-2.5 mt-7">
-                <button type="button" onclick="chooseInitialLanguage('ro')" class="py-4 rounded-2xl bg-slate-800 hover:bg-black text-white font-black text-sm shadow-lg transition-all hover:scale-[1.03] active:scale-[0.98]">Română</button>
-                <button type="button" onclick="chooseInitialLanguage('ru')" class="py-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white font-black text-sm shadow-sm transition-all hover:scale-[1.03] active:scale-[0.98]">Русский</button>
-                <button type="button" onclick="chooseInitialLanguage('en')" class="py-4 rounded-2xl bg-sky-500 hover:bg-sky-600 text-white font-black text-sm shadow-lg shadow-sky-500/20 transition-all hover:scale-[1.03] active:scale-[0.98]">English</button>
+                <button type="button" onclick="chooseInitialLanguage('ro')" class="language-start-choice py-4 rounded-2xl font-black text-sm active:scale-[0.98]">Română</button>
+                <button type="button" onclick="chooseInitialLanguage('ru')" class="language-start-choice py-4 rounded-2xl font-black text-sm active:scale-[0.98]">Русский</button>
+                <button type="button" onclick="chooseInitialLanguage('en')" class="language-start-choice py-4 rounded-2xl font-black text-sm active:scale-[0.98]">English</button>
             </div>
         </div>
     </div>
