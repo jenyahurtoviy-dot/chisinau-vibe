@@ -561,6 +561,12 @@
             return `Заведения: ${district}`;
         }
 
+        function formatPriceRange(value) {
+            const translated = tr(value);
+            const currency = currentLang === 'ro' ? 'lei' : (currentLang === 'en' ? 'MDL' : 'леев');
+            return translated.replace(/\s*леев\b/i, ` ${currency}`);
+        }
+
         function translatePageText(root = document.body) {
             if (!root) return;
             const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
@@ -3034,7 +3040,7 @@
                 </div>
                 <div class="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 p-3.5 rounded-xl border border-emerald-100 dark:border-emerald-500/20 flex items-center justify-between shadow-sm">
                     <span><i class="fa-solid fa-wallet"></i> Чек / Прайс:</span>
-                    <span>${p.priceRange}</span>
+                    <span>${formatPriceRange(p.priceRange)}</span>
                 </div>
             `;
             mapBtn.href = p.mapUrl;
@@ -3063,6 +3069,24 @@
 
             L.control.zoom({ position: 'bottomright' }).addTo(map);
             markersLayer = L.layerGroup().addTo(map);
+        }
+
+        // Плавно ведёт карту к центру выбранного района, не меняя текущий масштаб.
+        function panMapToDistrict(district) {
+            if (!map || !Array.isArray(places)) return;
+            const districtPlaces = places.filter(place => district === 'all' || place.district === district);
+            if (districtPlaces.length === 0) return;
+
+            const center = districtPlaces.reduce((sum, place) => ({
+                lat: sum.lat + place.lat,
+                lng: sum.lng + place.lng
+            }), { lat: 0, lng: 0 });
+
+            map.panTo([center.lat / districtPlaces.length, center.lng / districtPlaces.length], {
+                animate: true,
+                duration: 0.8,
+                easeLinearity: 0.25
+            });
         }
 
         function getUserLocation() {
@@ -3260,7 +3284,7 @@
                             </div>
                             
                             <div class="flex items-center justify-between pt-1">
-                                <span class="text-xs font-black text-emerald-600 dark:text-emerald-400"><i class="fa-solid fa-wallet"></i> ${p.priceRange}</span>
+                                <span class="text-xs font-black text-emerald-600 dark:text-emerald-400"><i class="fa-solid fa-wallet"></i> ${formatPriceRange(p.priceRange)}</span>
                                 <span class="text-xs font-bold text-black dark:text-slate-300 group-hover:translate-x-1 transition-transform flex items-center gap-1">
                                     Подробнее <i class="fa-solid fa-arrow-right text-[10px]"></i>
                                 </span>
@@ -3292,6 +3316,7 @@
             document.getElementById('current-district-display').textContent = tr(distName);
             document.getElementById('grid-title').textContent = getDistrictTitle(dist);
 
+            panMapToDistrict(dist);
             applyFilters();
             scheduleSaveUserPreferences();
         }
@@ -3385,6 +3410,7 @@
         document.getElementById('online-status').style.display = 'flex';
         startOnlineCounter();
         initMap();
+        panMapToDistrict(state.district);
         applyFilters();
         setInterval(updateClockUI, 1000);
         updateClockUI();
@@ -3403,6 +3429,7 @@
         setTimeout(() => {
             mainApp.classList.remove('opacity-0', 'translate-y-10');
             initMap();
+            panMapToDistrict(state.district);
             
             applyFilters();
             setInterval(updateClockUI, 1000);
