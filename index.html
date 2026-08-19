@@ -564,7 +564,7 @@
         function formatPriceRange(value) {
             const translated = tr(value);
             const currency = currentLang === 'ro' ? 'lei' : (currentLang === 'en' ? 'MDL' : 'леев');
-            return translated.replace(/\s*леев\b/i, ` ${currency}`);
+            return translated.replace(/\s*леев/iu, ` ${currency}`);
         }
 
         function translatePageText(root = document.body) {
