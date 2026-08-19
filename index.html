@@ -563,9 +563,9 @@
     <!-- Контейнер тостов-уведомлений (сохранение/ошибки/статусы) -->
     <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-[300] w-[calc(100%-2rem)] max-w-sm flex flex-col items-center gap-2 pointer-events-none" style="position: fixed; top: max(12px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); z-index: 10000; width: min(calc(100vw - 24px), 420px); display: flex; flex-direction: column; align-items: stretch; gap: 8px; pointer-events: none;"></div>
 
-    <!-- Всплывающий баннер: "Вы посетили это место?" -->
-    <div id="visit-prompt-banner" class="hidden fixed top-4 left-1/2 -translate-x-1/2 z-[200] w-[calc(100%-2rem)] max-w-md animate-fade-in-up">
-        <div class="glass rounded-[1.75rem] p-4 sm:p-5 border border-white/60 dark:border-white/10 shadow-2xl flex items-center gap-3 sm:gap-4">
+    <!-- Модальное окно: "Вы посетили это место?" -->
+    <div id="visit-prompt-banner" class="hidden fixed inset-0 z-[10000] bg-slate-950/45 backdrop-blur-md p-4 flex items-center justify-center" role="dialog" aria-modal="true" aria-label="Вопрос о посещении места">
+        <div class="glass w-full max-w-md rounded-[2rem] p-5 sm:p-7 border border-white/60 dark:border-white/10 shadow-2xl flex items-center gap-3 sm:gap-4 animate-fade-in-up">
             <div id="visit-prompt-icon" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-700 flex items-center justify-center text-xl sm:text-2xl text-white shadow-md shrink-0">
                 📍
             </div>
