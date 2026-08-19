@@ -561,7 +561,7 @@
     </script>
 
     <!-- Контейнер тостов-уведомлений (сохранение/ошибки/статусы) -->
-    <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-[300] w-[calc(100%-2rem)] max-w-sm flex flex-col items-center gap-2 pointer-events-none"></div>
+    <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-[300] w-[calc(100%-2rem)] max-w-sm flex flex-col items-center gap-2 pointer-events-none" style="position: fixed; top: max(12px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); z-index: 10000; width: min(calc(100vw - 24px), 420px); display: flex; flex-direction: column; align-items: stretch; gap: 8px; pointer-events: none;"></div>
 
     <!-- Всплывающий баннер: "Вы посетили это место?" -->
     <div id="visit-prompt-banner" class="hidden fixed top-4 left-1/2 -translate-x-1/2 z-[200] w-[calc(100%-2rem)] max-w-md animate-fade-in-up">
@@ -1754,10 +1754,9 @@
             const bootGate = document.getElementById('boot-gate-style');
             if (bootGate) bootGate.remove();
 
-            // Спрашиваем "вы там были?" про место, которое смотрели в прошлый заход
-            checkVisitPrompt();
-
             if (currentSession && currentSession.user) {
+                // Вопрос о последнем просмотренном месте доступен только вошедшему пользователю.
+                checkVisitPrompt();
                 const homeDistrict = currentSession.user.user_metadata?.home_district || 'all';
                 startApp(homeDistrict, true);
                 document.body.style.visibility = 'visible';
