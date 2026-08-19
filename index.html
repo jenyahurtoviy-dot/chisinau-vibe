@@ -2668,7 +2668,37 @@
             showPlaceModal(p);
         }
 
-        function showPlaceModal(p) {
+        // Клик по карточке внизу страницы: сначала показываем её точку на карте,
+        // а затем открываем подробности, чтобы переход был понятным пользователю.
+        function openPlaceFromCatalog(id) {
+            const p = places.find(pl => pl.id === id);
+            const mapEl = document.getElementById('map');
+            if (!p || !mapEl) {
+                if (p) showPlaceModal(p);
+                return;
+            }
+
+            mapEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(() => {
+                focusPlaceOnMap(p);
+                setTimeout(() => showPlaceModal(p, false), 900);
+            }, 300);
+        }
+
+        // При открытии места всегда переводим карту на его реальную точку.
+        // Работает одинаково для карточек каталога, избранного и меток на карте.
+        function focusPlaceOnMap(p) {
+            if (!map || !p || !Number.isFinite(p.lat) || !Number.isFinite(p.lng)) return;
+            map.invalidateSize();
+            map.flyTo([p.lat, p.lng], 18, {
+                animate: true,
+                duration: 1.15,
+                easeLinearity: 0.25
+            });
+        }
+
+        function showPlaceModal(p, shouldFocusMap = true) {
+            if (shouldFocusMap) focusPlaceOnMap(p);
             const status = checkOpenStatus(p.schedule);
             const modal = document.getElementById('random-modal');
             const content = document.getElementById('modal-content');
@@ -2885,7 +2915,7 @@
                 const isVisited = userVisited.includes(p.id);
 
                 grid.insertAdjacentHTML('beforeend', `
-                    <div onclick="showPlaceModalById('${p.id}')" class="glass rounded-[2.5rem] p-5 sm:p-6 card-hover flex flex-col justify-between border border-white/60 dark:border-white/10 cursor-pointer relative overflow-hidden group">
+                    <div onclick="openPlaceFromCatalog('${p.id}')" class="glass rounded-[2.5rem] p-5 sm:p-6 card-hover flex flex-col justify-between border border-white/60 dark:border-white/10 cursor-pointer relative overflow-hidden group">
                         ${isVisited ? `
                         <span class="absolute top-4 left-4 z-10 flex items-center gap-1 text-[10px] font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-100 dark:border-emerald-500/20 shadow-sm">
                             <i class="fa-solid fa-circle-check"></i> Посещено
