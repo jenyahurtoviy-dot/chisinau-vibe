@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru" class="light">
+<html lang="ro" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -86,6 +86,7 @@
             background-color: #020617;
             background-image: radial-gradient(ellipse 120% 80% at 50% -10%, rgba(30, 41, 59, 0.55) 0%, rgba(2, 6, 23, 0) 60%);
         }
+        #lang-toggle.lang-ro-active .lang-toggle-thumb { transform: translateX(100%); }
         
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -130,6 +131,37 @@
 
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* ===== Toast-уведомления ===== */
+        @keyframes toastIn {
+            0% { opacity: 0; transform: translateY(-16px) scale(0.96); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes toastOut {
+            0% { opacity: 1; transform: translateY(0) scale(1); max-height: 80px; margin-bottom: 0.5rem; }
+            100% { opacity: 0; transform: translateY(-10px) scale(0.96); max-height: 0; margin-bottom: 0; }
+        }
+        .toast-item {
+            pointer-events: auto;
+            animation: toastIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            overflow: hidden;
+        }
+        .toast-item.toast-leaving {
+            animation: toastOut 0.3s cubic-bezier(0.4, 0, 1, 1) forwards;
+        }
+
+        /* ===== Прогресс-бар посещённых мест ===== */
+        .visited-progress-track {
+            background: rgba(148, 163, 184, 0.25);
+        }
+        .dark .visited-progress-track {
+            background: rgba(51, 65, 85, 0.5);
+        }
+        .visited-progress-fill {
+            background: linear-gradient(90deg, #10b981, #34d399);
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
+            transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
         
         .card-hover {
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -229,14 +261,263 @@
     document.write('<style id="boot-gate-style">#welcome-screen{display:none !important;}#main-app{display:none !important;}</style>');
     </script>
 
-    <div class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[110] glass rounded-full px-4 py-2.5 flex items-center gap-3 cursor-help hover:scale-105 transition-transform shadow-xl" title="Людей сейчас ищут места">
+    <script>
+        // ============ I18N (RU / RO) ============
+        // Хранилище румынских переводов по ключам data-i18n / data-i18n-ph / data-i18n-title
+        const I18N_RO = {
+            "visit_back": "Bine ați revenit!",
+            "visit_lasttime": "Data trecută ați văzut",
+            "visit_thisplace": "acest loc",
+            "visit_werethere": ". Ați fost acolo?",
+            "visit_yes": "Da, am fost",
+            "visit_no": "Nu, n-am fost",
+            "online_now": "online",
+            "hero_title1": "Unde mergem",
+            "hero_title2": "în Chișinău?",
+            "hero_subtitle": "Alege-ți vibe-ul de azi",
+            "district_all_name": "Tot orașul",
+            "district_all_tag": "Arată-mi tot!",
+            "district_center_name": "Centru",
+            "district_center_tag": "Inima orașului",
+            "district_botanica_name": "Botanica",
+            "district_botanica_tag": "Parcuri și liniște",
+            "district_riscani_name": "Râșcani",
+            "district_riscani_tag": "Stil și viață",
+            "district_buiucani_name": "Buiucani",
+            "district_buiucani_tag": "Apusuri și pădure",
+            "district_ciocana_name": "Ciocana",
+            "district_ciocana_tag": "Alei și baruri",
+            "modal_ok": "Am înțeles",
+            "modal_map": "Pe hartă",
+            "auth_login_title": "Autentificare",
+            "auth_login_subtitle": "Autentifică-te pentru a-ți salva locurile preferate",
+            "auth_email_label": "Email",
+            "auth_password_label": "Parolă",
+            "auth_login_btn": "Autentificare",
+            "auth_no_account": "Nu ai cont? Înregistrează-te",
+            "profile_title": "Contul meu",
+            "profile_manage": "Gestionează contul și locațiile salvate",
+            "profile_vip": "VIP Vibe-er",
+            "logout_title": "Ieșire",
+            "stat_favorites": "Favorite",
+            "stat_visited": "Vizitat",
+            "stat_active": "Activ",
+            "stat_status": "Status",
+            "home_district_title": "Cartierul tău",
+            "home_district_saved": "Salvat",
+            "home_district_note": "Acest cartier se va deschide primul la intrarea în cont. Pe site poți oricând vedea și alege orice alt cartier.",
+            "fav_places_title": "Locuri salvate",
+            "visited_places_title": "Locuri vizitate",
+            "visited_progress_title": "Progresul tău în oraș",
+            "profile_back_btn": "Înapoi pe site",
+            "search_ph": "Caută un loc, ex: Carne, Vin, Zaxi...",
+            "time_md": "Ora în MD:",
+            "searching_places": "Se caută locuri...",
+            "im_lucky": "Norocul meu!",
+            "district_choice": "Alege cartierul",
+            "categories_title": "Categorii",
+            "open_now": "Deschis acum",
+            "cat_relax": "Timp liber",
+            "cat_education": "Educație",
+            "cat_banks": "Bănci",
+            "sub_all": "Toate",
+            "sub_food": "Mâncare",
+            "sub_bars": "Baruri",
+            "sub_coffee": "Cafea",
+            "sub_malls": "Moluri și Shopping",
+            "sub_unis": "Universități",
+            "sub_libraries": "Biblioteci",
+            "sub_branches": "Filiale",
+            "sub_atms": "Bancomate",
+            "results_title": "Toate locațiile",
+            "results_found": "Am găsit",
+            "results_topplaces": "locuri de top pentru tine",
+            "map_title": "Harta interactivă a Chișinăului",
+            "my_location": "Locația mea",
+            "support_title": "Suport și colaborare",
+            "support_q": "Mai ai întrebări sau sugestii?",
+            "support_desc": "Vrei să adaugi localul tău în ghid sau ai găsit o inexactitate? Scrie-mi în privat pe Telegram, sunt online!",
+            "support_btn": "Scrie @font1zadm"
+        };
+        // Переводы текста, который создаётся скриптом (карточки, модальные окна и сообщения).
+        // Данные мест, координаты и ссылки на карту не меняются: отображается только перевод.
+        const RO_TEXT = {
+            "Весь город": "Tot orașul", "Центр": "Centru", "Ботаника": "Botanica", "Рышкановка": "Râșcani", "Буюканы": "Buiucani", "Чеканы": "Ciocana", "Телецентр": "Telecentru",
+            "Войти": "Autentificare", "Время в MD:": "Ora în MD:", "Поиск мест...": "Caută locuri...", "Мне повезёт!": "Norocul meu!",
+            "Выбор Района": "Alege cartierul", "Категории": "Categorii", "Открытые": "Deschise", "Отдых": "Timp liber", "Образование": "Educație", "Банки": "Bănci",
+            "Все": "Toate", "Еда": "Mâncare", "Бары": "Baruri", "Кофе": "Cafea", "Моллы и Шоппинг": "Moluri și shopping", "Универы": "Universități", "Библиотеки": "Biblioteci", "Отделения": "Filiale", "Банкоматы": "Bancomate",
+            "Все заведения": "Toate locațiile", "Мы нашли": "Am găsit", "топовых мест для вас": "locuri de top pentru tine", "Интерактивная карта Кишинева": "Harta interactivă a Chișinăului", "Мое местоположение": "Locația mea",
+            "Поддержка и сотрудничество": "Suport și colaborare", "Остались вопросы или есть предложения?": "Mai ai întrebări sau sugestii?", "Хотите добавить свое заведение в гид или нашли неточность? Напишите мне в личные сообщения в Telegram, я на связи!": "Vrei să adaugi localul tău în ghid sau ai găsit o inexactitate? Scrie-mi în privat pe Telegram, sunt online!", "Написать @font1zadmi": "Scrie @font1zadmi",
+            "Ничего не найдено": "Nu s-a găsit nimic", "Попробуйте изменить параметры поиска или выбрать другой район.": "Încearcă să schimbi căutarea sau alege alt cartier.", "Посещено": "Vizitat", "Подробнее": "Detalii", "Посетил(а)": "Vizitat", "Отметить как посещённое": "Marchează ca vizitat", "Детали:": "Detalii:", "Чек / Прайс:": "Preț / bon:", "от вас": "de la tine",
+            "Открыто 24/7": "Deschis 24/7", "Круглосуточно": "Deschis non-stop", "Открыто": "Deschis", "Закрыто": "Închis", "Сегодня": "Astăzi",
+            "Торговый центр": "Centru comercial", "Шоппинг": "Shopping", "Магазины": "Magazine", "Кафе": "Cafenea", "Ресторан": "Restaurant", "Завтраки": "Mic dejun", "Клуб": "Club", "Бар": "Bar", "Коктейли": "Cocktailuri", "Ночная жизнь": "Viață de noapte", "Виски": "Whisky", "Атмосферно": "Atmosferă plăcută", "Фастфуд": "Fast-food", "Популярное": "Popular", "Фудкорт": "Food court", "ТЦ": "Centru comercial", "Азиатская": "Asiatică", "Панорама": "Panoramă", "Традиционная": "Tradițională", "Молдавская": "Moldovenească", "Университет": "Universitate", "Библиотека": "Bibliotecă", "Книги": "Cărți", "Банк": "Bancă", "Отделение": "Filială", "Банкомат": "Bancomat", "Наличные": "Numerar", "Беспл.": "Gratuit", "Бесплатно": "Gratuit", "Услуги": "Servicii", "Учеба": "Studii", "Комиссии банка": "Comisioane bancare", "Без комиссий (свои)": "Fără comision (clienți)",
+            "Популярный торговый центр в Кишиневе с магазинами, бутиками и развлечениями.": "Centru comercial popular din Chișinău, cu magazine, buticuri și divertisment.", "Магазины одежды, фудкорт, кинотеатр и развлечения.": "Magazine de haine, food court, cinema și divertisment.",
+            "Торговый центр в самом центре Кишинева с магазинами одежды, обуви и услуг.": "Centru comercial chiar în inima Chișinăului, cu haine, încălțăminte și servicii.", "Магазины, бутики, супермаркет и услуги.": "Magazine, buticuri, supermarket și servicii.",
+            "Уютное кафе в центре Кишинева возле Кафедрального парка и пешеходной улицы.": "Cafenea cochetă în centrul Chișinăului, lângă Parcul Catedralei și strada pietonală.", "Кофе, десерты, завтраки и блюда европейской кухни.": "Cafea, deserturi, mic dejun și preparate europene.",
+            "Азиатский коктейльный клуб в центре Кишинева с атмосферой ночной жизни.": "Club asiatic de cocktailuri în centrul Chișinăului, cu atmosferă de viață de noapte.", "Коктейли, музыка, бар и ночные развлечения.": "Cocktailuri, muzică, bar și divertisment de noapte.",
+            "Один из крупнейших и самых известных торговых центров в самом сердце Кишинёва.": "Unul dintre cele mai mari și cunoscute centre comerciale din inima Chișinăului.", "Бутики одежды, электроника, товары для дома, рестораны и кафе.": "Buticuri de haine, electronice, articole pentru casă, restaurante și cafenele.",
+            "Элегантный бар с богатым выбором виски и благородной атмосферой.": "Bar elegant, cu o selecție bogată de whisky și atmosferă rafinată.", "Элитный алкоголь, стильный интерьер, приятная музыка.": "Băuturi premium, interior elegant și muzică plăcută.",
+            "Главный McDonald's на центральном проспекте — б-р Штефана чел Маре ши Сфынт, 134/1.": "McDonald's principal de pe bulevardul central Ștefan cel Mare și Sfânt, 134/1.", "Два этажа, терраса, центр притяжения.": "Două etaje, terasă și o atmosferă plină de viață.",
+            "McDonald's в ТЦ Unic — б-р Штефана чел Маре ши Сфынт, 8, рядом с центральным автовокзалом.": "McDonald's în centrul comercial Unic — bd. Ștefan cel Mare și Sfânt, 8, lângă autogara centrală.", "Быстрый перекус в двух шагах от центра и автовокзала.": "O gustare rapidă la doi pași de centru și autogară.",
+            "McDonald's на бульваре Дачия, 21/1 — самом широком бульваре Кишинева, с McDrive.": "McDonald's pe bd. Dacia 21/1, cu McDrive.", "McDrive работает круглосуточно.": "McDrive este deschis non-stop.",
+            "McDonald's на 4 этаже ТЦ Malldova — ул. Арборилор, 21.": "McDonald's la etajul 4 al Malldova — str. Arborilor, 21.", "Удобно совместить с шоппингом в Malldova.": "Ușor de combinat cu shoppingul la Malldova.",
+            "McDonald's на ул. Алеку Руссо, 2, у площади Алеку Руссо, с McDrive.": "McDonald's pe str. Alecu Russo 2, lângă piața Alecu Russo, cu McDrive.", "McDonald's на ул. Алба-Юлия, 194/А, с McDrive.": "McDonald's pe str. Alba Iulia 194/A, cu McDrive.", "McDonald's на Каля Иешилор, 8, рядом с фабрикой Zorile, с McDrive.": "McDonald's pe Calea Ieșilor 8, lângă fabrica Zorile, cu McDrive.", "McDonald's на бульваре Мирча чел Бэтрын, 25/1, с McDrive.": "McDonald's pe bd. Mircea cel Bătrân 25/1, cu McDrive.",
+            "McDonald's на 3 этаже ТЦ Port Mall — ул. Михаил Садовяну, 42/6.": "McDonald's la etajul 3 al Port Mall — str. Mihail Sadoveanu, 42/6.", "Удобно совместить с шоппингом в Port Mall.": "Ușor de combinat cu shoppingul la Port Mall.",
+            "Панорамный ресторан на 8-м этаже отеля Radisson Blu Leogrand.": "Restaurant panoramic la etajul 8 al hotelului Radisson Blu Leogrand.", "Вид на ночной город, терраса, премиум-суши.": "Vedere spre orașul nocturn, terasă și sushi premium.",
+            "La Plăcinte (ул. Пушкина)": "La Plăcinte (str. Pușkin)", "Ресторан национальной кухни рядом с Площадью.": "Restaurant cu bucătărie națională, lângă Piață.", "Традиционные плацинды, уютная атмосфера.": "Plăcinte tradiționale și atmosferă primitoare.",
+            "La Plăcinte (ул. Дософтей)": "La Plăcinte (str. Dosoftei)", "Рядом с Театром оперы и балета.": "Lângă Teatrul de Operă și Balet.", "Уютный интерьер, национальная музыка.": "Interior cochet și muzică națională.",
+            "La Plăcinte (ул. М. Витязул)": "La Plăcinte (str. Mihai Viteazul)", "Точная точка по адресу ул. Михай Витязул, 14.": "Locația exactă: str. Mihai Viteazul 14.", "Удобное расположение, шопинг и еда.": "Locație convenabilă, shopping și mâncare.",
+            "La Plăcinte (ул. Алба-Юлия)": "La Plăcinte (str. Alba Iulia)", "Улица Алба-Юлия, дом 21.": "Strada Alba Iulia, 21.", "Быстрое обслуживание, домашняя кухня.": "Servire rapidă și bucătărie ca acasă.",
+            "La Plăcinte (Московский пр.)": "La Plăcinte (bd. Moscova)", "Точное здание дома 9/1 на Московском проспекте.": "Clădirea exactă: bd. Moscova 9/1.", "Отличный вид на проспект, просторный зал.": "Vedere frumoasă spre bulevard și sală spațioasă.",
+            "La Plăcinte (ул. Киевская)": "La Plăcinte (str. Kiev)", "Точный адрес дома 12 по улице Киевской.": "Adresa exactă: str. Kiev 12.", "Уютная веранда, приятная атмосфера.": "Verandă cochetă și atmosferă plăcută.",
+            "La Plăcinte (б-р Мирча чел Бэтрын)": "La Plăcinte (bd. Mircea cel Bătrân)", "Дом 12/5 по бульвару Мирча чел Бэтрын.": "Bd. Mircea cel Bătrân 12/5.", "Современный дизайн, отличные плацинды.": "Design modern și plăcinte excelente.",
+            "La Plăcinte (ул. Индепенденцей)": "La Plăcinte (str. Independenței)", "Адрес дома 16/1 по улице Индепенденцей.": "Strada Independenței 16/1.", "Вкусная еда, быстрая подача.": "Mâncare gustoasă și servire rapidă.",
+            "La Plăcinte (б-р Дачия, 30/5)": "La Plăcinte (bd. Dacia, 30/5)", "Точный адрес дома 30/5 по бульвару Дачия.": "Adresa exactă: bd. Dacia 30/5.", "Уютный зал, отличная кухня.": "Sală cochetă și bucătărie excelentă.",
+            "La Plăcinte (Ворота Города)": "La Plăcinte (Porțile Orașului)", "Точный адрес дома 48 у Ворот Города по бульвару Дачия, 2-й этаж.": "Adresa exactă: bd. Dacia 48, etajul 2, la Porțile Orașului.", "Панорамный вид, фирменные блюда.": "Vedere panoramică și preparate speciale.",
+            "La Plăcinte (ш. Хынчешть)": "La Plăcinte (șos. Hîncești)", "Точный адрес дома 58 по шоссе Хынчешть.": "Adresa exactă: șos. Hîncești 58.", "Уютная атмосфера, семейные обеды.": "Atmosferă primitoare și mese în familie.",
+            "Государственный Университет (USM)": "Universitatea de Stat (USM)", "Молдавский государственный университет, главный корпус.": "Universitatea de Stat din Moldova, clădirea principală.", "Учеба, библиотека, сквер, столовая.": "Studii, bibliotecă, scuar și cantină.",
+            "Национальная Библиотека": "Biblioteca Națională", "Национальная библиотека Республики Молдова.": "Biblioteca Națională a Republicii Moldova.", "Читальный зал, архивы, тихая атмосфера.": "Sală de lectură, arhive și atmosferă liniștită.",
+            "MAIB Главный офис": "MAIB — sediul central", "Главный филиал Moldova Agroindbank.": "Filiala principală Moldova Agroindbank.", "Кредиты, переводы, обслуживание бизнеса.": "Credite, transferuri și servicii pentru afaceri.",
+            "Банкомат MICB (24/7)": "Bancomat MICB (24/7)", "Круглосуточный банкомат Moldindconbank.": "Bancomat Moldindconbank deschis non-stop.", "Снятие наличных, пополнение счета.": "Retragere de numerar și alimentarea contului.",
+            "Регистрация": "Înregistrare", "Введите почту и пароль. Мы отправим письмо для подтверждения.": "Introdu emailul și parola. Îți vom trimite un mesaj de confirmare.", "Зарегистрироваться": "Înregistrează-te", "Уже есть аккаунт? Войти": "Ai deja cont? Autentifică-te", "Регистрация успешна! Проверьте почту.": "Înregistrare reușită! Verifică emailul.", "Успешный вход!": "Autentificare reușită!", "Ошибка авторизации": "Eroare de autentificare", "Выйти из аккаунта?": "Ieși din cont?",
+            "сегодня": "azi", "вчера": "ieri", "дн. назад": "zile în urmă", "мест": "locuri", "из": "din", "Повторить": "Reîncearcă", "Открыть": "Deschide", "Удалить": "Șterge", "Убрать отметку": "Elimină marcajul", "Закрыть": "Închide",
+            "У вас пока нет сохраненных мест.": "Încă nu ai locuri salvate.", "Нажимайте на сердечко на карточках заведений!": "Apasă pe inimioara din cardurile locațiilor!", "Вы ещё нигде не отмечались.": "Încă nu ai marcat nicio locație.", "Нажимайте на флажок на карточках заведений!": "Apasă pe steagul din cardurile locațiilor!", "Не получилось загрузить избранное.": "Nu s-au putut încărca favoritele.", "Не получилось загрузить посещённые места.": "Nu s-au putut încărca locurile vizitate.",
+            "Геолокация не поддерживается вашим браузером": "Geolocația nu este acceptată de browserul tău", "Не удалось получить ваше местоположение. Проверьте разрешения.": "Nu am putut obține locația ta. Verifică permisiunile.", "Вы здесь!": "Ești aici!"
+        };
+
+        // siteLangV2 evita păstrarea setării implicite rusești din versiunea veche a site-ului.
+        let currentLang = localStorage.getItem('siteLangV2') || 'ro';
+        let languageObserver = null;
+
+        function tr(value) {
+            return currentLang === 'ro' && RO_TEXT[value] ? RO_TEXT[value] : value;
+        }
+
+        function translatePageText(root = document.body) {
+            if (!root) return;
+            const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+            const nodes = [];
+            while (walker.nextNode()) nodes.push(walker.currentNode);
+            nodes.forEach(node => {
+                const parent = node.parentElement;
+                if (!parent || ['SCRIPT', 'STYLE', 'NOSCRIPT'].includes(parent.tagName) || parent.closest('[data-i18n]')) return;
+                const original = node.__ruOriginalText === undefined ? node.nodeValue : node.__ruOriginalText;
+                if (node.__ruOriginalText === undefined) node.__ruOriginalText = original;
+                const trimmed = original.trim();
+                if (!trimmed) return;
+                node.nodeValue = original.replace(trimmed, tr(trimmed));
+            });
+        }
+
+        function applyLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('siteLangV2', lang);
+            document.documentElement.lang = (lang === 'ro') ? 'ro' : 'ru';
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (!el.dataset.ruOrig) el.dataset.ruOrig = el.textContent;
+                el.textContent = (lang === 'ro' && I18N_RO[key]) ? I18N_RO[key] : el.dataset.ruOrig;
+            });
+            document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+                const key = el.getAttribute('data-i18n-ph');
+                if (!el.dataset.ruOrigPh) el.dataset.ruOrigPh = el.getAttribute('placeholder') || '';
+                el.setAttribute('placeholder', (lang === 'ro' && I18N_RO[key]) ? I18N_RO[key] : el.dataset.ruOrigPh);
+            });
+            document.querySelectorAll('[data-i18n-title]').forEach(el => {
+                const key = el.getAttribute('data-i18n-title');
+                if (!el.dataset.ruOrigTitle) el.dataset.ruOrigTitle = el.getAttribute('title') || '';
+                el.setAttribute('title', (lang === 'ro' && I18N_RO[key]) ? I18N_RO[key] : el.dataset.ruOrigTitle);
+            });
+            const languageSwitch = document.getElementById('lang-toggle');
+            if (languageSwitch) {
+                languageSwitch.setAttribute('aria-checked', String(lang === 'ro'));
+                languageSwitch.classList.toggle('lang-ro-active', lang === 'ro');
+            }
+            const searchDesktop = document.getElementById('search-input');
+            const searchMobile = document.getElementById('search-input-mobile');
+            if (searchDesktop) searchDesktop.placeholder = lang === 'ro' ? 'Caută un loc, ex.: Carne, Vin, Zaxi...' : 'Найти место, например: Мясо, Вино, Zaxi...';
+            if (searchMobile) searchMobile.placeholder = lang === 'ro' ? 'Caută locuri...' : 'Поиск мест...';
+
+            translatePageText();
+            if (!languageObserver && document.body) {
+                languageObserver = new MutationObserver(() => {
+                    if (currentLang === 'ro') requestAnimationFrame(() => translatePageText());
+                });
+                languageObserver.observe(document.body, { childList: true, subtree: true });
+            }
+
+            // Хук: если на странице уже определена функция дорендера динамического контента
+            // (карточки мест, категории и т.д.), она подставляется в Фазе 2.
+            if (typeof onLanguageChanged === 'function') onLanguageChanged(lang);
+        }
+
+        function toggleLang() {
+            applyLanguage(currentLang === 'ro' ? 'ru' : 'ro');
+        }
+
+        // После переключения перерисовываем динамические карточки, не трогая сами данные мест и карту.
+        function onLanguageChanged() {
+            if (typeof state !== 'undefined') {
+                const district = state.district || 'all';
+                const districtName = district === 'all' ? 'Весь город' : district;
+                const districtEl = document.getElementById('current-district-display');
+                const titleEl = document.getElementById('grid-title');
+                if (districtEl) districtEl.textContent = tr(districtName);
+                if (titleEl) titleEl.textContent = district === 'all' ? tr('Все заведения') : (currentLang === 'ro' ? `Locații: ${tr(district)}` : `Заведения: ${district}`);
+                if (typeof syncDistrictSelection === 'function') syncDistrictSelection(district);
+            }
+            if (typeof applyFilters === 'function') applyFilters();
+            const profileModal = document.getElementById('profile-modal');
+            if (profileModal && !profileModal.classList.contains('hidden')) {
+                if (typeof renderFavoritesList === 'function') renderFavoritesList();
+                if (typeof renderVisitedList === 'function') renderVisitedList();
+            }
+            translatePageText();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            applyLanguage(currentLang);
+        });
+    </script>
+
+    <!-- Контейнер тостов-уведомлений (сохранение/ошибки/статусы) -->
+    <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-[300] w-[calc(100%-2rem)] max-w-sm flex flex-col items-center gap-2 pointer-events-none"></div>
+
+    <!-- Всплывающий баннер: "Вы посетили это место?" -->
+    <div id="visit-prompt-banner" class="hidden fixed top-4 left-1/2 -translate-x-1/2 z-[200] w-[calc(100%-2rem)] max-w-md animate-fade-in-up">
+        <div class="glass rounded-[1.75rem] p-4 sm:p-5 border border-white/60 dark:border-white/10 shadow-2xl flex items-center gap-3 sm:gap-4">
+            <div id="visit-prompt-icon" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-700 flex items-center justify-center text-xl sm:text-2xl text-white shadow-md shrink-0">
+                📍
+            </div>
+            <div class="min-w-0 flex-1">
+                <p class="text-[10px] sm:text-[11px] font-black uppercase tracking-widest text-slate-400 mb-0.5"><span data-i18n="visit_back">С возвращением!</span></p>
+                <p class="text-xs sm:text-sm font-bold text-slate-800 dark:text-white leading-snug">
+                    <span data-i18n="visit_lasttime">В прошлый раз вы смотрели</span> <span id="visit-prompt-place-name" class="text-black dark:text-slate-200" data-i18n="visit_thisplace">это место</span><span data-i18n="visit_werethere">. Вы там были?</span>
+                </p>
+                <div class="flex items-center gap-2 mt-3">
+                    <button onclick="answerVisitPrompt(true)" class="flex-1 py-2 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-[11px] sm:text-xs shadow-md hover:scale-[1.03] transition-transform flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-check"></i> <span data-i18n="visit_yes">Да, был(а)</span>
+                    </button>
+                    <button onclick="answerVisitPrompt(false)" class="flex-1 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold text-[11px] sm:text-xs hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+                        <span data-i18n="visit_no">Нет, не был</span>
+                    </button>
+                </div>
+            </div>
+            <button onclick="dismissVisitPrompt()" class="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-slate-800 dark:hover:text-white flex items-center justify-center transition-colors shrink-0 self-start">
+                <i class="fa-solid fa-xmark text-xs"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[110] glass rounded-full px-4 py-2.5 flex items-center gap-3 cursor-help hover:scale-105 transition-transform shadow-xl" title="Людей сейчас ищут места" data-i18n-title="online_now_title">
         <div class="relative flex h-3 w-3">
           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
           <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
         </div>
         <div class="font-bold text-xs sm:text-sm tracking-wide flex items-center gap-2">
             <span id="online-count" class="text-emerald-600 dark:text-emerald-400 text-sm sm:text-lg transition-all duration-300">342</span> 
-            <span class="hidden sm:inline text-slate-500 dark:text-slate-400">онлайн</span>
+            <span class="hidden sm:inline text-slate-500 dark:text-slate-400" data-i18n="online_now">онлайн</span>
         </div>
     </div>
 
@@ -254,58 +535,58 @@
             </div>
         </div>
         <h1 class="text-3xl sm:text-6xl md:text-8xl font-black mb-3 sm:mb-6 tracking-tighter text-slate-900 dark:text-white">
-            Куда пойдем <span class="gradient-text block mt-1 sm:mt-2">в Кишиневе?</span>
+            <span data-i18n="hero_title1">Куда пойдем</span> <span class="gradient-text block mt-1 sm:mt-2" data-i18n="hero_title2">в Кишиневе?</span>
         </h1>
-        <p class="text-sm sm:text-xl md:text-2xl text-slate-500 dark:text-slate-400 mb-6 sm:mb-12 font-light">Выбери свой вайб на сегодня</p>
+        <p class="text-sm sm:text-xl md:text-2xl text-slate-500 dark:text-slate-400 mb-6 sm:mb-12 font-light" data-i18n="hero_subtitle">Выбери свой вайб на сегодня</p>
         
         <div class="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6 mb-8 max-w-3xl mx-auto">
             <!-- 1. Весь город (перемещен наверх) -->
             <button onclick="startApp('all')" class="group relative p-4 sm:p-8 rounded-3xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:-translate-y-2 transition-all duration-300 shadow-2xl hover:shadow-slate-900/40 dark:hover:shadow-white/30 text-left flex flex-col justify-center overflow-hidden col-span-2 md:col-span-1">
                 <i class="fa-solid fa-map-location-dot absolute -right-4 -bottom-4 text-6xl sm:text-8xl opacity-10 group-hover:scale-125 transition-transform duration-500"></i>
                 <div class="font-black text-lg sm:text-2xl mb-1 flex items-center gap-3">
-                    <i class="fa-solid fa-map-location-dot text-xl sm:text-2xl"></i> Весь город
+                    <i class="fa-solid fa-map-location-dot text-xl sm:text-2xl"></i> <span data-i18n="district_all_name">Весь город</span>
                 </div>
-                <div class="text-[11px] sm:text-sm opacity-80 mt-1 sm:mt-2 font-medium">Покажите мне всё!</div>
+                <div class="text-[11px] sm:text-sm opacity-80 mt-1 sm:mt-2 font-medium" data-i18n="district_all_tag">Покажите мне всё!</div>
             </button>
 
             <!-- 2. Центр -->
             <button onclick="startApp('Центр')" class="group relative p-4 sm:p-8 rounded-3xl glass hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl hover:shadow-slate-800/20 border border-white/50 dark:border-white/10 hover:border-slate-800 text-left overflow-hidden">
                 <i class="fa-solid fa-landmark absolute -right-4 -bottom-4 text-6xl sm:text-8xl text-slate-800 dark:text-white opacity-5 group-hover:scale-125 transition-transform duration-500"></i>
                 <div class="text-2xl sm:text-4xl mb-2 sm:mb-4 text-slate-800 dark:text-white group-hover:scale-110 transition-transform origin-left drop-shadow-md"><i class="fa-solid fa-landmark"></i></div>
-                <div class="font-black text-base sm:text-2xl mb-1 text-slate-800 dark:text-white">Центр</div>
-                <div class="text-[11px] sm:text-sm text-slate-500 dark:text-slate-400 font-medium">Сердце города</div>
+                <div class="font-black text-base sm:text-2xl mb-1 text-slate-800 dark:text-white" data-i18n="district_center_name">Центр</div>
+                <div class="text-[11px] sm:text-sm text-slate-500 dark:text-slate-400 font-medium" data-i18n="district_center_tag">Сердце города</div>
             </button>
 
             <!-- 3. Ботаника -->
             <button onclick="startApp('Ботаника')" class="group relative p-4 sm:p-8 rounded-3xl glass hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl hover:shadow-emerald-500/20 border border-white/50 dark:border-white/10 hover:border-emerald-500 text-left overflow-hidden">
                 <i class="fa-solid fa-tree-city absolute -right-4 -bottom-4 text-6xl sm:text-8xl text-emerald-500 opacity-5 group-hover:scale-125 transition-transform duration-500"></i>
                 <div class="text-2xl sm:text-4xl mb-2 sm:mb-4 text-emerald-500 group-hover:scale-110 transition-transform origin-left drop-shadow-md"><i class="fa-solid fa-tree-city"></i></div>
-                <div class="font-black text-base sm:text-2xl mb-1 text-slate-800 dark:text-white">Ботаника</div>
-                <div class="text-[11px] sm:text-sm text-slate-500 dark:text-slate-400 font-medium">Парки и уют</div>
+                <div class="font-black text-base sm:text-2xl mb-1 text-slate-800 dark:text-white" data-i18n="district_botanica_name">Ботаника</div>
+                <div class="text-[11px] sm:text-sm text-slate-500 dark:text-slate-400 font-medium" data-i18n="district_botanica_tag">Парки и уют</div>
             </button>
 
             <!-- 4. Рышкановка -->
             <button onclick="startApp('Рышкановка')" class="group relative p-4 sm:p-8 rounded-3xl glass hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20 border border-white/50 dark:border-white/10 hover:border-blue-500 text-left overflow-hidden">
                 <i class="fa-solid fa-gem absolute -right-4 -bottom-4 text-6xl sm:text-8xl text-blue-500 opacity-5 group-hover:scale-125 transition-transform duration-500"></i>
                 <div class="text-2xl sm:text-4xl mb-2 sm:mb-4 text-blue-500 group-hover:scale-110 transition-transform origin-left drop-shadow-md"><i class="fa-solid fa-gem"></i></div>
-                <div class="font-black text-base sm:text-2xl mb-1 text-slate-800 dark:text-white">Рышкановка</div>
-                <div class="text-[11px] sm:text-sm text-slate-500 dark:text-slate-400 font-medium">Стиль и жизнь</div>
+                <div class="font-black text-base sm:text-2xl mb-1 text-slate-800 dark:text-white" data-i18n="district_riscani_name">Рышкановка</div>
+                <div class="text-[11px] sm:text-sm text-slate-500 dark:text-slate-400 font-medium" data-i18n="district_riscani_tag">Стиль и жизнь</div>
             </button>
 
             <!-- 5. Буюканы -->
             <button onclick="startApp('Буюканы')" class="group relative p-4 sm:p-8 rounded-3xl glass hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl hover:shadow-orange-500/20 border border-white/50 dark:border-white/10 hover:border-orange-500 text-left overflow-hidden">
                 <i class="fa-solid fa-cloud-sun absolute -right-4 -bottom-4 text-6xl sm:text-8xl text-orange-500 opacity-5 group-hover:scale-125 transition-transform duration-500"></i>
                 <div class="text-2xl sm:text-4xl mb-2 sm:mb-4 text-orange-500 group-hover:scale-110 transition-transform origin-left drop-shadow-md"><i class="fa-solid fa-cloud-sun"></i></div>
-                <div class="font-black text-base sm:text-2xl mb-1 text-slate-800 dark:text-white">Буюканы</div>
-                <div class="text-[11px] sm:text-sm text-slate-500 dark:text-slate-400 font-medium">Закаты и лес</div>
+                <div class="font-black text-base sm:text-2xl mb-1 text-slate-800 dark:text-white" data-i18n="district_buiucani_name">Буюканы</div>
+                <div class="text-[11px] sm:text-sm text-slate-500 dark:text-slate-400 font-medium" data-i18n="district_buiucani_tag">Закаты и лес</div>
             </button>
 
             <!-- 6. Чеканы -->
             <button onclick="startApp('Чеканы')" class="group relative p-4 sm:p-8 rounded-3xl glass hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl hover:shadow-slate-700/20 border border-white/50 dark:border-white/10 hover:border-slate-700 text-left overflow-hidden">
                 <i class="fa-solid fa-building absolute -right-4 -bottom-4 text-6xl sm:text-8xl text-slate-700 dark:text-white opacity-5 group-hover:scale-125 transition-transform duration-500"></i>
                 <div class="text-2xl sm:text-4xl mb-2 sm:mb-4 text-slate-700 dark:text-white group-hover:scale-110 transition-transform origin-left drop-shadow-md"><i class="fa-solid fa-building"></i></div>
-                <div class="font-black text-base sm:text-2xl mb-1 text-slate-800 dark:text-white">Чеканы</div>
-                <div class="text-[11px] sm:text-sm text-slate-500 dark:text-slate-400 font-medium">Аллеи и бары</div>
+                <div class="font-black text-base sm:text-2xl mb-1 text-slate-800 dark:text-white" data-i18n="district_ciocana_name">Чеканы</div>
+                <div class="text-[11px] sm:text-sm text-slate-500 dark:text-slate-400 font-medium" data-i18n="district_ciocana_tag">Аллеи и бары</div>
             </button>
         </div>
     </div>
@@ -339,8 +620,8 @@
                 <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-700 flex items-center justify-center text-white text-xl shadow-lg shadow-slate-800/30 mx-auto mb-3">
                     <i id="auth-icon-header" class="fa-solid fa-right-to-bracket"></i>
                 </div>
-                <h3 id="auth-title" class="text-2xl font-black text-slate-800 dark:text-white">Вход в систему</h3>
-                <p id="auth-subtitle" class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1">Войдите, чтобы сохранять свои любимые места</p>
+                <h3 id="auth-title" class="text-2xl font-black text-slate-800 dark:text-white" data-i18n="auth_login_title">Вход в систему</h3>
+                <p id="auth-subtitle" class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1" data-i18n="auth_login_subtitle">Войдите, чтобы сохранять свои любимые места</p>
             </div>
 
             <div id="auth-error" class="hidden mb-4 p-3 rounded-xl bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs font-bold text-center"></div>
@@ -348,21 +629,21 @@
 
             <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1.5">Email</label>
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1.5" data-i18n="auth_email_label">Email</label>
                     <input id="auth-email" type="email" required placeholder="name@example.com" class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm font-bold outline-none focus:ring-2 focus:ring-slate-800 transition-all shadow-inner dark:text-white">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1.5">Пароль</label>
+                    <label class="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1.5" data-i18n="auth_password_label">Пароль</label>
                     <input id="auth-password" type="password" required placeholder="••••••••" class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm font-bold outline-none focus:ring-2 focus:ring-slate-800 transition-all shadow-inner dark:text-white">
                 </div>
                 <button type="submit" id="auth-submit-btn" class="w-full py-3.5 bg-gradient-to-r from-slate-800 to-slate-700 text-white font-bold rounded-xl shadow-lg hover:shadow-slate-800/30 transition-all flex items-center justify-center gap-2 text-sm">
-                    Войти
+                    <span data-i18n="auth_login_btn">Войти</span>
                 </button>
             </form>
 
             <div class="mt-5 text-center">
                 <button type="button" onclick="toggleAuthMode()" id="auth-switch-btn" class="text-xs font-bold text-black dark:text-slate-300 hover:underline">
-                    Нет аккаунта? Зарегистрироваться
+                    <span data-i18n="auth_no_account">Нет аккаунта? Зарегистрироваться</span>
                 </button>
             </div>
         </div>
@@ -380,8 +661,8 @@
                 <button onclick="closeProfileModal()" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/15 text-white flex items-center justify-center transition-all">
                     <i class="fa-solid fa-arrow-left"></i>
                 </button>
-                <h2 class="text-white font-black text-sm sm:text-base uppercase tracking-widest opacity-90">Мой аккаунт</h2>
-                <button onclick="handleLogout()" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/10 hover:bg-rose-500 backdrop-blur-md border border-white/15 text-white flex items-center justify-center transition-all" title="Выйти">
+                <h2 class="text-white font-black text-sm sm:text-base uppercase tracking-widest opacity-90" data-i18n="profile_title">Мой аккаунт</h2>
+                <button onclick="handleLogout()" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/10 hover:bg-rose-500 backdrop-blur-md border border-white/15 text-white flex items-center justify-center transition-all" title="Выйти" data-i18n-title="logout_title">
                     <i class="fa-solid fa-right-from-bracket"></i>
                 </button>
             </div>
@@ -398,29 +679,38 @@
                     </div>
                     <span class="absolute bottom-1 right-1 w-6 h-6 bg-emerald-500 border-4 border-white dark:border-slate-950 rounded-full"></span>
                 </div>
-                <span id="profile-badge-label" class="text-[10px] font-black uppercase tracking-widest text-black dark:text-slate-300 bg-slate-100 dark:bg-slate-800/60 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 inline-block mb-2">VIP Вайбер</span>
+                <span id="profile-badge-label" class="text-[10px] font-black uppercase tracking-widest text-black dark:text-slate-300 bg-slate-100 dark:bg-slate-800/60 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 inline-block mb-2" data-i18n="profile_vip">VIP Вайбер</span>
                 <h3 id="profile-email-display" class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white truncate max-w-full">user@example.com</h3>
-                <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium mt-1">Управление аккаунтом и сохраненными локациями</p>
+                <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium mt-1" data-i18n="profile_manage">Управление аккаунтом и сохраненными локациями</p>
             </div>
 
             <!-- Статистика / Данные пользователя -->
-            <div class="grid grid-cols-2 gap-3 mb-6 animate-fade-in-up">
-                <div class="p-5 rounded-[1.75rem] glass border border-white/60 dark:border-white/10 flex items-center gap-3.5 shadow-lg">
-                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-700 dark:ring-1 dark:ring-white/15 text-white flex items-center justify-center text-lg shrink-0 shadow-md shadow-slate-800/20">
+            <div class="grid grid-cols-3 gap-3 mb-6 animate-fade-in-up">
+                <div class="p-4 sm:p-5 rounded-[1.75rem] glass border border-white/60 dark:border-white/10 flex flex-col items-center text-center gap-2 shadow-lg">
+                    <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-700 dark:ring-1 dark:ring-white/15 text-white flex items-center justify-center text-lg shrink-0 shadow-md shadow-slate-800/20">
                         <i class="fa-solid fa-heart"></i>
                     </div>
                     <div class="min-w-0">
-                        <div id="fav-count-badge" class="text-xl font-black text-slate-800 dark:text-white">0</div>
-                        <div class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">В избранном</div>
+                        <div id="fav-count-badge" class="text-lg sm:text-xl font-black text-slate-800 dark:text-white">0</div>
+                        <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium" data-i18n="stat_favorites">В избранном</div>
                     </div>
                 </div>
-                <div class="p-5 rounded-[1.75rem] glass border border-white/60 dark:border-white/10 flex items-center gap-3.5 shadow-lg">
-                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 text-white flex items-center justify-center text-lg shrink-0 shadow-md shadow-emerald-500/20">
+                <div class="p-4 sm:p-5 rounded-[1.75rem] glass border border-white/60 dark:border-white/10 flex flex-col items-center text-center gap-2 shadow-lg">
+                    <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 text-white flex items-center justify-center text-lg shrink-0 shadow-md shadow-emerald-500/20">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <div id="visited-count-badge" class="text-lg sm:text-xl font-black text-emerald-600 dark:text-emerald-400">0</div>
+                        <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium" data-i18n="stat_visited">Посещено</div>
+                    </div>
+                </div>
+                <div class="p-4 sm:p-5 rounded-[1.75rem] glass border border-white/60 dark:border-white/10 flex flex-col items-center text-center gap-2 shadow-lg">
+                    <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-slate-700 to-slate-600 text-white flex items-center justify-center text-lg shrink-0 shadow-md shadow-slate-800/20">
                         <i class="fa-solid fa-shield-halved"></i>
                     </div>
                     <div class="min-w-0">
-                        <div class="text-base font-black text-emerald-600 dark:text-emerald-400">Активен</div>
-                        <div class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Статус сессии</div>
+                        <div class="text-sm sm:text-base font-black text-slate-700 dark:text-slate-200" data-i18n="stat_active">Активен</div>
+                        <div class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-medium" data-i18n="stat_status">Статус</div>
                     </div>
                 </div>
             </div>
@@ -429,10 +719,10 @@
             <div class="mb-6 p-5 sm:p-6 rounded-[1.75rem] glass border border-white/60 dark:border-white/10 shadow-lg animate-fade-in-up">
                 <div class="flex items-center justify-between mb-4">
                     <h4 class="text-xs font-black uppercase text-slate-400 tracking-wider flex items-center gap-2">
-                        <i class="fa-solid fa-location-dot text-slate-800 dark:text-slate-300"></i> Ваш район
+                        <i class="fa-solid fa-location-dot text-slate-800 dark:text-slate-300"></i> <span data-i18n="home_district_title">Ваш район</span>
                     </h4>
                     <span id="home-district-saved-badge" class="hidden text-[10px] font-bold text-emerald-500 items-center gap-1">
-                        <i class="fa-solid fa-circle-check"></i> Сохранено
+                        <i class="fa-solid fa-circle-check"></i> <span data-i18n="home_district_saved">Сохранено</span>
                     </span>
                 </div>
                 <div id="home-district-grid" class="grid grid-cols-3 gap-2.5">
@@ -461,14 +751,14 @@
                         <span class="text-[10px] sm:text-[11px] font-extrabold uppercase text-slate-800 dark:text-white text-center leading-tight">Чеканы</span>
                     </button>
                 </div>
-                <p class="text-[10px] text-slate-400 mt-3 px-1">Этот район будет открываться первым при входе в аккаунт. На сайте вы всегда можете смотреть и выбирать любой другой район.</p>
+                <p class="text-[10px] text-slate-400 mt-3 px-1" data-i18n="home_district_note">Этот район будет открываться первым при входе в аккаунт. На сайте вы всегда можете смотреть и выбирать любой другой район.</p>
             </div>
 
             <!-- Список избранного -->
             <div class="mb-6 p-5 sm:p-6 rounded-[1.75rem] glass border border-white/60 dark:border-white/10 shadow-lg animate-fade-in-up">
                 <div class="flex items-center justify-between mb-4">
                     <h4 class="text-xs font-black uppercase text-slate-400 tracking-wider flex items-center gap-2">
-                        <i class="fa-solid fa-bookmark text-slate-800 dark:text-slate-300"></i> Сохраненные заведения
+                        <i class="fa-solid fa-bookmark text-slate-800 dark:text-slate-300"></i> <span data-i18n="fav_places_title">Сохраненные заведения</span>
                     </h4>
                     <span id="fav-count" class="text-xs font-bold text-slate-500">0 мест</span>
                 </div>
@@ -477,9 +767,34 @@
                 </div>
             </div>
 
+            <!-- Список посещённых мест -->
+            <div class="mb-6 p-5 sm:p-6 rounded-[1.75rem] glass border border-white/60 dark:border-white/10 shadow-lg animate-fade-in-up">
+                <div class="flex items-center justify-between mb-4">
+                    <h4 class="text-xs font-black uppercase text-slate-400 tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-flag text-emerald-500"></i> <span data-i18n="visited_places_title">Посещённые места</span>
+                    </h4>
+                    <span id="visited-count" class="text-xs font-bold text-slate-500">0 мест</span>
+                </div>
+
+                <!-- Прогресс: сколько из всех заведений города уже отмечено -->
+                <div id="visited-progress-wrap" class="hidden mb-4">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400" data-i18n="visited_progress_title">Ваш прогресс по городу</span>
+                        <span id="visited-progress-label" class="text-[10px] font-black text-emerald-600 dark:text-emerald-400">0 из 0 · 0%</span>
+                    </div>
+                    <div class="h-2 w-full rounded-full visited-progress-track overflow-hidden">
+                        <div id="visited-progress-fill" class="h-full rounded-full visited-progress-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div id="visited-container" class="space-y-2.5 max-h-[320px] overflow-y-auto pr-1">
+                    <!-- Сюда динамически добавятся посещённые места -->
+                </div>
+            </div>
+
             <!-- Нижняя кнопка -->
             <button onclick="closeProfileModal()" class="w-full py-4 rounded-2xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-sm shadow-lg hover:scale-[1.02] transition-all animate-fade-in-up">
-                Вернуться на сайт
+                <span data-i18n="profile_back_btn">Вернуться на сайт</span>
             </button>
         </div>
     </div>
@@ -522,6 +837,11 @@
                     <button onclick="toggleTheme()" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:scale-105 hover:bg-white dark:hover:bg-slate-800 transition-all shadow-sm text-slate-600 dark:text-slate-300 shrink-0">
                         <i id="theme-icon" class="fa-solid fa-moon text-lg"></i>
                     </button>
+                    <button id="lang-toggle" onclick="toggleLang()" type="button" role="switch" aria-checked="true" aria-label="Schimbă limba între română și rusă" title="Română / Русский" class="relative w-[58px] h-10 sm:w-[66px] sm:h-12 rounded-xl bg-slate-800 dark:bg-slate-100 border border-slate-700 dark:border-white/20 flex items-center justify-between px-1.5 shadow-sm transition-all shrink-0 font-black text-[10px] sm:text-[11px] text-white dark:text-slate-900">
+                        <span class="relative z-10 w-1/2 text-center">RU</span>
+                        <span class="relative z-10 w-1/2 text-center">RO</span>
+                        <span class="lang-toggle-thumb absolute top-1 bottom-1 left-1 w-[calc(50%-0.25rem)] rounded-lg bg-white dark:bg-slate-800 shadow-md transition-transform duration-200"></span>
+                    </button>
                 </div>
             </div>
         </nav>
@@ -554,22 +874,22 @@
                             <h3 class="text-[11px] font-black uppercase text-slate-400 tracking-[0.2em]">Выбор Района</h3>
                         </div>
                         <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-1 gap-2.5" id="district-filters">
-                            <button onclick="setDistrict('all')" class="dist-btn w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center justify-between bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-700 border border-transparent text-xs sm:text-sm text-slate-700 dark:text-slate-200">
+                            <button onclick="setDistrict('all')" data-district="all" class="dist-btn w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center justify-between bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-700 border border-transparent text-xs sm:text-sm text-slate-700 dark:text-slate-200">
                                 <span class="flex items-center gap-3"><i class="fa-solid fa-map-location-dot w-5 text-center opacity-70"></i> Весь город</span>
                             </button>
-                            <button onclick="setDistrict('Центр')" class="dist-btn w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center justify-between bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-700 border border-transparent text-xs sm:text-sm text-slate-700 dark:text-slate-200">
+                            <button onclick="setDistrict('Центр')" data-district="Центр" class="dist-btn w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center justify-between bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-700 border border-transparent text-xs sm:text-sm text-slate-700 dark:text-slate-200">
                                 <span class="flex items-center gap-3"><i class="fa-solid fa-landmark w-5 text-center opacity-80"></i> Центр</span>
                             </button>
-                            <button onclick="setDistrict('Ботаника')" class="dist-btn w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center justify-between bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-700 border border-transparent text-xs sm:text-sm text-slate-700 dark:text-slate-200">
+                            <button onclick="setDistrict('Ботаника')" data-district="Ботаника" class="dist-btn w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center justify-between bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-700 border border-transparent text-xs sm:text-sm text-slate-700 dark:text-slate-200">
                                 <span class="flex items-center gap-3"><i class="fa-solid fa-tree-city w-5 text-center text-emerald-500 opacity-80"></i> Ботаника</span>
                             </button>
-                            <button onclick="setDistrict('Рышкановка')" class="dist-btn w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center justify-between bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-700 border border-transparent text-xs sm:text-sm text-slate-700 dark:text-slate-200">
+                            <button onclick="setDistrict('Рышкановка')" data-district="Рышкановка" class="dist-btn w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center justify-between bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-700 border border-transparent text-xs sm:text-sm text-slate-700 dark:text-slate-200">
                                 <span class="flex items-center gap-3"><i class="fa-solid fa-gem w-5 text-center text-blue-500 opacity-80"></i> Рышкановка</span>
                             </button>
-                            <button onclick="setDistrict('Буюканы')" class="dist-btn w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center justify-between bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-700 border border-transparent text-xs sm:text-sm text-slate-700 dark:text-slate-200">
+                            <button onclick="setDistrict('Буюканы')" data-district="Буюканы" class="dist-btn w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center justify-between bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-700 border border-transparent text-xs sm:text-sm text-slate-700 dark:text-slate-200">
                                 <span class="flex items-center gap-3"><i class="fa-solid fa-cloud-sun w-5 text-center text-orange-500 opacity-80"></i> Буюканы</span>
                             </button>
-                            <button onclick="setDistrict('Чеканы')" class="dist-btn w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center justify-between bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-700 border border-transparent text-xs sm:text-sm text-slate-700 dark:text-slate-200">
+                            <button onclick="setDistrict('Чеканы')" data-district="Чеканы" class="dist-btn w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center justify-between bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-700 border border-transparent text-xs sm:text-sm text-slate-700 dark:text-slate-200">
                                 <span class="flex items-center gap-3"><i class="fa-solid fa-building w-5 text-center opacity-80"></i> Чеканы</span>
                             </button>
                         </div>
@@ -719,6 +1039,67 @@
         let isRegisterMode = false;
         let currentSession = null;
         let userFavorites = [];
+        let userVisited = [];
+        let userVisitedDates = {}; // placeId -> ISO-дата отметки (если известна)
+        let visitedInFlight = new Set(); // placeId, по которым сейчас идёт запрос — защита от двойного клика
+        let visitedLoadError = false; // true, если последняя загрузка посещённых мест реально упала с ошибкой (а не "их просто нет")
+        let favoritesLoadError = false; // то же самое для избранного
+
+        // Ключи localStorage для "последней просмотренной локации"
+        const LAST_VIEWED_KEY = 'cv_last_viewed_place';
+        const LAST_VIEWED_DISMISSED_KEY = 'cv_last_viewed_dismissed';
+
+        // ===== Toast-уведомления =====
+        // type: 'success' | 'error' | 'warn' | 'info'
+        function showToast(message, type = 'info', duration = 3200) {
+            const container = document.getElementById('toast-container');
+            if (!container) { console.log(message); return; }
+
+            const styles = {
+                success: { icon: 'fa-circle-check', ring: 'border-emerald-200 dark:border-emerald-500/30', iconWrap: 'bg-emerald-500 text-white' },
+                error:   { icon: 'fa-triangle-exclamation', ring: 'border-rose-200 dark:border-rose-500/30', iconWrap: 'bg-rose-500 text-white' },
+                warn:    { icon: 'fa-circle-exclamation', ring: 'border-amber-200 dark:border-amber-500/30', iconWrap: 'bg-amber-500 text-white' },
+                info:    { icon: 'fa-circle-info', ring: 'border-slate-200 dark:border-slate-700', iconWrap: 'bg-slate-800 dark:bg-white text-white dark:text-slate-900' },
+            };
+            const s = styles[type] || styles.info;
+
+            const el = document.createElement('div');
+            el.className = `toast-item glass w-full rounded-2xl border ${s.ring} shadow-2xl px-4 py-3 flex items-center gap-3`;
+            el.innerHTML = `
+                <div class="w-8 h-8 rounded-xl ${s.iconWrap} flex items-center justify-center text-xs shrink-0 shadow-md">
+                    <i class="fa-solid ${s.icon}"></i>
+                </div>
+                <p class="text-xs sm:text-sm font-bold text-slate-800 dark:text-white leading-snug flex-1">${message}</p>
+                <button class="w-6 h-6 rounded-full text-slate-400 hover:text-slate-800 dark:hover:text-white flex items-center justify-center shrink-0 transition-colors" aria-label="Закрыть">
+                    <i class="fa-solid fa-xmark text-[10px]"></i>
+                </button>
+            `;
+
+            const removeToast = () => {
+                if (!el.parentNode) return;
+                el.classList.add('toast-leaving');
+                setTimeout(() => el.remove(), 300);
+            };
+
+            el.querySelector('button').addEventListener('click', removeToast);
+            container.appendChild(el);
+            setTimeout(removeToast, duration);
+        }
+
+        // Человекочитаемая относительная дата: "сегодня", "вчера", "N дней назад" или короткая дата
+        function formatVisitedDate(iso) {
+            if (!iso) return '';
+            const date = new Date(iso);
+            if (isNaN(date.getTime())) return '';
+            const now = new Date();
+            const startOfDay = d => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+            const diffDays = Math.round((startOfDay(now) - startOfDay(date)) / 86400000);
+
+            if (diffDays <= 0) return 'сегодня';
+            if (diffDays === 1) return 'вчера';
+            if (diffDays < 7) return `${diffDays} дн. назад`;
+            return date.toLocaleDateString(currentLang === 'ro' ? 'ro-RO' : 'ru-RU', { day: 'numeric', month: 'short' });
+        }
 
         function openAuthModal() {
             document.getElementById('auth-modal').classList.remove('hidden');
@@ -733,9 +1114,10 @@
         function openProfileModal() {
             document.getElementById('profile-email-display').textContent = currentSession?.user?.email || '';
             const badgeLabel = document.getElementById('profile-badge-label');
-            badgeLabel.textContent = 'VIP Вайбер';
+            badgeLabel.textContent = currentLang === 'ro' ? 'VIP Vibe-er' : 'VIP Вайбер';
             badgeLabel.className = 'text-[10px] font-black uppercase tracking-widest text-black dark:text-slate-300 bg-slate-100 dark:bg-slate-800/60 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 inline-block mb-2';
             renderFavoritesList();
+            renderVisitedList();
             populateHomeDistrictSelect();
             const modal = document.getElementById('profile-modal');
             modal.classList.remove('hidden');
@@ -827,54 +1209,66 @@
         }
 
         async function loadUserFavorites() {
+            favoritesLoadError = false;
             if (!currentSession || !currentSession.user) {
                 userFavorites = [];
+                applyFilters();
+                if (!document.getElementById('profile-modal').classList.contains('hidden')) {
+                    renderFavoritesList();
+                }
                 return;
             }
             try {
                 const { data, error } = await supabaseClient
-                    .from('favorites')
+                    .from('user_favorites')
                     .select('place_id')
                     .eq('user_id', currentSession.user.id);
                 
-                if (error) {
-                    userFavorites = [];
-                } else {
-                    userFavorites = data ? data.map(item => item.place_id) : [];
-                }
+                if (error) throw error;
+                userFavorites = data ? data.map(item => item.place_id) : [];
             } catch (e) {
+                console.error('Не удалось загрузить избранное:', e);
                 userFavorites = [];
+                favoritesLoadError = true;
+                showToast('Не удалось загрузить избранное', 'error');
             }
             applyFilters();
+            if (!document.getElementById('profile-modal').classList.contains('hidden')) {
+                renderFavoritesList();
+            }
         }
 
         async function toggleFavorite(placeId, event) {
             if (event) event.stopPropagation();
             
             if (!currentSession || !currentSession.user) {
-                alert('Чтобы добавлять места в избранное, пожалуйста, войдите в аккаунт!');
+                showToast('Чтобы добавлять места в избранное, войдите в аккаунт', 'warn');
                 openAuthModal();
                 return;
             }
 
             const userId = currentSession.user.id;
             const isFav = userFavorites.includes(placeId);
+            const place = places.find(pl => pl.id === placeId);
+            const placeName = place ? place.name : 'Место';
 
             try {
                 if (isFav) {
                     const { error } = await supabaseClient
-                        .from('favorites')
+                        .from('user_favorites')
                         .delete()
                         .eq('user_id', userId)
                         .eq('place_id', placeId);
                     if (error) throw error;
                     userFavorites = userFavorites.filter(id => id !== placeId);
+                    showToast(`«${placeName}» убрано из избранного`, 'info');
                 } else {
                     const { error } = await supabaseClient
-                        .from('favorites')
+                        .from('user_favorites')
                         .insert([{ user_id: userId, place_id: placeId }]);
                     if (error) throw error;
                     userFavorites.push(placeId);
+                    showToast(`«${placeName}» добавлено в избранное`, 'success');
                 }
                 applyFilters();
                 if (!document.getElementById('profile-modal').classList.contains('hidden')) {
@@ -882,7 +1276,272 @@
                 }
             } catch (err) {
                 console.error(err);
+                showToast('Не удалось сохранить изменение в избранном — попробуйте ещё раз', 'error');
             }
+        }
+
+        // ===== Посещённые места =====
+
+        async function loadUserVisited() {
+            visitedLoadError = false;
+            if (!currentSession || !currentSession.user) {
+                userVisited = [];
+                userVisitedDates = {};
+                applyFilters();
+                if (!document.getElementById('profile-modal').classList.contains('hidden')) {
+                    renderVisitedList();
+                }
+                return;
+            }
+            try {
+                // Пробуем получить вместе с датой отметки, чтобы отсортировать по свежести
+                // и показать пользователю "когда" он был в этом месте.
+                let { data, error } = await supabaseClient
+                    .from('user_visited_places')
+                    .select('place_id, created_at')
+                    .eq('user_id', currentSession.user.id)
+                    .order('created_at', { ascending: false });
+
+                // Если в таблице нет колонки created_at (или иной несовместимости схемы) —
+                // откатываемся к простому запросу, чтобы список всё равно загрузился.
+                if (error) {
+                    const fallback = await supabaseClient
+                        .from('user_visited_places')
+                        .select('place_id')
+                        .eq('user_id', currentSession.user.id);
+                    if (fallback.error) throw fallback.error;
+                    data = fallback.data;
+                }
+
+                userVisited = data ? data.map(item => item.place_id) : [];
+                userVisitedDates = {};
+                (data || []).forEach(item => {
+                    if (item.created_at) userVisitedDates[item.place_id] = item.created_at;
+                });
+            } catch (e) {
+                // Настоящая ошибка запроса (например, таблицы visited_places ещё нет в Supabase,
+                // или для неё не настроены RLS-политики) — отличаем это от "мест правда нет",
+                // чтобы не показывать пользователю вводящий в заблуждение пустой список.
+                console.error('Не удалось загрузить посещённые места:', e);
+                userVisited = [];
+                userVisitedDates = {};
+                visitedLoadError = true;
+                showToast('Не удалось загрузить посещённые места', 'error');
+            }
+            applyFilters();
+            if (!document.getElementById('profile-modal').classList.contains('hidden')) {
+                renderVisitedList();
+            }
+        }
+
+        async function toggleVisited(placeId, event) {
+            if (event) event.stopPropagation();
+
+            if (!currentSession || !currentSession.user) {
+                showToast('Чтобы отмечать посещённые места, войдите в аккаунт', 'warn');
+                openAuthModal();
+                return;
+            }
+
+            // Защита от двойного клика/гонки запросов, пока предыдущий ещё не завершился
+            if (visitedInFlight.has(placeId)) return;
+            visitedInFlight.add(placeId);
+
+            const userId = currentSession.user.id;
+            const isVisited = userVisited.includes(placeId);
+            const place = places.find(pl => pl.id === placeId);
+            const placeName = place ? place.name : 'Место';
+
+            try {
+                if (isVisited) {
+                    const { error } = await supabaseClient
+                        .from('user_visited_places')
+                        .delete()
+                        .eq('user_id', userId)
+                        .eq('place_id', placeId);
+                    if (error) throw error;
+                    userVisited = userVisited.filter(id => id !== placeId);
+                    delete userVisitedDates[placeId];
+                    showToast(`«${placeName}» убрано из посещённых`, 'info');
+                } else {
+                    const { error } = await supabaseClient
+                        .from('user_visited_places')
+                        .insert([{ user_id: userId, place_id: placeId }]);
+                    if (error) throw error;
+                    // Ставим отметку самой свежей — сразу наверх списка
+                    userVisited = userVisited.filter(id => id !== placeId);
+                    userVisited.unshift(placeId);
+                    userVisitedDates[placeId] = new Date().toISOString();
+                    showToast(`«${placeName}» отмечено как посещённое!`, 'success');
+                }
+                applyFilters();
+                if (!document.getElementById('profile-modal').classList.contains('hidden')) {
+                    renderVisitedList();
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Не удалось сохранить отметку — попробуйте ещё раз', 'error');
+            } finally {
+                visitedInFlight.delete(placeId);
+            }
+        }
+
+        function renderVisitedList() {
+            const container = document.getElementById('visited-container');
+            const countEl = document.getElementById('visited-count');
+            const countBadge = document.getElementById('visited-count-badge');
+            const progressWrap = document.getElementById('visited-progress-wrap');
+            const progressFill = document.getElementById('visited-progress-fill');
+            const progressLabel = document.getElementById('visited-progress-label');
+            if (!container) return;
+
+            countEl.textContent = currentLang === 'ro' ? `${userVisited.length} locuri` : `${userVisited.length} мест`;
+            countBadge.textContent = userVisited.length;
+
+            // Прогресс-бар: сколько из всех заведений города уже отмечено посещённым
+            const totalPlaces = Array.isArray(places) ? places.length : 0;
+            if (progressWrap && totalPlaces > 0) {
+                progressWrap.classList.remove('hidden');
+                const pct = Math.min(100, Math.round((userVisited.length / totalPlaces) * 100));
+                progressFill.style.width = `${pct}%`;
+                progressLabel.textContent = currentLang === 'ro'
+                    ? `${userVisited.length} din ${totalPlaces} · ${pct}%`
+                    : `${userVisited.length} из ${totalPlaces} · ${pct}%`;
+            } else if (progressWrap) {
+                progressWrap.classList.add('hidden');
+            }
+
+            if (visitedLoadError) {
+                container.innerHTML = `
+                    <div class="col-span-full py-10 text-center text-xs font-medium bg-rose-50 dark:bg-rose-500/10 rounded-2xl border border-dashed border-rose-200 dark:border-rose-500/30 flex flex-col items-center gap-2 px-4">
+                        <i class="fa-solid fa-triangle-exclamation text-2xl text-rose-400"></i>
+                        <span class="text-rose-500 dark:text-rose-300">Не получилось загрузить посещённые места.<br>Попробуйте ещё раз.</span>
+                        <button onclick="loadUserVisited()" class="mt-2 px-4 py-2 rounded-xl bg-rose-500 text-white text-[11px] font-black hover:bg-rose-600 transition-colors">
+                            <i class="fa-solid fa-rotate-right"></i> Повторить
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            if (userVisited.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full py-10 text-center text-slate-400 text-xs font-medium bg-slate-50 dark:bg-slate-800/30 rounded-2xl border border-dashed border-slate-200 dark:border-slate-700 flex flex-col items-center gap-2">
+                        <i class="fa-solid fa-flag text-2xl text-slate-300 dark:text-slate-600"></i>
+                        <span>Вы ещё нигде не отмечались.<br>Нажимайте на флажок на карточках заведений!</span>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '';
+            userVisited.forEach((placeId, idx) => {
+                const p = places.find(item => item.id === placeId);
+                if (!p) return;
+
+                const dateLabel = formatVisitedDate(userVisitedDates[placeId]);
+
+                container.insertAdjacentHTML('beforeend', `
+                    <div class="group relative p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3 transition-all hover:border-emerald-300 dark:hover:border-emerald-500/40 hover:shadow-md animate-fade-in-up" style="animation-delay: ${Math.min(idx, 10) * 40}ms">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <div class="relative shrink-0">
+                                <div class="w-11 h-11 rounded-xl bg-gradient-to-br ${p.gradient} flex items-center justify-center text-lg text-white shadow-sm">${p.icon}</div>
+                                <span class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-900 flex items-center justify-center text-white text-[8px]">
+                                    <i class="fa-solid fa-check"></i>
+                                </span>
+                            </div>
+                            <div class="min-w-0">
+                                <h5 class="text-xs font-black truncate text-slate-800 dark:text-white">${p.name}</h5>
+                                <div class="flex items-center gap-1.5 text-[10px] text-slate-500 dark:text-slate-400 font-medium mt-0.5">
+                                    <span class="truncate">${p.district}</span>
+                                    ${dateLabel ? `<span class="text-slate-300 dark:text-slate-600">·</span><span class="text-emerald-600 dark:text-emerald-400 font-bold whitespace-nowrap">${dateLabel}</span>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <button onclick="showPlaceModalById('${p.id}'); closeProfileModal();" class="p-2 rounded-xl bg-slate-800/10 text-black dark:text-slate-300 hover:bg-slate-800 hover:text-white text-xs transition-colors" title="Открыть">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                            <button onclick="toggleVisited('${p.id}');" class="p-2 rounded-xl bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white text-xs transition-colors" title="Убрать отметку">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `);
+            });
+        }
+
+        // ===== "Последняя просмотренная локация" и напоминание при следующем заходе =====
+
+        // Вызывается каждый раз при открытии карточки места — запоминаем её как "последнюю просмотренную"
+        function rememberLastViewedPlace(p) {
+            try {
+                localStorage.setItem(LAST_VIEWED_KEY, JSON.stringify({ id: p.id, name: p.name, ts: Date.now() }));
+                // Раз человек снова открыл карточку, старое "отклонение" баннера для этого места больше не актуально
+                const dismissedId = localStorage.getItem(LAST_VIEWED_DISMISSED_KEY);
+                if (dismissedId === p.id) {
+                    localStorage.removeItem(LAST_VIEWED_DISMISSED_KEY);
+                }
+            } catch (e) { /* localStorage недоступен — просто игнорируем */ }
+        }
+
+        // Проверяем при загрузке сайта: смотрел ли человек в прошлый раз какое-то место и стоит ли спросить "вы там были?"
+        function checkVisitPrompt() {
+            let last;
+            try {
+                last = JSON.parse(localStorage.getItem(LAST_VIEWED_KEY) || 'null');
+            } catch (e) {
+                last = null;
+            }
+            if (!last || !last.id) return;
+
+            // Уже отмечено как посещённое — можно почистить и не спрашивать
+            if (userVisited.includes(last.id)) {
+                localStorage.removeItem(LAST_VIEWED_KEY);
+                return;
+            }
+
+            // Пользователь уже сказал "нет" по этому месту — не спрашиваем повторно
+            const dismissedId = localStorage.getItem(LAST_VIEWED_DISMISSED_KEY);
+            if (dismissedId === last.id) return;
+
+            const p = places.find(pl => pl.id === last.id);
+            if (!p) return;
+
+            document.getElementById('visit-prompt-place-name').textContent = p.name;
+            document.getElementById('visit-prompt-icon').innerHTML = p.icon;
+            const banner = document.getElementById('visit-prompt-banner');
+            banner.dataset.placeId = p.id;
+            banner.classList.remove('hidden');
+        }
+
+        async function answerVisitPrompt(wasVisited) {
+            const banner = document.getElementById('visit-prompt-banner');
+            const placeId = banner.dataset.placeId;
+            if (!placeId) { banner.classList.add('hidden'); return; }
+
+            if (wasVisited) {
+                if (!currentSession || !currentSession.user) {
+                    banner.classList.add('hidden');
+                    showToast('Чтобы сохранить это в аккаунте, войдите', 'warn');
+                    openAuthModal();
+                    return;
+                }
+                if (!userVisited.includes(placeId)) {
+                    await toggleVisited(placeId);
+                }
+                localStorage.removeItem(LAST_VIEWED_KEY);
+            } else {
+                localStorage.setItem(LAST_VIEWED_DISMISSED_KEY, placeId);
+            }
+            banner.classList.add('hidden');
+        }
+
+        function dismissVisitPrompt() {
+            const banner = document.getElementById('visit-prompt-banner');
+            const placeId = banner.dataset.placeId;
+            if (placeId) localStorage.setItem(LAST_VIEWED_DISMISSED_KEY, placeId);
+            banner.classList.add('hidden');
         }
 
         function renderFavoritesList() {
@@ -890,8 +1549,21 @@
             const countEl = document.getElementById('fav-count');
             const countBadge = document.getElementById('fav-count-badge');
             
-            countEl.textContent = `${userFavorites.length} мест`;
+            countEl.textContent = currentLang === 'ro' ? `${userFavorites.length} locuri` : `${userFavorites.length} мест`;
             countBadge.textContent = userFavorites.length;
+
+            if (favoritesLoadError) {
+                container.innerHTML = `
+                    <div class="col-span-full py-8 text-center text-xs font-medium bg-rose-50 dark:bg-rose-500/10 rounded-2xl border border-dashed border-rose-200 dark:border-rose-500/30 flex flex-col items-center gap-2 px-4">
+                        <i class="fa-solid fa-triangle-exclamation text-2xl text-rose-400"></i>
+                        <span class="text-rose-500 dark:text-rose-300">Не получилось загрузить избранное.<br>Попробуйте ещё раз.</span>
+                        <button onclick="loadUserFavorites()" class="mt-2 px-4 py-2 rounded-xl bg-rose-500 text-white text-[11px] font-black hover:bg-rose-600 transition-colors">
+                            <i class="fa-solid fa-rotate-right"></i> Повторить
+                        </button>
+                    </div>
+                `;
+                return;
+            }
 
             if (userFavorites.length === 0) {
                 container.innerHTML = `
@@ -960,7 +1632,7 @@
                     badge.classList.remove('flex');
                 }, 2000);
             } catch (err) {
-                alert('Не удалось сохранить район: ' + (err.message || 'ошибка'));
+                showToast('Не удалось сохранить район: ' + (err.message || 'ошибка'), 'error');
             }
         }
 
@@ -973,9 +1645,11 @@
             if (session && session.user) {
                 btnText.textContent = session.user.email.split('@')[0];
                 await loadUserFavorites();
+                await loadUserVisited();
             } else {
                 btnText.textContent = 'Войти';
                 userFavorites = [];
+                userVisited = [];
             }
         }
 
@@ -986,6 +1660,9 @@
             await checkUserSession();
             const bootGate = document.getElementById('boot-gate-style');
             if (bootGate) bootGate.remove();
+
+            // Спрашиваем "вы там были?" про место, которое смотрели в прошлый заход
+            checkVisitPrompt();
 
             if (currentSession && currentSession.user) {
                 const homeDistrict = currentSession.user.user_metadata?.home_district || 'all';
@@ -1679,16 +2356,18 @@
         // Человекочитаемое расстояние. Если известно реальное время маршрута (из ORS) — используем его,
         // иначе считаем по средней скорости пешехода ~5 км/ч (запасной вариант "по прямой")
         function formatDistance(meters, seconds) {
-            const distText = meters < 1000 ? `${Math.round(meters / 10) * 10} м` : `${(meters / 1000).toFixed(1)} км`;
+            const distText = meters < 1000 ? `${Math.round(meters / 10) * 10} ${currentLang === 'ro' ? 'm' : 'м'}` : `${(meters / 1000).toFixed(1)} ${currentLang === 'ro' ? 'km' : 'км'}`;
             const totalMins = typeof seconds === 'number' ? Math.max(1, Math.round(seconds / 60)) : Math.max(1, Math.round(meters / 83.3));
 
             let walkText;
             if (totalMins >= 60) {
                 const hours = Math.floor(totalMins / 60);
                 const mins = totalMins % 60;
-                walkText = mins > 0 ? `${hours} ч ${mins} мин пешком` : `${hours} ч пешком`;
+                walkText = currentLang === 'ro'
+                    ? (mins > 0 ? `${hours} h ${mins} min pe jos` : `${hours} h pe jos`)
+                    : (mins > 0 ? `${hours} ч ${mins} мин пешком` : `${hours} ч пешком`);
             } else {
-                walkText = `${totalMins} мин пешком`;
+                walkText = currentLang === 'ro' ? `${totalMins} min pe jos` : `${totalMins} мин пешком`;
             }
 
             return { distText, walkText };
@@ -1763,8 +2442,12 @@
             const minutes = cDate.getMinutes();
             const timeInMinutes = hours * 60 + minutes;
 
-            const dayNames = ["Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"];
-            const dayShort = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
+            const dayNames = currentLang === 'ro'
+                ? ["Duminică", "Luni", "Marți", "Miercuri", "Joi", "Vineri", "Sâmbătă"]
+                : ["Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"];
+            const dayShort = currentLang === 'ro'
+                ? ["Du", "Lu", "Ma", "Mi", "Jo", "Vi", "Sâ"]
+                : ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
 
             const pad = (n) => String(n).padStart(2, '0');
             const clockStr = `${pad(hours)}:${pad(minutes)}:${pad(cDate.getSeconds())}`;
@@ -1779,7 +2462,7 @@
             const todaySchedule = (scheduleObj && scheduleObj[info.day]) ? scheduleObj[info.day] : "10:00-22:00";
 
             if (todaySchedule === "00:00-24:00" || todaySchedule === "24/7") {
-                return { isOpen: true, statusText: "Открыто 24/7", todayHours: "Круглосуточно", badgeBg: "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 border-emerald-500/30", dot: "<i class='fa-solid fa-circle text-[8px]'></i>" };
+                return { isOpen: true, statusText: tr("Открыто 24/7"), todayHours: tr("Круглосуточно"), badgeBg: "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 border-emerald-500/30", dot: "<i class='fa-solid fa-circle text-[8px]'></i>" };
             }
 
             const [startStr, endStr] = todaySchedule.split("-");
@@ -1798,8 +2481,8 @@
 
             return {
                 isOpen,
-                statusText: isOpen ? `Открыто (Сегодня: ${todaySchedule})` : `Закрыто (Сегодня: ${todaySchedule})`,
-                todayHours: `Сегодня: ${startStr} - ${endStr}`,
+                statusText: currentLang === 'ro' ? `${isOpen ? 'Deschis' : 'Închis'} (Astăzi: ${todaySchedule})` : `${isOpen ? 'Открыто' : 'Закрыто'} (Сегодня: ${todaySchedule})`,
+                todayHours: currentLang === 'ro' ? `Astăzi: ${startStr} - ${endStr}` : `Сегодня: ${startStr} - ${endStr}`,
                 badgeBg: isOpen ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 border-emerald-500/30" : "bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400 border-rose-500/30",
                 dot: "<i class='fa-solid fa-circle text-[8px]'></i>"
             };
@@ -1906,6 +2589,7 @@
             const actionBtn = document.getElementById('modal-action-btn');
 
             const isFav = userFavorites.includes(p.id);
+            const isVisited = userVisited.includes(p.id);
 
             content.innerHTML = `
                 <div class="p-5 rounded-2xl bg-gradient-to-br ${p.gradient} text-white flex items-center justify-between shadow-inner relative">
@@ -1920,9 +2604,15 @@
                         <div class="text-4xl opacity-90 shrink-0">${p.icon}</div>
                     </div>
                 </div>
-                <div class="flex items-center gap-2 text-xs font-bold px-3.5 py-2 rounded-xl border ${status.badgeBg} shadow-sm">
-                    <span class="mt-0.5">${status.dot}</span>
-                    <span>${status.statusText}</span>
+                <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-2 text-xs font-bold px-3.5 py-2 rounded-xl border ${status.badgeBg} shadow-sm">
+                        <span class="mt-0.5">${status.dot}</span>
+                        <span>${status.statusText}</span>
+                    </div>
+                    <button onclick="toggleVisited('${p.id}', event); showPlaceModalById('${p.id}');" class="flex items-center gap-2 text-xs font-bold px-3.5 py-2 rounded-xl border shadow-sm transition-colors ${isVisited ? 'bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/20 text-emerald-600 dark:text-emerald-400' : 'bg-slate-100 dark:bg-slate-800/40 border-slate-200 dark:border-slate-800/40 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white'}">
+                        <i class="fa-solid ${isVisited ? 'fa-circle-check' : 'fa-flag'}"></i>
+                        <span>${isVisited ? 'Посетил(а)' : 'Отметить как посещённое'}</span>
+                    </button>
                 </div>
                 ${(() => {
                     const d = getPlaceDistanceInfo(p);
@@ -1944,6 +2634,10 @@
             mapBtn.href = p.mapUrl;
                 actionBtn.onclick = function() { closeRandomModal(); };
                 modal.classList.remove('hidden');
+                translatePageText(content);
+
+                // Запоминаем последнюю просмотренную локацию, чтобы на следующий заход спросить "вы там были?"
+                rememberLastViewedPlace(p);
         }
 
         function closeRandomModal() {
@@ -1967,7 +2661,7 @@
 
         function getUserLocation() {
             if (!navigator.geolocation) {
-                alert("Геолокация не поддерживается вашим браузером");
+                alert(tr("Геолокация не поддерживается вашим браузером"));
                 return;
             }
             navigator.geolocation.getCurrentPosition(
@@ -1985,7 +2679,7 @@
                     });
 
                     userMarker = L.marker([lat, lng], { icon: userIcon }).addTo(map);
-                    userMarker.bindPopup("<div class='font-bold text-xs'>Вы здесь!</div>").openPopup();
+                    userMarker.bindPopup("<div class='font-bold text-xs'>" + tr("Вы здесь!") + "</div>").openPopup();
                     map.setView([lat, lng], 15);
 
                     userLocation = { lat, lng };
@@ -1994,7 +2688,7 @@
                     fetchWalkingDistances(lat, lng); // подтягиваем точные пешие маршруты от OpenRouteService
                 },
                 () => {
-                    alert("Не удалось получить ваше местоположение. Проверьте разрешения.");
+                    alert(tr("Не удалось получить ваше местоположение. Проверьте разрешения."));
                 },
                 { enableHighAccuracy: true }
             );
@@ -2006,21 +2700,23 @@
 
     filteredPlaces.forEach(p => {
         const isFav = userFavorites.includes(p.id);
+        const isVisited = userVisited.includes(p.id);
         
         // Проверяем статус заведения (открыто/закрыто)
         const status = checkOpenStatus(p.schedule);
         // Цвет кружочка в зависимости от статуса: зеленый если открыто, красный если закрыто
         const dotColorBg = status.isOpen ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]' : 'bg-rose-500';
 
-        // Формируем иконку маркера с добавлением мини-кружочка статуса в правом верхнем углу
+        // Формируем иконку маркера с добавлением мини-кружочка статуса и, если место посещено, галочки внизу
         const customIcon = L.divIcon({
             className: 'custom-map-marker',
             html: `
                 <div class="relative group/pin">
-                    <div class="w-9 h-9 rounded-xl bg-gradient-to-br ${p.gradient} text-white flex items-center justify-center text-sm shadow-xl border-2 border-white dark:border-slate-800 hover:scale-125 transition-transform cursor-pointer">
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-br ${p.gradient} text-white flex items-center justify-center text-sm shadow-xl border-2 ${isVisited ? 'border-emerald-400' : 'border-white dark:border-slate-800'} hover:scale-125 transition-transform cursor-pointer">
                         ${p.icon}
                     </div>
                     <span class="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full ${dotColorBg} border-2 border-white dark:border-slate-900"></span>
+                    ${isVisited ? `<span class="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-900 flex items-center justify-center text-white text-[7px]"><i class="fa-solid fa-check"></i></span>` : ''}
                 </div>
             `,
             iconSize: [36, 36],
@@ -2099,15 +2795,23 @@
             list.forEach(p => {
                 const status = checkOpenStatus(p.schedule);
                 const isFav = userFavorites.includes(p.id);
+                const isVisited = userVisited.includes(p.id);
 
                 grid.insertAdjacentHTML('beforeend', `
                     <div onclick="showPlaceModalById('${p.id}')" class="glass rounded-[2.5rem] p-5 sm:p-6 card-hover flex flex-col justify-between border border-white/60 dark:border-white/10 cursor-pointer relative overflow-hidden group">
+                        ${isVisited ? `
+                        <span class="absolute top-4 left-4 z-10 flex items-center gap-1 text-[10px] font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-100 dark:border-emerald-500/20 shadow-sm">
+                            <i class="fa-solid fa-circle-check"></i> Посещено
+                        </span>` : ''}
                         <div>
                             <div class="flex items-center justify-between mb-4">
                                 <div class="w-14 h-14 rounded-2xl bg-gradient-to-br ${p.gradient} flex items-center justify-center text-2xl text-white shadow-lg shadow-slate-800/20 group-hover:scale-110 transition-transform">
                                     ${p.icon}
                                 </div>
                                 <div class="flex items-center gap-2">
+                                    <button onclick="toggleVisited('${p.id}', event)" title="${isVisited ? 'Убрать отметку о посещении' : 'Отметить как посещённое'}" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800/80 flex items-center justify-center text-base ${isVisited ? 'text-emerald-500' : 'text-slate-400 dark:text-slate-500'} hover:scale-110 transition-transform">
+                                        <i class="fa-solid ${isVisited ? 'fa-circle-check' : 'fa-flag'}"></i>
+                                    </button>
                                     <button onclick="toggleFavorite('${p.id}', event)" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800/80 flex items-center justify-center text-base ${isFav ? 'text-rose-500' : 'text-slate-400 dark:text-slate-500'} hover:scale-110 transition-transform">
                                         <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
                                     </button>
@@ -2157,20 +2861,28 @@
                     </div>
                 `);
             });
+            translatePageText(grid);
         }
 
-        function setDistrict(dist) {
-            state.district = dist;
+        function syncDistrictSelection(dist) {
             document.querySelectorAll('.dist-btn').forEach(btn => {
                 btn.classList.remove('bg-gradient-to-r', 'from-slate-800', 'to-slate-700', 'text-white', 'shadow-lg', 'dark:from-white', 'dark:to-slate-100', 'dark:text-slate-900', 'dark:ring-2', 'dark:ring-white/40', 'dark:shadow-[0_0_18px_rgba(255,255,255,0.3)]');
                 btn.classList.add('bg-white/60', 'dark:bg-slate-800/60', 'text-slate-700', 'dark:text-slate-200');
             });
-            event.currentTarget.classList.remove('bg-white/60', 'dark:bg-slate-800/60', 'text-slate-700', 'dark:text-slate-200');
-            event.currentTarget.classList.add('bg-gradient-to-r', 'from-slate-800', 'to-slate-700', 'text-white', 'shadow-lg', 'dark:from-white', 'dark:to-slate-100', 'dark:text-slate-900', 'dark:ring-2', 'dark:ring-white/40', 'dark:shadow-[0_0_18px_rgba(255,255,255,0.3)]');
+            const activeButton = [...document.querySelectorAll('.dist-btn')].find(btn => btn.dataset.district === dist);
+            if (activeButton) {
+                activeButton.classList.remove('bg-white/60', 'dark:bg-slate-800/60', 'text-slate-700', 'dark:text-slate-200');
+                activeButton.classList.add('bg-gradient-to-r', 'from-slate-800', 'to-slate-700', 'text-white', 'shadow-lg', 'dark:from-white', 'dark:to-slate-100', 'dark:text-slate-900', 'dark:ring-2', 'dark:ring-white/40', 'dark:shadow-[0_0_18px_rgba(255,255,255,0.3)]');
+            }
+        }
+
+        function setDistrict(dist) {
+            state.district = dist;
+            syncDistrictSelection(dist);
 
             const distName = dist === 'all' ? 'Весь город' : dist;
-            document.getElementById('current-district-display').textContent = distName;
-            document.getElementById('grid-title').textContent = dist === 'all' ? 'Все заведения' : `Заведения: ${dist}`;
+            document.getElementById('current-district-display').textContent = tr(distName);
+            document.getElementById('grid-title').textContent = dist === 'all' ? tr('Все заведения') : (currentLang === 'ro' ? `Locații: ${tr(dist)}` : `Заведения: ${dist}`);
 
             applyFilters();
         }
@@ -2225,7 +2937,7 @@
             showPlaceModal(randomP);
         }
 
-       function startApp(district, instant) {
+        function startApp(district, instant) {
     const welcome = document.getElementById('welcome-screen');
     const mainApp = document.getElementById('main-app');
 
@@ -2235,19 +2947,11 @@
 
         // Обновляем текст в интерфейсе
         const distName = district === 'all' ? 'Весь город' : district;
-        document.getElementById('current-district-display').textContent = distName;
-        document.getElementById('grid-title').textContent = district === 'all' ? 'Все заведения' : `Заведения: ${district}`;
+        document.getElementById('current-district-display').textContent = tr(distName);
+        document.getElementById('grid-title').textContent = district === 'all' ? tr('Все заведения') : (currentLang === 'ro' ? `Locații: ${tr(district)}` : `Заведения: ${district}`);
 
-        // Подсвечиваем нужную кнопку района в фильтрах
-        document.querySelectorAll('.dist-btn').forEach(btn => {
-            if (btn.textContent.trim() === distName) {
-                btn.classList.remove('bg-white/60', 'dark:bg-slate-800/60', 'text-slate-700', 'dark:text-slate-200');
-                btn.classList.add('bg-gradient-to-r', 'from-slate-800', 'to-slate-700', 'text-white', 'shadow-lg', 'dark:from-white', 'dark:to-slate-100', 'dark:text-slate-900', 'dark:ring-2', 'dark:ring-white/40', 'dark:shadow-[0_0_18px_rgba(255,255,255,0.3)]');
-            } else {
-                btn.classList.remove('bg-gradient-to-r', 'from-slate-800', 'to-slate-700', 'text-white', 'shadow-lg', 'dark:from-white', 'dark:to-slate-100', 'dark:text-slate-900', 'dark:ring-2', 'dark:ring-white/40', 'dark:shadow-[0_0_18px_rgba(255,255,255,0.3)]');
-                btn.classList.add('bg-white/60', 'dark:bg-slate-800/60', 'text-slate-700', 'dark:text-slate-200');
-            }
-        });
+        // Синхронизация по data-district, поэтому перевод текста не влияет на подсветку.
+        syncDistrictSelection(district);
     }
 
     if (instant) {
