@@ -699,9 +699,6 @@
                             <button onclick="getUserLocation()" class="text-[10px] sm:text-xs bg-slate-800 dark:ring-1 dark:ring-white/15 text-white font-bold px-3 py-1.5 rounded-full shadow-md hover:bg-black transition-all flex items-center gap-1.5">
                                 <i class="fa-solid fa-location-crosshairs"></i> Мое местоположение
                             </button>
-                            <button id="btn-sort-distance" onclick="toggleSortByDistance()" class="hidden text-[10px] sm:text-xs bg-slate-800 dark:ring-1 dark:ring-white/15 text-white font-bold px-3 py-1.5 rounded-full shadow-md hover:bg-black transition-all flex items-center gap-1.5">
-                                <i class="fa-solid fa-arrow-down-short-wide"></i> Сначала ближайшие
-                            </button>
                         </div>
                     </div>
 
@@ -1684,14 +1681,20 @@
 
         places.forEach((p, i) => { p.id = p.id || ('place_' + i); });
 
-        let state = { mainCat: 'relax', category: 'all', district: 'all', search: '', onlyOpen: false, sortByDistance: false };
+        let state = { mainCat: 'relax', category: 'all', district: 'all', search: '', onlyOpen: false };
         let map = null;
         let markersLayer = null;
         let tileLayer = null;
         let userMarker = null;
         let userLocation = null; // { lat, lng } — заполняется после getUserLocation()
 
-        // Расстояние между двумя точками по формуле гаверсинуса, результат в метрах
+        // Ключ OpenRouteService — реальные пешие маршруты по улицам (как в Google Maps)
+        const ORS_API_KEY = 'eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjkxNTQ1ZjVhOTZiODRhNjk5M2FkNjY0YTI4ZmFmNGYzIiwiaCI6Im11cm11cjY0In0=';
+        // Кэш реальных маршрутов от текущей геопозиции: { [placeId]: { meters, seconds } }
+        let realWalkDistances = {};
+        let isFetchingWalkDistances = false;
+
+        // Расстояние между двумя точками по формуле гаверсинуса, результат в метрах (запасной вариант "по прямой")
         function getDistanceMeters(lat1, lng1, lat2, lng2) {
             const R = 6371000;
             const toRad = (deg) => deg * Math.PI / 180;
@@ -1704,11 +1707,71 @@
             return R * c;
         }
 
-        // Человекочитаемое расстояние + время пешком (средняя скорость ~5 км/ч → 83.3 м/мин)
-        function formatDistance(meters) {
+        // Человекочитаемое расстояние. Если известно реальное время маршрута (из ORS) — используем его,
+        // иначе считаем по средней скорости пешехода ~5 км/ч (запасной вариант "по прямой")
+        function formatDistance(meters, seconds) {
             const distText = meters < 1000 ? `${Math.round(meters / 10) * 10} м` : `${(meters / 1000).toFixed(1)} км`;
-            const mins = Math.max(1, Math.round(meters / 83.3));
+            const mins = typeof seconds === 'number' ? Math.max(1, Math.round(seconds / 60)) : Math.max(1, Math.round(meters / 83.3));
             return { distText, walkText: `${mins} мин пешком` };
+        }
+
+        // Возвращает инфо о расстоянии до места: реальный маршрут (ORS), если уже посчитан,
+        // иначе временно "по прямой", пока не пришёл ответ от сервиса
+        function getPlaceDistanceInfo(p) {
+            if (!userLocation) return null;
+            const real = realWalkDistances[p.id];
+            if (real) return formatDistance(real.meters, real.seconds);
+            const meters = getDistanceMeters(userLocation.lat, userLocation.lng, p.lat, p.lng);
+            return formatDistance(meters);
+        }
+
+        // Запрашивает у OpenRouteService реальные пешие маршруты от userLocation до всех точек за один запрос (Matrix API)
+        async function fetchWalkingDistances(lat, lng) {
+            if (isFetchingWalkDistances) return;
+            isFetchingWalkDistances = true;
+            try {
+                const activePlaces = places.filter(p => !p.isPermanentlyClosed);
+                const chunkSize = 45; // ограничение бесплатного тарифа ORS Matrix по числу точек в одном запросе
+                for (let i = 0; i < activePlaces.length; i += chunkSize) {
+                    const chunk = activePlaces.slice(i, i + chunkSize);
+                    const locations = [[lng, lat], ...chunk.map(p => [p.lng, p.lat])];
+                    const destinations = chunk.map((_, idx) => idx + 1);
+
+                    const res = await fetch('https://api.openrouteservice.org/v2/matrix/foot-walking', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': ORS_API_KEY,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            locations,
+                            sources: [0],
+                            destinations,
+                            metrics: ['distance', 'duration']
+                        })
+                    });
+
+                    if (!res.ok) throw new Error(`ORS ответил ${res.status}`);
+                    const data = await res.json();
+                    const distances = data.distances && data.distances[0];
+                    const durations = data.durations && data.durations[0];
+                    if (!distances || !durations) throw new Error('ORS: пустой ответ');
+
+                    chunk.forEach((p, idx) => {
+                        const meters = distances[idx];
+                        const seconds = durations[idx];
+                        if (typeof meters === 'number' && typeof seconds === 'number') {
+                            realWalkDistances[p.id] = { meters, seconds };
+                        }
+                    });
+
+                    applyFilters(); // обновляем UI по мере поступления реальных данных
+                }
+            } catch (e) {
+                console.warn('Не удалось получить реальные пешие маршруты от OpenRouteService, используем расчёт по прямой:', e);
+            } finally {
+                isFetchingWalkDistances = false;
+            }
         }
 
         function getChisinauInfo() {
@@ -1882,6 +1945,14 @@
                     <span class="mt-0.5">${status.dot}</span>
                     <span>${status.statusText}</span>
                 </div>
+                ${(() => {
+                    const d = getPlaceDistanceInfo(p);
+                    if (!d) return '';
+                    return `<div class="flex items-center gap-2 text-xs font-bold px-3.5 py-2 rounded-xl border border-emerald-100 dark:border-emerald-500/20 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 shadow-sm">
+                        <i class="fa-solid fa-person-walking"></i>
+                        <span>${d.distText} · ${d.walkText} от вас</span>
+                    </div>`;
+                })()}
                 <p class="text-sm font-medium text-slate-700 dark:text-slate-300 leading-relaxed">${p.desc}</p>
                 <div class="bg-slate-100 dark:bg-slate-800/10 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800/20 text-xs text-slate-700 dark:text-slate-300 shadow-sm">
                     <b class="text-black dark:text-slate-300 block mb-1"><i class="fa-solid fa-gamepad"></i> Детали:</b> ${p.entertainment}
@@ -1939,29 +2010,15 @@
                     map.setView([lat, lng], 15);
 
                     userLocation = { lat, lng };
-                    const sortBtn = document.getElementById('btn-sort-distance');
-                    if (sortBtn) sortBtn.classList.remove('hidden');
-                    applyFilters();
+                    realWalkDistances = {}; // сбрасываем кэш — геопозиция новая
+                    applyFilters(); // мгновенно показываем расстояние "по прямой", пока грузятся реальные маршруты
+                    fetchWalkingDistances(lat, lng); // подтягиваем точные пешие маршруты от OpenRouteService
                 },
                 () => {
                     alert("Не удалось получить ваше местоположение. Проверьте разрешения.");
                 },
                 { enableHighAccuracy: true }
             );
-        }
-
-        function toggleSortByDistance() {
-            if (!userLocation) return;
-            state.sortByDistance = !state.sortByDistance;
-            const btn = document.getElementById('btn-sort-distance');
-            if (state.sortByDistance) {
-                btn.classList.add('bg-emerald-500', 'text-white', 'border-transparent');
-                btn.classList.remove('bg-slate-800', 'text-white');
-            } else {
-                btn.classList.remove('bg-emerald-500', 'text-white', 'border-transparent');
-                btn.classList.add('bg-slate-800', 'text-white');
-            }
-            applyFilters();
         }
 
         function renderMapMarkers(filteredPlaces) {
@@ -2030,14 +2087,11 @@
                 return true;
             });
 
-            // Если известна геолокация — считаем расстояние до каждого места
+            // Если известна геолокация — считаем расстояние до каждого места (реальное или "по прямой")
             if (userLocation) {
                 filtered.forEach(p => {
-                    p.distanceMeters = getDistanceMeters(userLocation.lat, userLocation.lng, p.lat, p.lng);
+                    p.distanceInfo = getPlaceDistanceInfo(p);
                 });
-                if (state.sortByDistance) {
-                    filtered.sort((a, b) => a.distanceMeters - b.distanceMeters);
-                }
             }
 
             renderPlacesGrid(filtered);
@@ -2099,10 +2153,9 @@
                                     ${p.price}
                                 </span>
                                 ${(() => {
-                                    if (typeof p.distanceMeters !== 'number') return '';
-                                    const d = formatDistance(p.distanceMeters);
+                                    if (!p.distanceInfo) return '';
                                     return `<span class="text-[10px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-100 dark:border-emerald-500/20 flex items-center gap-1">
-                                        <i class="fa-solid fa-person-walking"></i> ${d.distText} · ${d.walkText}
+                                        <i class="fa-solid fa-person-walking"></i> ${p.distanceInfo.distText} · ${p.distanceInfo.walkText}
                                     </span>`;
                                 })()}
                             </div>
