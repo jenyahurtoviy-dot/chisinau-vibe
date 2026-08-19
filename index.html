@@ -82,13 +82,17 @@
             transition: background-color 0.5s ease;
             -webkit-tap-highlight-color: transparent;
         }
-        .dark body { background-color: #020617; }
+        .dark body {
+            background-color: #020617;
+            background-image: radial-gradient(ellipse 120% 80% at 50% -10%, rgba(30, 41, 59, 0.55) 0%, rgba(2, 6, 23, 0) 60%);
+        }
         
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 10px; }
         .dark ::-webkit-scrollbar-thumb { background: #334155; }
         ::-webkit-scrollbar-thumb:hover { background: #0f172a; }
+        .dark ::-webkit-scrollbar-thumb:hover { background: #64748b; }
         
         .glass {
             background: rgba(255, 255, 255, 0.85);
@@ -98,13 +102,20 @@
             box-shadow: 0 10px 40px -10px rgba(31, 38, 135, 0.08);
         }
         .dark .glass {
-            background: rgba(15, 23, 42, 0.85);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.4);
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
         }
 
         .gradient-text {
             background: linear-gradient(135deg, #0f172a, #475569, #000000);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% 200%;
+            animation: gradientMove 4s ease infinite;
+        }
+        .dark .gradient-text {
+            background: linear-gradient(135deg, #ffffff, #94a3b8, #ffffff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-size: 200% 200%;
@@ -129,8 +140,8 @@
             border-color: rgba(15, 23, 42, 0.4);
         }
         .dark .card-hover:hover {
-            box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25);
-            border-color: rgba(15, 23, 42, 0.5);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.18);
         }
         
         .cat-btn-active {
@@ -139,9 +150,19 @@
             border-color: transparent !important;
             box-shadow: 0 12px 24px -8px rgba(15, 23, 42, 0.5) !important;
         }
+        .dark .cat-btn-active {
+            background: linear-gradient(135deg, #f8fafc, #cbd5e1) !important;
+            color: #0f172a !important;
+            border-color: transparent !important;
+            box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
+        }
 
         .cat-btn-active i, .cat-btn-active span {
             color: white !important;
+            opacity: 1 !important;
+        }
+        .dark .cat-btn-active i, .dark .cat-btn-active span {
+            color: #0f172a !important;
             opacity: 1 !important;
         }
 
@@ -220,9 +241,9 @@
     </div>
 
     <div class="fixed inset-0 w-full h-full pointer-events-none z-[-1] overflow-hidden">
-        <div class="absolute top-[-10%] left-[-10%] w-[20rem] sm:w-[40rem] h-[20rem] sm:h-[40rem] bg-slate-800 rounded-full mix-blend-multiply filter blur-[80px] sm:blur-[120px] opacity-20 dark:opacity-30 animate-blob"></div>
-        <div class="absolute top-[20%] right-[-10%] w-[18rem] sm:w-[35rem] h-[18rem] sm:h-[35rem] bg-slate-700 rounded-full mix-blend-multiply filter blur-[80px] sm:blur-[120px] opacity-20 dark:opacity-30 animate-blob animation-delay-2000"></div>
-        <div class="absolute bottom-[-10%] left-[20%] w-[20rem] sm:w-[40rem] h-[20rem] sm:h-[40rem] bg-slate-600 rounded-full mix-blend-multiply filter blur-[80px] sm:blur-[120px] opacity-10 dark:opacity-20 animate-blob animation-delay-4000"></div>
+        <div class="absolute top-[-10%] left-[-10%] w-[20rem] sm:w-[40rem] h-[20rem] sm:h-[40rem] bg-slate-800 dark:bg-slate-500 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[80px] sm:blur-[120px] opacity-20 dark:opacity-[0.15] animate-blob"></div>
+        <div class="absolute top-[20%] right-[-10%] w-[18rem] sm:w-[35rem] h-[18rem] sm:h-[35rem] bg-slate-700 dark:bg-slate-400 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[80px] sm:blur-[120px] opacity-20 dark:opacity-[0.12] animate-blob animation-delay-2000"></div>
+        <div class="absolute bottom-[-10%] left-[20%] w-[20rem] sm:w-[40rem] h-[20rem] sm:h-[40rem] bg-slate-600 dark:bg-slate-300 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[80px] sm:blur-[120px] opacity-10 dark:opacity-[0.1] animate-blob animation-delay-4000"></div>
     </div>
 
    <div id="welcome-screen" class="fixed inset-0 z-[100] bg-white/90 dark:bg-slate-950/90 backdrop-blur-3xl flex flex-col items-center justify-start pt-8 sm:justify-center sm:pt-0 transition-all duration-700 overflow-y-auto py-10 px-4">
@@ -249,8 +270,8 @@
 
             <!-- 2. Центр -->
             <button onclick="startApp('Центр')" class="group relative p-4 sm:p-8 rounded-3xl glass hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl hover:shadow-slate-800/20 border border-white/50 dark:border-white/10 hover:border-slate-800 text-left overflow-hidden">
-                <i class="fa-solid fa-landmark absolute -right-4 -bottom-4 text-6xl sm:text-8xl text-slate-800 opacity-5 group-hover:scale-125 transition-transform duration-500"></i>
-                <div class="text-2xl sm:text-4xl mb-2 sm:mb-4 text-slate-800 group-hover:scale-110 transition-transform origin-left drop-shadow-md"><i class="fa-solid fa-landmark"></i></div>
+                <i class="fa-solid fa-landmark absolute -right-4 -bottom-4 text-6xl sm:text-8xl text-slate-800 dark:text-white opacity-5 group-hover:scale-125 transition-transform duration-500"></i>
+                <div class="text-2xl sm:text-4xl mb-2 sm:mb-4 text-slate-800 dark:text-white group-hover:scale-110 transition-transform origin-left drop-shadow-md"><i class="fa-solid fa-landmark"></i></div>
                 <div class="font-black text-base sm:text-2xl mb-1 text-slate-800 dark:text-white">Центр</div>
                 <div class="text-[11px] sm:text-sm text-slate-500 dark:text-slate-400 font-medium">Сердце города</div>
             </button>
@@ -281,8 +302,8 @@
 
             <!-- 6. Чеканы -->
             <button onclick="startApp('Чеканы')" class="group relative p-4 sm:p-8 rounded-3xl glass hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl hover:shadow-slate-700/20 border border-white/50 dark:border-white/10 hover:border-slate-700 text-left overflow-hidden">
-                <i class="fa-solid fa-building absolute -right-4 -bottom-4 text-6xl sm:text-8xl text-slate-700 opacity-5 group-hover:scale-125 transition-transform duration-500"></i>
-                <div class="text-2xl sm:text-4xl mb-2 sm:mb-4 text-slate-700 group-hover:scale-110 transition-transform origin-left drop-shadow-md"><i class="fa-solid fa-building"></i></div>
+                <i class="fa-solid fa-building absolute -right-4 -bottom-4 text-6xl sm:text-8xl text-slate-700 dark:text-white opacity-5 group-hover:scale-125 transition-transform duration-500"></i>
+                <div class="text-2xl sm:text-4xl mb-2 sm:mb-4 text-slate-700 dark:text-white group-hover:scale-110 transition-transform origin-left drop-shadow-md"><i class="fa-solid fa-building"></i></div>
                 <div class="font-black text-base sm:text-2xl mb-1 text-slate-800 dark:text-white">Чеканы</div>
                 <div class="text-[11px] sm:text-sm text-slate-500 dark:text-slate-400 font-medium">Аллеи и бары</div>
             </button>
@@ -315,7 +336,7 @@
                 <i class="fa-solid fa-xmark"></i>
             </button>
             <div class="flex items-center gap-3 mb-5">
-                <div class="w-10 h-10 rounded-xl bg-slate-800 text-white flex items-center justify-center text-lg shadow-md shadow-slate-800/30">
+                <div class="w-10 h-10 rounded-xl bg-slate-800 dark:ring-1 dark:ring-white/15 text-white flex items-center justify-center text-lg shadow-md shadow-slate-800/30">
                     <i class="fa-solid fa-pen-to-square"></i>
                 </div>
                 <div>
@@ -346,7 +367,7 @@
                     <button type="button" onclick="closeAdminEditModal()" class="py-3 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold rounded-xl text-center text-xs hover:bg-slate-300 transition-colors">
                         Отмена
                     </button>
-                    <button type="submit" class="py-3 bg-slate-800 text-white font-bold rounded-xl text-center text-xs shadow-lg shadow-slate-800/30 hover:bg-black transition-all">
+                    <button type="submit" class="py-3 bg-slate-800 dark:ring-1 dark:ring-white/15 text-white font-bold rounded-xl text-center text-xs shadow-lg shadow-slate-800/30 hover:bg-black transition-all">
                         Сохранить
                     </button>
                 </div>
@@ -418,7 +439,7 @@
             <!-- Статистика / Данные пользователя -->
             <div class="grid grid-cols-2 gap-3 mb-6">
                 <div class="p-4 rounded-2xl bg-slate-100/50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 flex items-center gap-3.5">
-                    <div class="w-10 h-10 rounded-xl bg-slate-800 text-white flex items-center justify-center text-lg shrink-0 shadow-md shadow-slate-800/20">
+                    <div class="w-10 h-10 rounded-xl bg-slate-800 dark:ring-1 dark:ring-white/15 text-white flex items-center justify-center text-lg shrink-0 shadow-md shadow-slate-800/20">
                         <i class="fa-solid fa-heart"></i>
                     </div>
                     <div>
@@ -441,7 +462,7 @@
             <div class="mb-6">
                 <div class="flex items-center justify-between mb-3 px-1">
                     <h4 class="text-xs font-black uppercase text-slate-400 tracking-wider flex items-center gap-2">
-                        <i class="fa-solid fa-location-dot text-slate-800"></i> Ваш район
+                        <i class="fa-solid fa-location-dot text-slate-800 dark:text-slate-300"></i> Ваш район
                     </h4>
                     <span id="home-district-saved-badge" class="hidden text-[10px] font-bold text-emerald-500"><i class="fa-solid fa-check"></i> Сохранено</span>
                 </div>
@@ -454,7 +475,7 @@
                         <option value="Буюканы">Буюканы</option>
                         <option value="Чеканы">Чеканы</option>
                     </select>
-                    <button onclick="saveHomeDistrict()" class="px-5 py-3 rounded-xl bg-slate-800 text-white font-bold text-xs shadow-lg hover:bg-black transition-all shrink-0">
+                    <button onclick="saveHomeDistrict()" class="px-5 py-3 rounded-xl bg-slate-800 dark:ring-1 dark:ring-white/15 text-white font-bold text-xs shadow-lg hover:bg-black transition-all shrink-0">
                         Сохранить
                     </button>
                 </div>
@@ -465,7 +486,7 @@
             <div class="mb-6">
                 <div class="flex items-center justify-between mb-3 px-1">
                     <h4 class="text-xs font-black uppercase text-slate-400 tracking-wider flex items-center gap-2">
-                        <i class="fa-solid fa-bookmark text-slate-800"></i> Сохраненные заведения
+                        <i class="fa-solid fa-bookmark text-slate-800 dark:text-slate-300"></i> Сохраненные заведения
                     </h4>
                     <span id="fav-count" class="text-xs font-bold text-slate-500">0 мест</span>
                 </div>
@@ -496,14 +517,14 @@
                     </div>
                     <div class="min-w-0">
                         <h1 class="text-base sm:text-2xl font-black tracking-tight leading-none text-slate-900 dark:text-white truncate">
-                            Chisinau<span class="text-slate-800">.Vibe</span>
+                            Chisinau<span class="text-slate-800 dark:text-slate-300">.Vibe</span>
                         </h1>
                         <span id="current-district-display" class="text-[9px] sm:text-[10px] font-bold text-black dark:text-slate-300 uppercase tracking-widest bg-slate-800/10 px-2 py-0.5 rounded-md mt-1 inline-block truncate max-w-[120px] sm:max-w-none">Весь город</span>
                     </div>
                 </div>
 
                 <div class="hidden sm:flex items-center gap-3 bg-slate-100/50 dark:bg-slate-800/50 px-5 py-2.5 rounded-2xl border border-slate-200/50 dark:border-slate-700/50 shadow-inner">
-                    <i class="fa-solid fa-clock text-slate-800 text-lg opacity-80"></i>
+                    <i class="fa-solid fa-clock text-slate-800 dark:text-slate-300 text-lg opacity-80"></i>
                     <div class="flex flex-col text-left leading-tight">
                         <span id="chisinau-date" class="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">--.--.----</span>
                         <span id="chisinau-clock" class="text-sm font-black text-slate-800 dark:text-slate-200 font-mono tracking-wider">--:--:--</span>
@@ -513,12 +534,12 @@
                 <div class="hidden md:flex flex-1 max-w-xl mx-6 relative group">
                     <input type="text" id="search-input" onkeyup="applyFilters()" placeholder="Найти место, например: Мясо, Вино, Zaxi..." 
                            class="w-full bg-white/60 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-700 rounded-2xl py-3.5 px-6 pl-14 focus:outline-none focus:ring-2 focus:ring-slate-800 focus:border-transparent transition-all dark:text-white placeholder-slate-400 font-medium">
-                    <i class="fa-solid fa-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-slate-800 transition-colors"></i>
+                    <i class="fa-solid fa-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-slate-800 dark:group-focus-within:text-slate-200 transition-colors"></i>
                 </div>
 
                 <div class="flex items-center gap-2 sm:gap-3">
                     <!-- Кнопка Входа/Кабинета -->
-                    <button id="nav-auth-btn" onclick="handleNavAuthClick()" class="px-3 sm:px-4 py-2.5 rounded-xl bg-slate-800 text-white font-bold text-xs sm:text-sm shadow-md hover:bg-black transition-all flex items-center gap-2 max-w-[110px] sm:max-w-none truncate">
+                    <button id="nav-auth-btn" onclick="handleNavAuthClick()" class="px-3 sm:px-4 py-2.5 rounded-xl bg-slate-800 dark:ring-1 dark:ring-white/15 text-white font-bold text-xs sm:text-sm shadow-md hover:bg-black transition-all flex items-center gap-2 max-w-[110px] sm:max-w-none truncate">
                         <i class="fa-solid fa-user"></i> <span id="nav-auth-text" class="truncate">Войти</span>
                     </button>
                     <button onclick="toggleTheme()" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:scale-105 hover:bg-white dark:hover:bg-slate-800 transition-all shadow-sm text-slate-600 dark:text-slate-300 shrink-0">
@@ -535,7 +556,7 @@
                     
                     <div class="sm:hidden flex items-center justify-between bg-slate-100/50 dark:bg-slate-800/50 p-3.5 rounded-xl border border-slate-200/50 dark:border-slate-700/50">
                         <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-clock text-slate-800"></i>
+                            <i class="fa-solid fa-clock text-slate-800 dark:text-slate-300"></i>
                             <span class="text-xs font-bold text-slate-500 dark:text-slate-400">Время в MD:</span>
                         </div>
                         <span id="chisinau-clock-mobile" class="text-xs font-black text-slate-800 dark:text-slate-200 font-mono">--:--</span>
@@ -560,7 +581,7 @@
                                 <span class="flex items-center gap-3"><i class="fa-solid fa-map-location-dot w-5 text-center opacity-70"></i> Весь город</span>
                             </button>
                             <button onclick="setDistrict('Центр')" class="dist-btn w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center justify-between bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-700 border border-transparent text-xs sm:text-sm text-slate-700 dark:text-slate-200">
-                                <span class="flex items-center gap-3"><i class="fa-solid fa-landmark w-5 text-center text-slate-800 opacity-80"></i> Центр</span>
+                                <span class="flex items-center gap-3"><i class="fa-solid fa-landmark w-5 text-center opacity-80"></i> Центр</span>
                             </button>
                             <button onclick="setDistrict('Ботаника')" class="dist-btn w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center justify-between bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-700 border border-transparent text-xs sm:text-sm text-slate-700 dark:text-slate-200">
                                 <span class="flex items-center gap-3"><i class="fa-solid fa-tree-city w-5 text-center text-emerald-500 opacity-80"></i> Ботаника</span>
@@ -572,7 +593,7 @@
                                 <span class="flex items-center gap-3"><i class="fa-solid fa-cloud-sun w-5 text-center text-orange-500 opacity-80"></i> Буюканы</span>
                             </button>
                             <button onclick="setDistrict('Чеканы')" class="dist-btn w-full text-left px-4 py-3 rounded-xl font-bold transition-all flex items-center justify-between bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-700 border border-transparent text-xs sm:text-sm text-slate-700 dark:text-slate-200">
-                                <span class="flex items-center gap-3"><i class="fa-solid fa-building w-5 text-center text-slate-700 opacity-80"></i> Чеканы</span>
+                                <span class="flex items-center gap-3"><i class="fa-solid fa-building w-5 text-center opacity-80"></i> Чеканы</span>
                             </button>
                         </div>
                     </div>
@@ -590,7 +611,7 @@
                         <!-- ГЛАВНЫЕ КАТЕГОРИИ -->
                         <div class="grid grid-cols-3 gap-2 mb-4">
                             <button onclick="setMainCategory('relax')" id="btn-main-relax" class="cat-main-btn cat-btn-active flex flex-col items-center justify-center gap-2 p-3 min-h-[76px] rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 text-slate-600 dark:text-slate-300">
-                                <i class="fa-solid fa-umbrella-beach text-lg sm:text-xl text-slate-800 opacity-90"></i>
+                                <i class="fa-solid fa-umbrella-beach text-lg sm:text-xl text-slate-800 dark:text-slate-300 opacity-90"></i>
                                 <span class="text-[11px] sm:text-xs font-extrabold uppercase tracking-normal text-center leading-tight mt-1 text-slate-800 dark:text-white w-full min-w-0 break-words px-0.5">Отдых</span>
                             </button>
                             <button onclick="setMainCategory('edu')" id="btn-main-edu" class="cat-main-btn flex flex-col items-center justify-center gap-2 p-3 min-h-[76px] rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 text-slate-600 dark:text-slate-300">
@@ -606,7 +627,7 @@
                         <!-- ПОДКАТЕГОРИИ ОТДЫХ -->
                         <div id="subcats-relax" class="grid grid-cols-2 gap-3 subcats-group">
                             <button onclick="setCategory('all')" id="btn-cat-all" class="cat-btn cat-btn-active flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 text-slate-600 dark:text-slate-300">
-                                <i class="fa-solid fa-layer-group text-xl sm:text-2xl text-slate-800 opacity-90"></i>
+                                <i class="fa-solid fa-layer-group text-xl sm:text-2xl text-slate-800 dark:text-slate-300 opacity-90"></i>
                                 <span class="text-[11px] sm:text-xs font-extrabold uppercase tracking-normal text-slate-800 dark:text-white w-full min-w-0 break-words text-center px-0.5">Все</span>
                             </button>
                             <button onclick="setCategory('food')" id="btn-cat-food" class="cat-btn flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 text-slate-600 dark:text-slate-300">
@@ -614,7 +635,7 @@
                                 <span class="text-[11px] sm:text-xs font-extrabold uppercase tracking-normal text-slate-800 dark:text-white w-full min-w-0 break-words text-center px-0.5">Еда</span>
                             </button>
                             <button onclick="setCategory('night')" id="btn-cat-night" class="cat-btn flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 text-slate-600 dark:text-slate-300">
-                                <i class="fa-solid fa-champagne-glasses text-xl sm:text-2xl text-slate-600 opacity-90"></i>
+                                <i class="fa-solid fa-champagne-glasses text-xl sm:text-2xl text-slate-600 dark:text-slate-300 opacity-90"></i>
                                 <span class="text-[11px] sm:text-xs font-extrabold uppercase tracking-normal text-slate-800 dark:text-white w-full min-w-0 break-words text-center px-0.5">Бары</span>
                             </button>
                             <button onclick="setCategory('coffee')" id="btn-cat-coffee" class="cat-btn flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 text-slate-600 dark:text-slate-300">
@@ -666,7 +687,7 @@
                 <div class="mb-6 sm:mb-8 glass p-3 sm:p-5 rounded-[2rem] border border-white/60 dark:border-white/10 shadow-lg overflow-hidden relative group">
                     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3 px-2 gap-3 relative z-20">
                         <h3 class="font-black text-base sm:text-lg flex items-center gap-2 text-slate-800 dark:text-slate-200">
-                            <i class="fa-solid fa-map-location-dot text-slate-800"></i> Интерактивная карта Кишинева
+                            <i class="fa-solid fa-map-location-dot text-slate-800 dark:text-slate-300"></i> Интерактивная карта Кишинева
                         </h3>
                         <div class="flex flex-wrap items-center gap-2">
                             <!-- Панель управления только для админа -->
@@ -675,8 +696,11 @@
                                     <i class="fa-solid fa-shield-halved"></i> Режим админа: ВЫКЛ
                                 </button>
                             </div>
-                            <button onclick="getUserLocation()" class="text-[10px] sm:text-xs bg-slate-800 text-white font-bold px-3 py-1.5 rounded-full shadow-md hover:bg-black transition-all flex items-center gap-1.5">
+                            <button onclick="getUserLocation()" class="text-[10px] sm:text-xs bg-slate-800 dark:ring-1 dark:ring-white/15 text-white font-bold px-3 py-1.5 rounded-full shadow-md hover:bg-black transition-all flex items-center gap-1.5">
                                 <i class="fa-solid fa-location-crosshairs"></i> Мое местоположение
+                            </button>
+                            <button id="btn-sort-distance" onclick="toggleSortByDistance()" class="hidden text-[10px] sm:text-xs bg-slate-800 dark:ring-1 dark:ring-white/15 text-white font-bold px-3 py-1.5 rounded-full shadow-md hover:bg-black transition-all flex items-center gap-1.5">
+                                <i class="fa-solid fa-arrow-down-short-wide"></i> Сначала ближайшие
                             </button>
                         </div>
                     </div>
@@ -1200,6 +1224,158 @@
     isPermanentlyClosed: false
 },
 {
+    name: "McDonald's Unic",
+    type: "food",
+    mainCat: "relax",
+    district: "Центр",
+    tags: ["Фастфуд", "Популярное"],
+    price: "$",
+    rating: 4.0,
+    desc: "McDonald's в ТЦ Unic — б-р Штефана чел Маре ши Сфынт, 8, рядом с центральным автовокзалом.",
+    entertainment: "Быстрый перекус в двух шагах от центра и автовокзала.",
+    priceRange: "80 - 150 леев",
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=47.017165,28.846000",
+    lat: 47.017165,
+    lng: 28.846000,
+    gradient: "from-slate-800 to-slate-900",
+    icon: "<i class='fa-solid fa-burger text-yellow-500'></i>",
+    schedule: stdSched("07:30-22:30"),
+    isPermanentlyClosed: false
+},
+{
+    name: "McDonald's Botanica",
+    type: "food",
+    mainCat: "relax",
+    district: "Ботаника",
+    tags: ["Фастфуд", "Популярное", "McDrive"],
+    price: "$",
+    rating: 4.3,
+    desc: "McDonald's на бульваре Дачия, 21/1 — самом широком бульваре Кишинева, с McDrive.",
+    entertainment: "McDrive работает круглосуточно.",
+    priceRange: "80 - 150 леев",
+    mapUrl: "https://maps.app.goo.gl/ehNdx1pE1RinFB5a7",
+    lat: 46.987279,
+    lng: 28.857085,
+    gradient: "from-slate-800 to-slate-900",
+    icon: "<i class='fa-solid fa-burger text-yellow-500'></i>",
+    schedule: stdSched("07:00-01:00"),
+    isPermanentlyClosed: false
+},
+{
+    name: "McDonald's Malldova",
+    type: "food",
+    mainCat: "relax",
+    district: "Центр",
+    tags: ["Фастфуд", "Фудкорт", "ТЦ"],
+    price: "$",
+    rating: 4.3,
+    desc: "McDonald's на 4 этаже ТЦ Malldova — ул. Арборилор, 21.",
+    entertainment: "Удобно совместить с шоппингом в Malldova.",
+    priceRange: "80 - 150 леев",
+    mapUrl: "https://maps.app.goo.gl/tyQJCM1VpgbC4k397",
+    lat: 47.0046432308106, 
+    lng: 28.840931188375496,
+    gradient: "from-slate-800 to-slate-900",
+    icon: "<i class='fa-solid fa-burger text-yellow-500'></i>",
+    schedule: stdSched("10:00-22:00"),
+    isPermanentlyClosed: false
+},
+{
+    name: "McDonald's Рышкановка",
+    type: "food",
+    mainCat: "relax",
+    district: "Рышкановка",
+    tags: ["Фастфуд", "Популярное", "McDrive"],
+    price: "$",
+    rating: 4.1,
+    desc: "McDonald's на ул. Алеку Руссо, 2, у площади Алеку Руссо, с McDrive.",
+    entertainment: "McDrive работает круглосуточно.",
+    priceRange: "80 - 150 леев",
+    mapUrl: "https://maps.app.goo.gl/ENqPJ1LbUKVYkb4F8",
+    lat: 47.044634,
+    lng: 28.86108,
+    gradient: "from-slate-800 to-slate-900",
+    icon: "<i class='fa-solid fa-burger text-yellow-500'></i>",
+    schedule: stdSched("07:00-01:00"),
+    isPermanentlyClosed: false
+},
+{
+    name: "McDonald's Буюканы",
+    type: "food",
+    mainCat: "relax",
+    district: "Буюканы",
+    tags: ["Фастфуд", "Популярное", "McDrive"],
+    price: "$",
+    rating: 4.1,
+    desc: "McDonald's на ул. Алба-Юлия, 194/А, с McDrive.",
+    entertainment: "McDrive работает круглосуточно.",
+    priceRange: "80 - 150 леев",
+    mapUrl: "https://maps.app.goo.gl/8gSee7AqJaxWsEjDA",
+    lat: 47.038928,
+    lng: 28.770227,
+    gradient: "from-slate-800 to-slate-900",
+    icon: "<i class='fa-solid fa-burger text-yellow-500'></i>",
+    schedule: stdSched("07:00-01:00"),
+    isPermanentlyClosed: false
+},
+{
+    name: "McDonald's Zity",
+    type: "food",
+    mainCat: "relax",
+    district: "Буюканы",
+    tags: ["Фастфуд", "McDrive"],
+    price: "$",
+    rating: 4.0,
+    desc: "McDonald's на Каля Иешилор, 8, рядом с фабрикой Zorile, с McDrive.",
+    entertainment: "McDrive работает круглосуточно.",
+    priceRange: "80 - 150 леев",
+    mapUrl: "https://maps.app.goo.gl/nVbAxUHF9BeZuAvQA",
+    lat: 47.039711570874914,
+    lng: 28.8031834765952,
+    gradient: "from-slate-800 to-slate-900",
+    icon: "<i class='fa-solid fa-burger text-yellow-500'></i>",
+    schedule: stdSched("07:00-01:00"),
+    isPermanentlyClosed: false
+},
+{
+    name: "McDonald's Чеканы",
+    type: "food",
+    mainCat: "relax",
+    district: "Чеканы",
+    tags: ["Фастфуд", "Популярное", "McDrive"],
+    price: "$",
+    rating: 4.2,
+    desc: "McDonald's на бульваре Мирча чел Бэтрын, 25/1, с McDrive.",
+    entertainment: "McDrive работает круглосуточно.",
+    priceRange: "80 - 150 леев",
+    mapUrl: "https://maps.app.goo.gl/gYhPwm8T7L4FU137A",
+    lat: 47.05238898831091,
+    lng: 28.88977369026501,
+    gradient: "from-slate-800 to-slate-900",
+    icon: "<i class='fa-solid fa-burger text-yellow-500'></i>",
+    schedule: stdSched("07:00-01:00"),
+    isPermanentlyClosed: false
+},
+{
+    name: "McDonald's Port Mall",
+    type: "food",
+    mainCat: "relax",
+    district: "Чеканы",
+    tags: ["Фастфуд", "Фудкорт", "ТЦ"],
+    price: "$",
+    rating: 4.2,
+    desc: "McDonald's на 3 этаже ТЦ Port Mall — ул. Михаил Садовяну, 42/6.",
+    entertainment: "Удобно совместить с шоппингом в Port Mall.",
+    priceRange: "80 - 150 леев",
+    mapUrl: "https://maps.app.goo.gl/fpFpUrP12ytmcma37",
+    lat: 47.070797,
+    lng: 28.888652,
+    gradient: "from-slate-800 to-slate-900",
+    icon: "<i class='fa-solid fa-burger text-yellow-500'></i>",
+    schedule: stdSched("10:00-22:00"),
+    isPermanentlyClosed: false
+},
+{
     name: "Zaxi Fun & Finest",
     type: "food",
     mainCat: "relax",
@@ -1508,11 +1684,32 @@
 
         places.forEach((p, i) => { p.id = p.id || ('place_' + i); });
 
-        let state = { mainCat: 'relax', category: 'all', district: 'all', search: '', onlyOpen: false };
+        let state = { mainCat: 'relax', category: 'all', district: 'all', search: '', onlyOpen: false, sortByDistance: false };
         let map = null;
         let markersLayer = null;
         let tileLayer = null;
         let userMarker = null;
+        let userLocation = null; // { lat, lng } — заполняется после getUserLocation()
+
+        // Расстояние между двумя точками по формуле гаверсинуса, результат в метрах
+        function getDistanceMeters(lat1, lng1, lat2, lng2) {
+            const R = 6371000;
+            const toRad = (deg) => deg * Math.PI / 180;
+            const dLat = toRad(lat2 - lat1);
+            const dLng = toRad(lng2 - lng1);
+            const a = Math.sin(dLat / 2) ** 2 +
+                      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+                      Math.sin(dLng / 2) ** 2;
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+        }
+
+        // Человекочитаемое расстояние + время пешком (средняя скорость ~5 км/ч → 83.3 м/мин)
+        function formatDistance(meters) {
+            const distText = meters < 1000 ? `${Math.round(meters / 10) * 10} м` : `${(meters / 1000).toFixed(1)} км`;
+            const mins = Math.max(1, Math.round(meters / 83.3));
+            return { distText, walkText: `${mins} мин пешком` };
+        }
 
         function getChisinauInfo() {
             const now = new Date();
@@ -1582,6 +1779,20 @@
         const mapStyleLight = 'https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}';
         const mapStyleDark = mapStyleLight;
 
+        // Принудительная полная перерисовка страницы после смены темы.
+        // Чинит баг мобильных браузеров, когда часть экрана (блюр-блобы,
+        // glass-элементы с backdrop-filter) "застревает" на старой теме
+        // и получается наполовину светлый / наполовину тёмный экран.
+        function forceThemeRepaint() {
+            requestAnimationFrame(() => {
+                const body = document.body;
+                const prevDisplay = body.style.display;
+                body.style.display = 'none';
+                void body.offsetHeight; // форсируем reflow
+                body.style.display = prevDisplay;
+            });
+        }
+
         function toggleTheme() {
             try {
                 const html = document.documentElement;
@@ -1597,6 +1808,8 @@
                     html.classList.add('dark');
                     if (icon) icon.className = 'fa-solid fa-sun text-lg text-amber-400';
                 }
+
+                forceThemeRepaint();
 
                 const mapEl = document.getElementById('map');
                 if (map && mapEl && mapEl.offsetParent !== null) {
@@ -1620,6 +1833,7 @@
                 if (shouldBeDark !== isDark) {
                     html.classList.remove(shouldBeDark ? 'light' : 'dark');
                     html.classList.add(shouldBeDark ? 'dark' : 'light');
+                    forceThemeRepaint();
                     if (map && document.getElementById('map') && document.getElementById('map').offsetParent !== null) {
                         setTimeout(() => { if (map) map.invalidateSize(); }, 350);
                     }
@@ -1723,12 +1937,31 @@
                     userMarker = L.marker([lat, lng], { icon: userIcon }).addTo(map);
                     userMarker.bindPopup("<div class='font-bold text-xs'>Вы здесь!</div>").openPopup();
                     map.setView([lat, lng], 15);
+
+                    userLocation = { lat, lng };
+                    const sortBtn = document.getElementById('btn-sort-distance');
+                    if (sortBtn) sortBtn.classList.remove('hidden');
+                    applyFilters();
                 },
                 () => {
                     alert("Не удалось получить ваше местоположение. Проверьте разрешения.");
                 },
                 { enableHighAccuracy: true }
             );
+        }
+
+        function toggleSortByDistance() {
+            if (!userLocation) return;
+            state.sortByDistance = !state.sortByDistance;
+            const btn = document.getElementById('btn-sort-distance');
+            if (state.sortByDistance) {
+                btn.classList.add('bg-emerald-500', 'text-white', 'border-transparent');
+                btn.classList.remove('bg-slate-800', 'text-white');
+            } else {
+                btn.classList.remove('bg-emerald-500', 'text-white', 'border-transparent');
+                btn.classList.add('bg-slate-800', 'text-white');
+            }
+            applyFilters();
         }
 
         function renderMapMarkers(filteredPlaces) {
@@ -1797,6 +2030,16 @@
                 return true;
             });
 
+            // Если известна геолокация — считаем расстояние до каждого места
+            if (userLocation) {
+                filtered.forEach(p => {
+                    p.distanceMeters = getDistanceMeters(userLocation.lat, userLocation.lng, p.lat, p.lng);
+                });
+                if (state.sortByDistance) {
+                    filtered.sort((a, b) => a.distanceMeters - b.distanceMeters);
+                }
+            }
+
             renderPlacesGrid(filtered);
             renderMapMarkers(filtered);
         }
@@ -1848,13 +2091,20 @@
                                 </div>
                             </div>
                             
-                            <div class="flex items-center gap-2 mb-2">
+                            <div class="flex items-center gap-2 mb-2 flex-wrap">
                                 <span class="text-[10px] font-bold uppercase tracking-widest text-black dark:text-slate-300 bg-slate-100 dark:bg-slate-800/10 px-2.5 py-1 rounded-md border border-slate-200 dark:border-slate-800/20">
                                     <i class="fa-solid fa-location-dot"></i> ${p.district}
                                 </span>
                                 <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-md">
                                     ${p.price}
                                 </span>
+                                ${(() => {
+                                    if (typeof p.distanceMeters !== 'number') return '';
+                                    const d = formatDistance(p.distanceMeters);
+                                    return `<span class="text-[10px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-100 dark:border-emerald-500/20 flex items-center gap-1">
+                                        <i class="fa-solid fa-person-walking"></i> ${d.distText} · ${d.walkText}
+                                    </span>`;
+                                })()}
                             </div>
 
                             <h3 class="text-lg sm:text-xl font-black mb-2 text-slate-800 dark:text-white group-hover:text-slate-800 transition-colors leading-tight">
@@ -1887,11 +2137,11 @@
         function setDistrict(dist) {
             state.district = dist;
             document.querySelectorAll('.dist-btn').forEach(btn => {
-                btn.classList.remove('bg-gradient-to-r', 'from-slate-800', 'to-slate-700', 'text-white', 'shadow-lg');
+                btn.classList.remove('bg-gradient-to-r', 'from-slate-800', 'to-slate-700', 'text-white', 'shadow-lg', 'dark:from-white', 'dark:to-slate-100', 'dark:text-slate-900', 'dark:ring-2', 'dark:ring-white/40', 'dark:shadow-[0_0_18px_rgba(255,255,255,0.3)]');
                 btn.classList.add('bg-white/60', 'dark:bg-slate-800/60', 'text-slate-700', 'dark:text-slate-200');
             });
             event.currentTarget.classList.remove('bg-white/60', 'dark:bg-slate-800/60', 'text-slate-700', 'dark:text-slate-200');
-            event.currentTarget.classList.add('bg-gradient-to-r', 'from-slate-800', 'to-slate-700', 'text-white', 'shadow-lg');
+            event.currentTarget.classList.add('bg-gradient-to-r', 'from-slate-800', 'to-slate-700', 'text-white', 'shadow-lg', 'dark:from-white', 'dark:to-slate-100', 'dark:text-slate-900', 'dark:ring-2', 'dark:ring-white/40', 'dark:shadow-[0_0_18px_rgba(255,255,255,0.3)]');
 
             const distName = dist === 'all' ? 'Весь город' : dist;
             document.getElementById('current-district-display').textContent = distName;
@@ -1967,9 +2217,9 @@
         document.querySelectorAll('.dist-btn').forEach(btn => {
             if (btn.textContent.trim() === distName) {
                 btn.classList.remove('bg-white/60', 'dark:bg-slate-800/60', 'text-slate-700', 'dark:text-slate-200');
-                btn.classList.add('bg-gradient-to-r', 'from-slate-800', 'to-slate-700', 'text-white', 'shadow-lg');
+                btn.classList.add('bg-gradient-to-r', 'from-slate-800', 'to-slate-700', 'text-white', 'shadow-lg', 'dark:from-white', 'dark:to-slate-100', 'dark:text-slate-900', 'dark:ring-2', 'dark:ring-white/40', 'dark:shadow-[0_0_18px_rgba(255,255,255,0.3)]');
             } else {
-                btn.classList.remove('bg-gradient-to-r', 'from-slate-800', 'to-slate-700', 'text-white', 'shadow-lg');
+                btn.classList.remove('bg-gradient-to-r', 'from-slate-800', 'to-slate-700', 'text-white', 'shadow-lg', 'dark:from-white', 'dark:to-slate-100', 'dark:text-slate-900', 'dark:ring-2', 'dark:ring-white/40', 'dark:shadow-[0_0_18px_rgba(255,255,255,0.3)]');
                 btn.classList.add('bg-white/60', 'dark:bg-slate-800/60', 'text-slate-700', 'dark:text-slate-200');
             }
         });
