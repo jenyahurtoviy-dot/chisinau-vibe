@@ -86,36 +86,36 @@
             background-color: #020617;
             background-image: radial-gradient(ellipse 120% 80% at 50% -10%, rgba(30, 41, 59, 0.55) 0%, rgba(2, 6, 23, 0) 60%);
         }
-        #lang-toggle.lang-ro-active .lang-toggle-thumb { transform: translateX(100%); }
-        /* Переключатель языка: выбранная сторона читается одинаково хорошо в обеих темах. */
+        /* Трёхпозиционный выбор языка. */
         #lang-toggle {
             background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
             border-color: #cbd5e1;
-            color: #64748b;
             box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.12), 0 4px 12px rgba(15, 23, 42, 0.08);
         }
-        #lang-toggle .lang-toggle-thumb {
+        #lang-toggle .language-choice {
+            color: #64748b;
+            transition: color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+        }
+        #lang-toggle .language-choice:hover { color: #0f172a; }
+        #lang-toggle .language-choice.lang-active {
             background: linear-gradient(135deg, #ffffff, #f1f5f9);
             border: 1px solid rgba(255, 255, 255, 0.9);
+            color: #0f172a;
             box-shadow: 0 2px 7px rgba(15, 23, 42, 0.18);
         }
-        #lang-toggle .lang-label { color: #64748b; transition: color 0.2s ease; }
-        #lang-toggle:not(.lang-ro-active) .lang-label-ru,
-        #lang-toggle.lang-ro-active .lang-label-ro { color: #0f172a; }
         .dark #lang-toggle {
             background: linear-gradient(135deg, #0f172a, #1e293b);
             border-color: #334155;
-            color: #64748b;
             box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5), 0 4px 14px rgba(0, 0, 0, 0.28);
         }
-        .dark #lang-toggle .lang-toggle-thumb {
+        .dark #lang-toggle .language-choice { color: #94a3b8; }
+        .dark #lang-toggle .language-choice:hover { color: #e2e8f0; }
+        .dark #lang-toggle .language-choice.lang-active {
             background: linear-gradient(135deg, #475569, #334155);
             border-color: #64748b;
+            color: #e2e8f0;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.42);
         }
-        .dark #lang-toggle .lang-label { color: #94a3b8; }
-        .dark #lang-toggle:not(.lang-ro-active) .lang-label-ru,
-        .dark #lang-toggle.lang-ro-active .lang-label-ro { color: #e2e8f0; }
 
         /* Район под логотипом читается как отдельная стеклянная плашка. */
         #current-district-display {
@@ -167,8 +167,9 @@
             #nav-auth-text { max-width: none; }
             #nav-auth-btn.is-account-button { width: 2.25rem; height: 2.25rem; padding: 0; }
             #theme-toggle-btn { width: 2.25rem; height: 2.25rem; }
-            #lang-toggle { width: 43px; height: 36px; padding-left: 0.2rem; padding-right: 0.2rem; font-size: 9px; }
-            #lang-toggle .lang-toggle-thumb { left: 0.25rem; top: 0.25rem; bottom: 0.25rem; width: calc(50% - 0.25rem); }
+            #nav-auth-btn:not(.is-account-button) #nav-auth-icon { display: none; }
+            #nav-auth-btn:not(.is-account-button) { min-width: 3rem; }
+            #lang-toggle { width: 74px; height: 36px; padding: 0.2rem; font-size: 8px; }
         }
         
         ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -258,6 +259,35 @@
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.06);
             border-color: rgba(255, 255, 255, 0.18);
         }
+        /* Статусы — часть карточки, а не плашка поверх названия. */
+        .place-card.is-favorite {
+            background: linear-gradient(145deg, rgba(255, 241, 242, 0.96), rgba(255, 255, 255, 0.84));
+            border-color: rgba(244, 63, 94, 0.42);
+            box-shadow: 0 14px 30px -20px rgba(244, 63, 94, 0.52), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+        .place-card.is-visited {
+            background: linear-gradient(145deg, rgba(236, 253, 245, 0.97), rgba(255, 255, 255, 0.84));
+            border-color: rgba(16, 185, 129, 0.42);
+            box-shadow: 0 14px 30px -20px rgba(16, 185, 129, 0.52), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+        .place-card.is-favorite.is-visited {
+            background: linear-gradient(135deg, rgba(236, 253, 245, 0.97), rgba(255, 241, 242, 0.88));
+            border-color: rgba(16, 185, 129, 0.46);
+            box-shadow: 0 14px 30px -20px rgba(16, 185, 129, 0.45), 0 0 0 1px rgba(244, 63, 94, 0.18);
+        }
+        .dark .place-card.is-favorite {
+            background: linear-gradient(145deg, rgba(76, 5, 25, 0.5), rgba(30, 41, 59, 0.82));
+            border-color: rgba(251, 113, 133, 0.42);
+            box-shadow: 0 16px 34px -20px rgba(244, 63, 94, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+        }
+        .dark .place-card.is-visited {
+            background: linear-gradient(145deg, rgba(6, 78, 59, 0.52), rgba(30, 41, 59, 0.82));
+            border-color: rgba(52, 211, 153, 0.4);
+            box-shadow: 0 16px 34px -20px rgba(16, 185, 129, 0.52), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+        }
+        .dark .place-card.is-favorite.is-visited {
+            background: linear-gradient(135deg, rgba(6, 78, 59, 0.52), rgba(76, 5, 25, 0.42), rgba(30, 41, 59, 0.82));
+        }
         
         .cat-btn-active {
             background: linear-gradient(135deg, #0f172a, #334155) !important;
@@ -344,7 +374,7 @@
     <style id="boot-gate-style">#language-screen,#welcome-screen,#main-app{display:none !important;}</style>
 
     <script>
-        // ============ I18N (RU / RO) ============
+        // ============ I18N (RU / RO / EN) ============
         // Хранилище румынских переводов по ключам data-i18n / data-i18n-ph / data-i18n-title
         const I18N_RO = {
             "visit_back": "Bine ați revenit!",
@@ -421,6 +451,16 @@
             "support_desc": "Vrei să adaugi localul tău în ghid sau ai găsit o inexactitate? Scrie-mi în privat pe Telegram, sunt online!",
             "support_btn": "Scrie @font1zadm"
         };
+        const I18N_EN = {
+            "visit_back": "Welcome back!", "visit_lasttime": "Last time you viewed", "visit_thisplace": "this place", "visit_werethere": ". Have you been there?", "visit_yes": "Yes, I have", "visit_no": "Not yet",
+            "online_now": "online", "online_now_title": "People are looking for places right now",
+            "hero_title1": "Where shall we go", "hero_title2": "in Chișinău?", "hero_subtitle": "Pick today's vibe",
+            "district_all_name": "Entire city", "district_all_tag": "Show me everything!", "district_center_name": "City Centre", "district_center_tag": "The heart of the city", "district_botanica_name": "Botanica", "district_botanica_tag": "Parks and calm", "district_riscani_name": "Rîșcani", "district_riscani_tag": "Style and life", "district_buiucani_name": "Buiucani", "district_buiucani_tag": "Sunsets and forest", "district_ciocana_name": "Ciocana", "district_ciocana_tag": "Walkways and bars",
+            "modal_ok": "Got it", "modal_map": "View on map", "auth_login_title": "Sign in", "auth_login_subtitle": "Sign in to save your favourite places", "auth_email_label": "Email", "auth_password_label": "Password", "auth_login_btn": "Sign in", "auth_no_account": "No account? Sign up",
+            "profile_title": "My account", "profile_manage": "Manage your account and saved places", "profile_vip": "VIP Vibe-er", "logout_title": "Sign out", "stat_favorites": "Favourites", "stat_visited": "Visited", "stat_active": "Active", "stat_status": "Status",
+            "home_district_title": "Your district", "home_district_saved": "Saved", "home_district_note": "This district will open first when you sign in. You can always browse and choose any other district on the site.", "fav_places_title": "Saved places", "visited_places_title": "Visited places", "visited_progress_title": "Your city progress", "profile_back_btn": "Back to the site",
+            "search_ph": "Find a place, e.g. Meat, Wine, Zaxi...", "time_md": "Time in MD:", "searching_places": "Searching for places...", "im_lucky": "I'm feeling lucky!", "district_choice": "Choose a district", "categories_title": "Categories", "open_now": "Open now", "cat_relax": "Leisure", "cat_education": "Education", "cat_banks": "Banks", "sub_all": "All", "sub_food": "Food", "sub_bars": "Bars", "sub_coffee": "Coffee", "sub_malls": "Malls & shopping", "sub_unis": "Universities", "sub_libraries": "Libraries", "sub_branches": "Branches", "sub_atms": "ATMs", "results_title": "All places", "results_found": "We found", "results_topplaces": "top places for you", "map_title": "Interactive map of Chișinău", "my_location": "My location", "support_title": "Support and collaboration", "support_q": "Have questions or suggestions?", "support_desc": "Want to add your venue to the guide or spotted an inaccuracy? Message me on Telegram — I'm online!", "support_btn": "Message @font1zadm"
+        };
         // Переводы текста, который создаётся скриптом (карточки, модальные окна и сообщения).
         // Данные мест, координаты и ссылки на карту не меняются: отображается только перевод.
         const RO_TEXT = {
@@ -430,7 +470,7 @@
             "Все": "Toate", "Еда": "Mâncare", "Бары": "Baruri", "Кофе": "Cafea", "Моллы и Шоппинг": "Moluri și shopping", "Универы": "Universități", "Библиотеки": "Biblioteci", "Отделения": "Filiale", "Банкоматы": "Bancomate",
             "Все заведения": "Toate locațiile", "Мы нашли": "Am găsit", "топовых мест для вас": "locuri de top pentru tine", "Интерактивная карта Кишинева": "Harta interactivă a Chișinăului", "Мое местоположение": "Locația mea",
             "Поддержка и сотрудничество": "Suport și colaborare", "Остались вопросы или есть предложения?": "Mai ai întrebări sau sugestii?", "Хотите добавить свое заведение в гид или нашли неточность? Напишите мне в личные сообщения в Telegram, я на связи!": "Vrei să adaugi localul tău în ghid sau ai găsit o inexactitate? Scrie-mi în privat pe Telegram, sunt online!", "Написать @font1zadmi": "Scrie @font1zadmi",
-            "Ничего не найдено": "Nu s-a găsit nimic", "Попробуйте изменить параметры поиска или выбрать другой район.": "Încearcă să schimbi căutarea sau alege alt cartier.", "Посещено": "Vizitat", "Подробнее": "Detalii", "Посетил(а)": "Vizitat", "Отметить как посещённое": "Marchează ca vizitat", "Детали:": "Detalii:", "Чек / Прайс:": "Preț / bon:", "от вас": "de la tine",
+            "Ничего не найдено": "Nu s-a găsit nimic", "Попробуйте изменить параметры поиска или выбрать другой район.": "Încearcă să schimbi căutarea sau alege alt cartier.", "Посещено": "Vizitat", "В избранном": "La favorite", "Подробнее": "Detalii", "Посетил(а)": "Vizitat", "Отметить как посещённое": "Marchează ca vizitat", "Детали:": "Detalii:", "Чек / Прайс:": "Preț / bon:", "от вас": "de la tine",
             "Открыто 24/7": "Deschis 24/7", "Круглосуточно": "Deschis non-stop", "Открыто": "Deschis", "Закрыто": "Închis", "Сегодня": "Astăzi",
             "Торговый центр": "Centru comercial", "Шоппинг": "Shopping", "Магазины": "Magazine", "Кафе": "Cafenea", "Ресторан": "Restaurant", "Завтраки": "Mic dejun", "Клуб": "Club", "Бар": "Bar", "Коктейли": "Cocktailuri", "Ночная жизнь": "Viață de noapte", "Виски": "Whisky", "Атмосферно": "Atmosferă plăcută", "Фастфуд": "Fast-food", "Популярное": "Popular", "Фудкорт": "Food court", "ТЦ": "Centru comercial", "Азиатская": "Asiatică", "Панорама": "Panoramă", "Традиционная": "Tradițională", "Молдавская": "Moldovenească", "Университет": "Universitate", "Библиотека": "Bibliotecă", "Книги": "Cărți", "Банк": "Bancă", "Отделение": "Filială", "Банкомат": "Bancomat", "Наличные": "Numerar", "Беспл.": "Gratuit", "Бесплатно": "Gratuit", "Услуги": "Servicii", "Учеба": "Studii", "Комиссии банка": "Comisioane bancare", "Без комиссий (свои)": "Fără comision (clienți)",
             "Популярный торговый центр в Кишиневе с магазинами, бутиками и развлечениями.": "Centru comercial popular din Chișinău, cu magazine, buticuri și divertisment.", "Магазины одежды, фудкорт, кинотеатр и развлечения.": "Magazine de haine, food court, cinema și divertisment.",
@@ -466,6 +506,23 @@
             "У вас пока нет сохраненных мест.": "Încă nu ai locuri salvate.", "Нажимайте на сердечко на карточках заведений!": "Apasă pe inimioara din cardurile locațiilor!", "Вы ещё нигде не отмечались.": "Încă nu ai marcat nicio locație.", "Нажимайте на флажок на карточках заведений!": "Apasă pe steagul din cardurile locațiilor!", "Не получилось загрузить избранное.": "Nu s-au putut încărca favoritele.", "Не получилось загрузить посещённые места.": "Nu s-au putut încărca locurile vizitate.",
             "Геолокация не поддерживается вашим браузером": "Geolocația nu este acceptată de browserul tău", "Не удалось получить ваше местоположение. Проверьте разрешения.": "Nu am putut obține locația ta. Verifică permisiunile.", "Вы здесь!": "Ești aici!"
         };
+        // Английские подписи для интерфейса, аккаунта, карточек и уведомлений.
+        const EN_TEXT = {
+            "Весь город": "Entire city", "Центр": "City Centre", "Ботаника": "Botanica", "Рышкановка": "Rîșcani", "Буюканы": "Buiucani", "Чеканы": "Ciocana", "Телецентр": "Telecentru",
+            "Войти": "Sign in", "Время в MD:": "Time in MD:", "Поиск мест...": "Find places...", "Мне повезёт!": "I'm feeling lucky!", "Выбор Района": "Choose a district", "Категории": "Categories", "Открытые": "Open now", "Отдых": "Leisure", "Образование": "Education", "Банки": "Banks",
+            "Все": "All", "Еда": "Food", "Бары": "Bars", "Кофе": "Coffee", "Моллы и Шоппинг": "Malls & shopping", "Универы": "Universities", "Библиотеки": "Libraries", "Отделения": "Branches", "Банкоматы": "ATMs",
+            "Все заведения": "All places", "Мы нашли": "We found", "топовых мест для вас": "top places for you", "Интерактивная карта Кишинева": "Interactive map of Chișinău", "Мое местоположение": "My location", "Поддержка и сотрудничество": "Support and collaboration", "Остались вопросы или есть предложения?": "Have questions or suggestions?", "Хотите добавить свое заведение в гид или нашли неточность? Напишите мне в личные сообщения в Telegram, я на связи!": "Want to add your venue to the guide or spotted an inaccuracy? Message me on Telegram — I'm online!", "Написать @font1zadmi": "Message @font1zadm",
+            "Ничего не найдено": "Nothing found", "Попробуйте изменить параметры поиска или выбрать другой район.": "Try changing the search or choosing another district.", "Посещено": "Visited", "В избранном": "In favourites", "Подробнее": "Details", "Посетил(а)": "Visited", "Отметить как посещённое": "Mark as visited", "Детали:": "Details:", "Чек / Прайс:": "Price list:", "от вас": "away from you", "Открыто 24/7": "Open 24/7", "Круглосуточно": "Open around the clock", "Открыто": "Open", "Закрыто": "Closed", "Сегодня": "Today",
+            "Торговый центр": "Shopping centre", "Шоппинг": "Shopping", "Магазины": "Shops", "Кафе": "Café", "Ресторан": "Restaurant", "Завтраки": "Breakfast", "Клуб": "Club", "Бар": "Bar", "Коктейли": "Cocktails", "Ночная жизнь": "Nightlife", "Виски": "Whisky", "Атмосферно": "Atmospheric", "Фастфуд": "Fast food", "Популярное": "Popular", "Фудкорт": "Food court", "ТЦ": "Shopping centre", "Азиатская": "Asian", "Панорама": "Panorama", "Традиционная": "Traditional", "Молдавская": "Moldovan", "Университет": "University", "Библиотека": "Library", "Книги": "Books", "Банк": "Bank", "Отделение": "Branch", "Банкомат": "ATM", "Наличные": "Cash", "Беспл.": "Free", "Бесплатно": "Free", "Услуги": "Services", "Учеба": "Study", "Комиссии банка": "Bank fees", "Без комиссий (свои)": "No fees (customers)",
+            "Вход в систему": "Sign in", "Войдите, чтобы сохранять свои любимые места": "Sign in to save your favourite places", "Нет аккаунта? Зарегистрироваться": "No account? Sign up", "Регистрация": "Sign up", "Введите почту и пароль. Мы отправим письмо для подтверждения.": "Enter your email and password. We'll send a confirmation email.", "Зарегистрироваться": "Sign up", "Уже есть аккаунт? Войти": "Already have an account? Sign in", "Регистрация успешна! Проверьте почту.": "Registration successful! Check your email.", "Успешный вход!": "Signed in successfully!", "Ошибка авторизации": "Authentication error", "Выйти из аккаунта?": "Sign out of your account?",
+            "сегодня": "today", "вчера": "yesterday", "дн. назад": "days ago", "мест": "places", "из": "of", "Повторить": "Try again", "Открыть": "Open", "Удалить": "Delete", "Убрать отметку": "Remove mark", "Закрыть": "Close", "У вас пока нет сохраненных мест.": "You don't have any saved places yet.", "Нажимайте на сердечко на карточках заведений!": "Tap the heart on a place card to save it!", "Вы ещё нигде не отмечались.": "You haven't marked any places as visited yet.", "Нажимайте на флажок на карточках заведений!": "Tap the flag on a place card to mark it as visited!", "Не получилось загрузить избранное.": "Couldn't load favourites.", "Не получилось загрузить посещённые места.": "Couldn't load visited places.", "Геолокация не поддерживается вашим браузером": "Geolocation is not supported by your browser", "Не удалось получить ваше местоположение. Проверьте разрешения.": "Couldn't get your location. Check your permissions.", "Вы здесь!": "You are here!",
+            "Чтобы добавлять места в избранное, войдите в аккаунт": "Sign in to add places to favourites", "Чтобы отмечать посещённые места, войдите в аккаунт": "Sign in to mark places as visited", "Чтобы сохранить это в аккаунте, войдите": "Sign in to save this to your account", "Не удалось сохранить район:": "Couldn't save the district:", "Не удалось сохранить настройки пользователя:": "Couldn't save user settings:",
+            "Популярный торговый центр в Кишиневе с магазинами, бутиками и развлечениями.": "A popular shopping centre in Chișinău with shops, boutiques and entertainment.", "Магазины одежды, фудкорт, кинотеатр и развлечения.": "Clothing shops, a food court, cinema and entertainment.", "Торговый центр в самом центре Кишинева с магазинами одежды, обуви и услуг.": "A shopping centre in the heart of Chișinău with clothing, footwear and services.", "Магазины, бутики, супермаркет и услуги.": "Shops, boutiques, a supermarket and services.", "Уютное кафе в центре Кишинева возле Кафедрального парка и пешеходной улицы.": "A cosy café in central Chișinău near Cathedral Park and the pedestrian street.", "Кофе, десерты, завтраки и блюда европейской кухни.": "Coffee, desserts, breakfast and European dishes.", "Азиатский коктейльный клуб в центре Кишинева с атмосферой ночной жизни.": "An Asian cocktail club in central Chișinău with a nightlife atmosphere.", "Коктейли, музыка, бар и ночные развлечения.": "Cocktails, music, a bar and nightlife entertainment.", "Один из крупнейших и самых известных торговых центров в самом сердце Кишинёва.": "One of the largest and best-known shopping centres in the heart of Chișinău.", "Бутики одежды, электроника, товары для дома, рестораны и кафе.": "Fashion boutiques, electronics, home goods, restaurants and cafés.", "Элегантный бар с богатым выбором виски и благородной атмосферой.": "An elegant bar with a rich whisky selection and refined atmosphere.", "Элитный алкоголь, стильный интерьер, приятная музыка.": "Premium drinks, a stylish interior and pleasant music.",
+            "McDonald's (б-р Штефана чел Маре)": "McDonald's (Ștefan cel Mare Blvd.)", "Главный McDonald's на центральном проспекте — б-р Штефана чел Маре ши Сфынт, 134/1.": "The main McDonald's on the central avenue — 134/1 Ștefan cel Mare și Sfânt Blvd.", "Два этажа, терраса, центр притяжения.": "Two floors, a terrace and a lively meeting point.", "McDonald's в ТЦ Unic — б-р Штефана чел Маре ши Сфынт, 8, рядом с центральным автовокзалом.": "McDonald's in Unic Mall — 8 Ștefan cel Mare și Sfânt Blvd., near the central bus station.", "Быстрый перекус в двух шагах от центра и автовокзала.": "A quick bite just steps from the city centre and bus station.", "McDonald's на бульваре Дачия, 21/1 — самом широком бульваре Кишинева, с McDrive.": "McDonald's at 21/1 Dacia Blvd., Chișinău's widest boulevard, with McDrive.", "McDonald's Рышкановка": "McDonald's Rîșcani", "McDonald's Буюканы": "McDonald's Buiucani", "McDonald's на ул. Алеку Руссо, 2, у площади Алеку Руссо, с McDrive.": "McDonald's at 2 Alecu Russo Street, by Alecu Russo Square, with McDrive.", "McDonald's на ул. Алба-Юлия, 194/А, с McDrive.": "McDonald's at 194/A Alba Iulia Street, with McDrive.", "McDonald's на Каля Иешилор, 8, рядом с фабрикой Zorile, с McDrive.": "McDonald's at 8 Calea Ieșilor Street, near the Zorile factory, with McDrive.", "McDonald's Чеканы": "McDonald's Ciocana", "McDonald's на бульваре Мирча чел Бэтрын, 25/1, с McDrive.": "McDonald's at 25/1 Mircea cel Bătrân Blvd., with McDrive.", "McDonald's на 4 этаже ТЦ Malldova — ул. Арборилор, 21.": "McDonald's on the 4th floor of Malldova Mall — 21 Arborilor Street.", "Удобно совместить с шоппингом в Malldova.": "Easy to combine with shopping at Malldova.", "McDonald's на 3 этаже ТЦ Port Mall — ул. Михаил Садовяну, 42/6.": "McDonald's on the 3rd floor of Port Mall — 42/6 Mihail Sadoveanu Street.", "Удобно совместить с шоппингом в Port Mall.": "Easy to combine with shopping at Port Mall.", "McDrive работает круглосуточно.": "McDrive is open around the clock.",
+            "Панорамный ресторан на 8-м этаже отеля Radisson Blu Leogrand.": "A panoramic restaurant on the 8th floor of the Radisson Blu Leogrand hotel.", "Вид на ночной город, терраса, премиум-суши.": "Night city views, a terrace and premium sushi.", "La Plăcinte (ул. Пушкина)": "La Plăcinte (Pușkin Street)", "Ресторан национальной кухни рядом с Площадью.": "A national cuisine restaurant near the Square.", "Традиционные плацинды, уютная атмосфера.": "Traditional placintas and a cosy atmosphere.", "La Plăcinte (ул. Дософтей)": "La Plăcinte (Dosoftei Street)", "Рядом с Театром оперы и балета.": "Near the Opera and Ballet Theatre.", "Уютный интерьер, национальная музыка.": "A cosy interior and traditional music.", "La Plăcinte (ул. М. Витязул)": "La Plăcinte (Mihai Viteazul Street)", "Точная точка по адресу ул. Михай Витязул, 14.": "Exact location: 14 Mihai Viteazul Street.", "Удобное расположение, шопинг и еда.": "A convenient location for shopping and food.", "La Plăcinte (ул. Алба-Юлия)": "La Plăcinte (Alba Iulia Street)", "Улица Алба-Юлия, дом 21.": "21 Alba Iulia Street.", "Быстрое обслуживание, домашняя кухня.": "Quick service and home-style cooking.", "La Plăcinte (Московский пр.)": "La Plăcinte (Moscova Blvd.)", "Точное здание дома 9/1 на Московском проспекте.": "The exact building at 9/1 Moscova Boulevard.", "Отличный вид на проспект, просторный зал.": "A great boulevard view and a spacious dining room.", "La Plăcinte (ул. Киевская)": "La Plăcinte (Kiev Street)", "Точный адрес дома 12 по улице Киевской.": "Exact address: 12 Kiev Street.", "Уютная веранда, приятная атмосфера.": "A cosy veranda and a pleasant atmosphere.",
+            "La Plăcinte (б-р Мирча чел Бэтрын)": "La Plăcinte (Mircea cel Bătrân Blvd.)", "Дом 12/5 по бульвару Мирча чел Бэтрын.": "12/5 Mircea cel Bătrân Boulevard.", "Современный дизайн, отличные плацинды.": "Modern design and excellent placintas.", "La Plăcinte (ул. Индепенденцей)": "La Plăcinte (Independenței Street)", "Адрес дома 16/1 по улице Индепенденцей.": "16/1 Independenței Street.", "Вкусная еда, быстрая подача.": "Tasty food and fast service.", "La Plăcinte (б-р Дачия, 30/5)": "La Plăcinte (30/5 Dacia Blvd.)", "Точный адрес дома 30/5 по бульвару Дачия.": "Exact address: 30/5 Dacia Boulevard.", "Уютный зал, отличная кухня.": "A cosy dining room and excellent cuisine.", "La Plăcinte (Ворота Города)": "La Plăcinte (City Gates)", "Точный адрес дома 48 у Ворот Города по бульвару Дачия, 2-й этаж.": "Exact address: 48 Dacia Boulevard, 2nd floor, at the City Gates.", "Панорамный вид, фирменные блюда.": "Panoramic views and signature dishes.", "La Plăcinte (ш. Хынчешть)": "La Plăcinte (Hîncești Highway)", "Точный адрес дома 58 по шоссе Хынчешть.": "Exact address: 58 Hîncești Highway.", "Уютная атмосфера, семейные обеды.": "A warm atmosphere and family lunches.",
+            "Государственный Университет (USM)": "State University (USM)", "Молдавский государственный университет, главный корпус.": "Moldova State University, main building.", "Учеба, библиотека, сквер, столовая.": "Study spaces, library, garden and canteen.", "Национальная Библиотека": "National Library", "Национальная библиотека Республики Молдова.": "The National Library of the Republic of Moldova.", "Читальный зал, архивы, тихая атмосфера.": "Reading rooms, archives and a quiet atmosphere.", "MAIB Главный офис": "MAIB Head Office", "Главный филиал Moldova Agroindbank.": "The main Moldova Agroindbank branch.", "Кредиты, переводы, обслуживание бизнеса.": "Loans, transfers and business services.", "Банкомат MICB (24/7)": "MICB ATM (24/7)", "Круглосуточный банкомат Moldindconbank.": "A round-the-clock Moldindconbank ATM.", "Снятие наличных, пополнение счета.": "Cash withdrawals and account top-ups."
+        };
 
         // Гость всегда начинает с языка по умолчанию: настройки интерфейса
         // сохраняются только в профиле авторизованного пользователя.
@@ -473,7 +530,15 @@
         let languageObserver = null;
 
         function tr(value) {
-            return currentLang === 'ro' && RO_TEXT[value] ? RO_TEXT[value] : value;
+            const dictionary = currentLang === 'ro' ? RO_TEXT : (currentLang === 'en' ? EN_TEXT : null);
+            return dictionary?.[value] || value;
+        }
+
+        function getDistrictTitle(district) {
+            if (district === 'all') return tr('Все заведения');
+            if (currentLang === 'ro') return `Locații: ${tr(district)}`;
+            if (currentLang === 'en') return `Places: ${tr(district)}`;
+            return `Заведения: ${district}`;
         }
 
         function translatePageText(root = document.body) {
@@ -494,37 +559,41 @@
 
         function applyLanguage(lang) {
             currentLang = lang;
-            document.documentElement.lang = (lang === 'ro') ? 'ro' : 'ru';
+            document.documentElement.lang = lang;
+            const interfaceDictionary = lang === 'ro' ? I18N_RO : (lang === 'en' ? I18N_EN : null);
 
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if (!el.dataset.ruOrig) el.dataset.ruOrig = el.textContent;
-                el.textContent = (lang === 'ro' && I18N_RO[key]) ? I18N_RO[key] : el.dataset.ruOrig;
+                el.textContent = interfaceDictionary?.[key] || el.dataset.ruOrig;
             });
             document.querySelectorAll('[data-i18n-ph]').forEach(el => {
                 const key = el.getAttribute('data-i18n-ph');
                 if (!el.dataset.ruOrigPh) el.dataset.ruOrigPh = el.getAttribute('placeholder') || '';
-                el.setAttribute('placeholder', (lang === 'ro' && I18N_RO[key]) ? I18N_RO[key] : el.dataset.ruOrigPh);
+                el.setAttribute('placeholder', interfaceDictionary?.[key] || el.dataset.ruOrigPh);
             });
             document.querySelectorAll('[data-i18n-title]').forEach(el => {
                 const key = el.getAttribute('data-i18n-title');
                 if (!el.dataset.ruOrigTitle) el.dataset.ruOrigTitle = el.getAttribute('title') || '';
-                el.setAttribute('title', (lang === 'ro' && I18N_RO[key]) ? I18N_RO[key] : el.dataset.ruOrigTitle);
+                el.setAttribute('title', interfaceDictionary?.[key] || el.dataset.ruOrigTitle);
             });
             const languageSwitch = document.getElementById('lang-toggle');
             if (languageSwitch) {
-                languageSwitch.setAttribute('aria-checked', String(lang === 'ro'));
-                languageSwitch.classList.toggle('lang-ro-active', lang === 'ro');
+                languageSwitch.querySelectorAll('[data-lang-choice]').forEach(button => {
+                    const isActive = button.dataset.langChoice === lang;
+                    button.classList.toggle('lang-active', isActive);
+                    button.setAttribute('aria-pressed', String(isActive));
+                });
             }
             const searchDesktop = document.getElementById('search-input');
             const searchMobile = document.getElementById('search-input-mobile');
-            if (searchDesktop) searchDesktop.placeholder = lang === 'ro' ? 'Caută un loc, ex.: Carne, Vin, Zaxi...' : 'Найти место, например: Мясо, Вино, Zaxi...';
-            if (searchMobile) searchMobile.placeholder = lang === 'ro' ? 'Caută locuri...' : 'Поиск мест...';
+            if (searchDesktop) searchDesktop.placeholder = lang === 'ro' ? 'Caută un loc, ex.: Carne, Vin, Zaxi...' : (lang === 'en' ? 'Find a place, e.g. Meat, Wine, Zaxi...' : 'Найти место, например: Мясо, Вино, Zaxi...');
+            if (searchMobile) searchMobile.placeholder = lang === 'ro' ? 'Caută locuri...' : (lang === 'en' ? 'Find places...' : 'Поиск мест...');
 
             translatePageText();
             if (!languageObserver && document.body) {
                 languageObserver = new MutationObserver(() => {
-                    if (currentLang === 'ro') requestAnimationFrame(() => translatePageText());
+                    if (currentLang !== 'ru') requestAnimationFrame(() => translatePageText());
                 });
                 languageObserver.observe(document.body, { childList: true, subtree: true });
             }
@@ -534,8 +603,9 @@
             if (typeof onLanguageChanged === 'function') onLanguageChanged(lang);
         }
 
-        function toggleLang() {
-            applyLanguage(currentLang === 'ro' ? 'ru' : 'ro');
+        function selectLanguage(lang) {
+            if (!['ru', 'ro', 'en'].includes(lang)) return;
+            applyLanguage(lang);
             scheduleSaveUserPreferences();
         }
 
@@ -608,7 +678,7 @@
                 const districtEl = document.getElementById('current-district-display');
                 const titleEl = document.getElementById('grid-title');
                 if (districtEl) districtEl.textContent = tr(districtName);
-                if (titleEl) titleEl.textContent = district === 'all' ? tr('Все заведения') : (currentLang === 'ro' ? `Locații: ${tr(district)}` : `Заведения: ${district}`);
+                if (titleEl) titleEl.textContent = getDistrictTitle(district);
                 if (typeof syncDistrictSelection === 'function') syncDistrictSelection(district);
             }
             if (typeof applyFilters === 'function') applyFilters();
@@ -660,7 +730,7 @@
           <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
         </div>
         <div class="font-bold text-xs sm:text-sm tracking-wide flex items-center gap-2">
-            <span id="online-count" class="text-emerald-600 dark:text-emerald-400 text-sm sm:text-lg transition-all duration-300">342</span> 
+            <span id="online-count" class="text-emerald-600 dark:text-emerald-400 text-sm sm:text-lg transition-all duration-300">58</span> 
             <span class="hidden sm:inline text-slate-500 dark:text-slate-400" data-i18n="online_now">онлайн</span>
         </div>
     </div>
@@ -678,9 +748,10 @@
             </div>
             <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">Alege limba</h1>
             <p class="mt-2 text-sm text-slate-500 dark:text-slate-400 font-medium">Выберите язык сайта</p>
-            <div class="grid grid-cols-2 gap-3 mt-7">
+            <div class="grid grid-cols-3 gap-2.5 mt-7">
                 <button type="button" onclick="chooseInitialLanguage('ro')" class="py-4 rounded-2xl bg-slate-800 hover:bg-black text-white font-black text-sm shadow-lg transition-all hover:scale-[1.03] active:scale-[0.98]">Română</button>
                 <button type="button" onclick="chooseInitialLanguage('ru')" class="py-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white font-black text-sm shadow-sm transition-all hover:scale-[1.03] active:scale-[0.98]">Русский</button>
+                <button type="button" onclick="chooseInitialLanguage('en')" class="py-4 rounded-2xl bg-sky-500 hover:bg-sky-600 text-white font-black text-sm shadow-lg shadow-sky-500/20 transition-all hover:scale-[1.03] active:scale-[0.98]">English</button>
             </div>
         </div>
     </div>
@@ -995,11 +1066,11 @@
                     <button id="theme-toggle-btn" onclick="toggleTheme()" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:scale-105 hover:bg-white dark:hover:bg-slate-800 transition-all shadow-sm text-slate-600 dark:text-slate-300 shrink-0">
                         <i id="theme-icon" class="fa-solid fa-moon text-lg"></i>
                     </button>
-                    <button id="lang-toggle" onclick="toggleLang()" type="button" role="switch" aria-checked="true" aria-label="Schimbă limba între română și rusă" title="Română / Русский" class="relative w-[58px] h-10 sm:w-[66px] sm:h-12 rounded-xl bg-slate-800 dark:bg-slate-100 border border-slate-700 dark:border-white/20 flex items-center justify-between px-1.5 shadow-sm transition-all shrink-0 font-black text-[10px] sm:text-[11px] text-white dark:text-slate-900">
-                        <span class="lang-label lang-label-ru relative z-10 w-1/2 text-center">RU</span>
-                        <span class="lang-label lang-label-ro relative z-10 w-1/2 text-center">RO</span>
-                        <span class="lang-toggle-thumb absolute top-1 bottom-1 left-1 w-[calc(50%-0.25rem)] rounded-lg bg-white dark:bg-slate-800 shadow-md transition-transform duration-200"></span>
-                    </button>
+                    <div id="lang-toggle" role="group" aria-label="Language" class="relative w-[102px] h-10 sm:w-[120px] sm:h-12 rounded-xl bg-slate-800 dark:bg-slate-900 border border-slate-700 dark:border-slate-600 flex items-center gap-0.5 p-1 shadow-sm shrink-0 font-black text-[9px] sm:text-[10px]">
+                        <button type="button" onclick="selectLanguage('ru')" data-lang-choice="ru" aria-pressed="false" class="language-choice flex-1 h-full rounded-lg">RU</button>
+                        <button type="button" onclick="selectLanguage('ro')" data-lang-choice="ro" aria-pressed="true" class="language-choice flex-1 h-full rounded-lg lang-active">RO</button>
+                        <button type="button" onclick="selectLanguage('en')" data-lang-choice="en" aria-pressed="false" class="language-choice flex-1 h-full rounded-lg">EN</button>
+                    </div>
                 </div>
             </div>
         </nav>
@@ -1262,7 +1333,8 @@
             if (diffDays <= 0) return 'сегодня';
             if (diffDays === 1) return 'вчера';
             if (diffDays < 7) return `${diffDays} дн. назад`;
-            return date.toLocaleDateString(currentLang === 'ro' ? 'ro-RO' : 'ru-RU', { day: 'numeric', month: 'short' });
+            const locale = currentLang === 'ro' ? 'ro-RO' : (currentLang === 'en' ? 'en-GB' : 'ru-RU');
+            return date.toLocaleDateString(locale, { day: 'numeric', month: 'short' });
         }
 
         function openAuthModal() {
@@ -1278,7 +1350,7 @@
         function openProfileModal() {
             document.getElementById('profile-email-display').textContent = currentSession?.user?.email || '';
             const badgeLabel = document.getElementById('profile-badge-label');
-            badgeLabel.textContent = currentLang === 'ro' ? 'VIP Vibe-er' : 'VIP Вайбер';
+            badgeLabel.textContent = currentLang === 'ru' ? 'VIP Вайбер' : 'VIP Vibe-er';
             badgeLabel.className = 'text-[10px] font-black uppercase tracking-widest text-black dark:text-slate-300 bg-slate-100 dark:bg-slate-800/60 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 inline-block mb-2';
             renderFavoritesList();
             renderVisitedList();
@@ -1314,16 +1386,16 @@
             document.getElementById('auth-success').classList.add('hidden');
 
             if (isRegisterMode) {
-                title.textContent = 'Регистрация';
-                subtitle.textContent = 'Введите почту и пароль. Мы отправим письмо для подтверждения.';
-                submitBtn.textContent = 'Зарегистрироваться';
-                switchBtn.textContent = 'Уже есть аккаунт? Войти';
+                title.textContent = tr('Регистрация');
+                subtitle.textContent = tr('Введите почту и пароль. Мы отправим письмо для подтверждения.');
+                submitBtn.textContent = tr('Зарегистрироваться');
+                switchBtn.textContent = tr('Уже есть аккаунт? Войти');
                 iconHeader.className = 'fa-solid fa-user-plus';
             } else {
-                title.textContent = 'Вход в систему';
-                subtitle.textContent = 'Войдите, чтобы сохранять свои любимые места';
-                submitBtn.textContent = 'Войти';
-                switchBtn.textContent = 'Нет аккаунта? Зарегистрироваться';
+                title.textContent = tr('Вход в систему');
+                subtitle.textContent = tr('Войдите, чтобы сохранять свои любимые места');
+                submitBtn.textContent = tr('Войти');
+                switchBtn.textContent = tr('Нет аккаунта? Зарегистрироваться');
                 iconHeader.className = 'fa-solid fa-right-to-bracket';
             }
         }
@@ -1559,7 +1631,7 @@
             const progressLabel = document.getElementById('visited-progress-label');
             if (!container) return;
 
-            countEl.textContent = currentLang === 'ro' ? `${userVisited.length} locuri` : `${userVisited.length} мест`;
+            countEl.textContent = currentLang === 'ro' ? `${userVisited.length} locuri` : (currentLang === 'en' ? `${userVisited.length} places` : `${userVisited.length} мест`);
             countBadge.textContent = userVisited.length;
 
             // Прогресс-бар: сколько из всех заведений города уже отмечено посещённым
@@ -1570,7 +1642,7 @@
                 progressFill.style.width = `${pct}%`;
                 progressLabel.textContent = currentLang === 'ro'
                     ? `${userVisited.length} din ${totalPlaces} · ${pct}%`
-                    : `${userVisited.length} из ${totalPlaces} · ${pct}%`;
+                    : (currentLang === 'en' ? `${userVisited.length} of ${totalPlaces} · ${pct}%` : `${userVisited.length} из ${totalPlaces} · ${pct}%`);
             } else if (progressWrap) {
                 progressWrap.classList.add('hidden');
             }
@@ -1722,7 +1794,7 @@
             const countEl = document.getElementById('fav-count');
             const countBadge = document.getElementById('fav-count-badge');
             
-            countEl.textContent = currentLang === 'ro' ? `${userFavorites.length} locuri` : `${userFavorites.length} мест`;
+            countEl.textContent = currentLang === 'ro' ? `${userFavorites.length} locuri` : (currentLang === 'en' ? `${userFavorites.length} places` : `${userFavorites.length} мест`);
             countBadge.textContent = userFavorites.length;
 
             if (favoritesLoadError) {
@@ -1822,7 +1894,7 @@
             if (!currentSession?.user) return {};
             const prefs = currentSession.user.user_metadata?.ui_preferences || {};
 
-            if (prefs.language === 'ru' || prefs.language === 'ro') applyLanguage(prefs.language);
+            if (['ru', 'ro', 'en'].includes(prefs.language)) applyLanguage(prefs.language);
 
             if (['relax', 'edu', 'bank'].includes(prefs.mainCat)) setMainCategory(prefs.mainCat);
             if (typeof prefs.category === 'string' && document.getElementById(`btn-cat-${prefs.category}`)) setCategory(prefs.category);
@@ -2596,7 +2668,8 @@
         // Человекочитаемое расстояние. Если известно реальное время маршрута (из ORS) — используем его,
         // иначе считаем по средней скорости пешехода ~5 км/ч (запасной вариант "по прямой")
         function formatDistance(meters, seconds) {
-            const distText = meters < 1000 ? `${Math.round(meters / 10) * 10} ${currentLang === 'ro' ? 'm' : 'м'}` : `${(meters / 1000).toFixed(1)} ${currentLang === 'ro' ? 'km' : 'км'}`;
+            const metricUnit = currentLang === 'ru' ? ['м', 'км'] : ['m', 'km'];
+            const distText = meters < 1000 ? `${Math.round(meters / 10) * 10} ${metricUnit[0]}` : `${(meters / 1000).toFixed(1)} ${metricUnit[1]}`;
             const totalMins = typeof seconds === 'number' ? Math.max(1, Math.round(seconds / 60)) : Math.max(1, Math.round(meters / 83.3));
 
             let walkText;
@@ -2605,9 +2678,9 @@
                 const mins = totalMins % 60;
                 walkText = currentLang === 'ro'
                     ? (mins > 0 ? `${hours} h ${mins} min pe jos` : `${hours} h pe jos`)
-                    : (mins > 0 ? `${hours} ч ${mins} мин пешком` : `${hours} ч пешком`);
+                    : (currentLang === 'en' ? (mins > 0 ? `${hours} h ${mins} min walk` : `${hours} h walk`) : (mins > 0 ? `${hours} ч ${mins} мин пешком` : `${hours} ч пешком`));
             } else {
-                walkText = currentLang === 'ro' ? `${totalMins} min pe jos` : `${totalMins} мин пешком`;
+                walkText = currentLang === 'ro' ? `${totalMins} min pe jos` : (currentLang === 'en' ? `${totalMins} min walk` : `${totalMins} мин пешком`);
             }
 
             return { distText, walkText };
@@ -2684,10 +2757,10 @@
 
             const dayNames = currentLang === 'ro'
                 ? ["Duminică", "Luni", "Marți", "Miercuri", "Joi", "Vineri", "Sâmbătă"]
-                : ["Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"];
+                : (currentLang === 'en' ? ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"] : ["Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"]);
             const dayShort = currentLang === 'ro'
                 ? ["Du", "Lu", "Ma", "Mi", "Jo", "Vi", "Sâ"]
-                : ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
+                : (currentLang === 'en' ? ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] : ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"]);
 
             const pad = (n) => String(n).padStart(2, '0');
             const clockStr = `${pad(hours)}:${pad(minutes)}:${pad(cDate.getSeconds())}`;
@@ -2721,8 +2794,8 @@
 
             return {
                 isOpen,
-                statusText: currentLang === 'ro' ? `${isOpen ? 'Deschis' : 'Închis'} (Astăzi: ${todaySchedule})` : `${isOpen ? 'Открыто' : 'Закрыто'} (Сегодня: ${todaySchedule})`,
-                todayHours: currentLang === 'ro' ? `Astăzi: ${startStr} - ${endStr}` : `Сегодня: ${startStr} - ${endStr}`,
+                statusText: currentLang === 'ro' ? `${isOpen ? 'Deschis' : 'Închis'} (Astăzi: ${todaySchedule})` : (currentLang === 'en' ? `${isOpen ? 'Open' : 'Closed'} (Today: ${todaySchedule})` : `${isOpen ? 'Открыто' : 'Закрыто'} (Сегодня: ${todaySchedule})`),
+                todayHours: currentLang === 'ro' ? `Astăzi: ${startStr} - ${endStr}` : (currentLang === 'en' ? `Today: ${startStr} - ${endStr}` : `Сегодня: ${startStr} - ${endStr}`),
                 badgeBg: isOpen ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 border-emerald-500/30" : "bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400 border-rose-500/30",
                 dot: "<i class='fa-solid fa-circle text-[8px]'></i>"
             };
@@ -2737,6 +2810,63 @@
             if (clockEl) clockEl.textContent = info.clockStr;
             if (clockElMobile) clockElMobile.textContent = info.clockShort;
             if (dateEl) dateEl.textContent = `${info.dateStr}, ${info.dayShort}`;
+        }
+
+        // Плавная симуляция активности: обычно небольшой поток, иногда — заметный всплеск.
+        let onlinePeopleCount = 58;
+        let onlinePeopleTarget = 58;
+        let onlineCounterStarted = false;
+
+        const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+        function chooseNextOnlineTarget() {
+            const isInHighActivity = onlinePeopleCount > 100 || onlinePeopleTarget > 100;
+            const startSurge = !isInHighActivity && Math.random() < 0.16;
+
+            if (startSurge) {
+                onlinePeopleTarget = randomInt(260, 400);
+            } else if (isInHighActivity) {
+                onlinePeopleTarget = randomInt(32, 70);
+            } else {
+                onlinePeopleTarget = randomInt(30, 70);
+            }
+
+            const nextChangeIn = (startSurge || isInHighActivity)
+                ? randomInt(50000, 80000)
+                : randomInt(12000, 24000);
+            setTimeout(chooseNextOnlineTarget, nextChangeIn);
+        }
+
+        function updateOnlineCounter() {
+            const countEl = document.getElementById('online-count');
+            if (!countEl) return;
+
+            const difference = onlinePeopleTarget - onlinePeopleCount;
+            let movement;
+
+            if (Math.abs(difference) <= 5) {
+                // У цели число немного "дышит", а не застывает на одном значении.
+                movement = randomInt(-4, 4);
+            } else {
+                const maxStep = Math.abs(difference) > 100 ? 4 : (Math.abs(difference) > 30 ? 3 : 2);
+                const step = randomInt(1, maxStep);
+                // Примерно треть обновлений идёт в обратную сторону — как у живого потока людей.
+                movement = Math.random() < 0.32
+                    ? -Math.sign(difference) * randomInt(1, Math.min(3, step + 1))
+                    : Math.sign(difference) * step;
+            }
+
+            onlinePeopleCount = Math.max(30, Math.min(400, onlinePeopleCount + movement));
+            countEl.textContent = onlinePeopleCount;
+        }
+
+        function startOnlineCounter() {
+            if (onlineCounterStarted) return;
+            onlineCounterStarted = true;
+            const countEl = document.getElementById('online-count');
+            if (countEl) countEl.textContent = onlinePeopleCount;
+            setInterval(updateOnlineCounter, 650);
+            setTimeout(chooseNextOnlineTarget, randomInt(7000, 15000));
         }
 
         const isMobile = () => window.innerWidth < 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -3054,11 +3184,7 @@
                 const isVisited = userVisited.includes(p.id);
 
                 grid.insertAdjacentHTML('beforeend', `
-                    <div onclick="openPlaceFromCatalog('${p.id}')" class="glass rounded-[2.5rem] p-5 sm:p-6 card-hover flex flex-col justify-between border border-white/60 dark:border-white/10 cursor-pointer relative overflow-hidden group">
-                        ${isVisited ? `
-                        <span class="absolute top-4 left-4 z-10 flex items-center gap-1 text-[10px] font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-100 dark:border-emerald-500/20 shadow-sm">
-                            <i class="fa-solid fa-circle-check"></i> Посещено
-                        </span>` : ''}
+                    <div onclick="openPlaceFromCatalog('${p.id}')" class="glass place-card ${isVisited ? 'is-visited' : ''} ${isFav ? 'is-favorite' : ''} rounded-[2.5rem] p-5 sm:p-6 card-hover flex flex-col justify-between border border-white/60 dark:border-white/10 cursor-pointer relative overflow-hidden group">
                         <div>
                             <div class="flex items-center justify-between mb-4">
                                 <div class="w-14 h-14 rounded-2xl bg-gradient-to-br ${p.gradient} flex items-center justify-center text-2xl text-white shadow-lg shadow-slate-800/20 group-hover:scale-110 transition-transform">
@@ -3091,6 +3217,12 @@
                                     </span>`;
                                 })()}
                             </div>
+
+                            ${(isVisited || isFav) ? `
+                            <div class="flex flex-wrap gap-2 mb-3">
+                                ${isVisited ? `<span class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-black uppercase tracking-wide bg-emerald-500/15 dark:bg-emerald-400/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/25 dark:border-emerald-400/25"><i class="fa-solid fa-circle-check"></i> Посещено</span>` : ''}
+                                ${isFav ? `<span class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-black uppercase tracking-wide bg-rose-500/15 dark:bg-rose-400/15 text-rose-700 dark:text-rose-300 border border-rose-500/25 dark:border-rose-400/25"><i class="fa-solid fa-heart"></i> В избранном</span>` : ''}
+                            </div>` : ''}
 
                             <h3 class="text-lg sm:text-xl font-black mb-2 text-slate-800 dark:text-white group-hover:text-slate-800 transition-colors leading-tight">
                                 ${p.name}
@@ -3138,7 +3270,7 @@
 
             const distName = dist === 'all' ? 'Весь город' : dist;
             document.getElementById('current-district-display').textContent = tr(distName);
-            document.getElementById('grid-title').textContent = dist === 'all' ? tr('Все заведения') : (currentLang === 'ro' ? `Locații: ${tr(dist)}` : `Заведения: ${dist}`);
+            document.getElementById('grid-title').textContent = getDistrictTitle(dist);
 
             applyFilters();
             scheduleSaveUserPreferences();
@@ -3219,7 +3351,7 @@
         // Обновляем текст в интерфейсе
         const distName = district === 'all' ? 'Весь город' : district;
         document.getElementById('current-district-display').textContent = tr(distName);
-        document.getElementById('grid-title').textContent = district === 'all' ? tr('Все заведения') : (currentLang === 'ro' ? `Locații: ${tr(district)}` : `Заведения: ${district}`);
+        document.getElementById('grid-title').textContent = getDistrictTitle(district);
 
         // Синхронизация по data-district, поэтому перевод текста не влияет на подсветку.
         syncDistrictSelection(district);
@@ -3231,6 +3363,7 @@
         mainApp.classList.remove('hidden', 'opacity-0', 'translate-y-10');
         mainApp.style.display = 'flex';
         document.getElementById('online-status').style.display = 'flex';
+        startOnlineCounter();
         initMap();
         applyFilters();
         setInterval(updateClockUI, 1000);
@@ -3246,6 +3379,7 @@
         mainApp.classList.remove('hidden');
         mainApp.style.display = 'flex';
         document.getElementById('online-status').style.display = 'flex';
+        startOnlineCounter();
         setTimeout(() => {
             mainApp.classList.remove('opacity-0', 'translate-y-10');
             initMap();
