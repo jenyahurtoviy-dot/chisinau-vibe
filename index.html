@@ -117,6 +117,26 @@
         .dark #lang-toggle:not(.lang-ro-active) .lang-label-ru,
         .dark #lang-toggle.lang-ro-active .lang-label-ro { color: #e2e8f0; }
 
+        /* Район под логотипом читается как отдельная стеклянная плашка. */
+        #current-district-display {
+            background: rgba(255, 255, 255, 0.58);
+            border: 1px solid rgba(148, 163, 184, 0.42);
+            box-shadow: 0 3px 10px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        .dark #current-district-display {
+            background: rgba(30, 41, 59, 0.64);
+            border-color: rgba(226, 232, 240, 0.18);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        }
+        /* В ночной теме белый пин получает тёмный контур и остаётся заметным. */
+        .dark #brand-location-icon {
+            color: #ffffff;
+            -webkit-text-stroke: 1px #334155;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+        }
+
         /* Вошедший пользователь открывает профиль по компактной кнопке-иконке. */
         #nav-auth-btn.is-account-button {
             width: 2.75rem;
@@ -943,7 +963,7 @@
             <div class="max-w-[1400px] mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-4">
                 <div class="flex items-center gap-3 sm:gap-4">
                     <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-slate-800 to-slate-700 flex items-center justify-center text-white text-xl sm:text-2xl shadow-lg shadow-slate-800/30 shrink-0">
-                        <i class="fa-solid fa-location-dot"></i>
+                        <i id="brand-location-icon" class="fa-solid fa-location-dot"></i>
                     </div>
                     <div class="min-w-0">
                         <h1 class="text-base sm:text-2xl font-black tracking-tight leading-none text-slate-900 dark:text-white whitespace-nowrap">
