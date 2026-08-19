@@ -479,6 +479,9 @@
         function showLanguageScreen() {
             const screen = document.getElementById('language-screen');
             if (!screen) return;
+            // До выбора языка экран районов и каталог не должны успеть появиться.
+            document.getElementById('welcome-screen')?.classList.add('hidden');
+            document.getElementById('main-app')?.classList.add('hidden');
             screen.classList.remove('hidden');
             screen.style.opacity = '0';
             requestAnimationFrame(() => { screen.style.opacity = '1'; });
@@ -487,6 +490,7 @@
         function showWelcomeScreen() {
             const welcome = document.getElementById('welcome-screen');
             if (!welcome) return;
+            welcome.classList.remove('hidden');
             welcome.style.display = '';
             welcome.style.opacity = '0';
             requestAnimationFrame(() => {
@@ -592,7 +596,7 @@
         </div>
     </div>
 
-   <div id="welcome-screen" class="fixed inset-0 z-[100] bg-white/90 dark:bg-slate-950/90 backdrop-blur-3xl flex flex-col items-center justify-start pt-8 sm:justify-center sm:pt-0 transition-all duration-700 overflow-y-auto py-10 px-4">
+   <div id="welcome-screen" class="hidden fixed inset-0 z-[100] bg-white/90 dark:bg-slate-950/90 backdrop-blur-3xl flex flex-col items-center justify-start pt-8 sm:justify-center sm:pt-0 transition-all duration-700 overflow-y-auto py-10 px-4">
     <div class="text-center max-w-4xl w-full my-auto sm:my-auto">
         <div class="mb-6 mt-4 sm:mt-18 animate-float inline-block">
             <div class="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-slate-800 to-slate-600 rounded-3xl flex items-center justify-center text-white text-4xl shadow-2xl shadow-slate-800/40 rotate-12 mx-auto">
@@ -3014,6 +3018,7 @@
     }
 
     if (instant) {
+        welcome.classList.add('hidden');
         welcome.style.display = 'none';
         mainApp.classList.remove('hidden', 'opacity-0', 'translate-y-10');
         initMap();
