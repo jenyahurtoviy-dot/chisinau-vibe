@@ -403,8 +403,9 @@
             "Геолокация не поддерживается вашим браузером": "Geolocația nu este acceptată de browserul tău", "Не удалось получить ваше местоположение. Проверьте разрешения.": "Nu am putut obține locația ta. Verifică permisiunile.", "Вы здесь!": "Ești aici!"
         };
 
-        // siteLangV2 evita păstrarea setării implicite rusești din versiunea veche a site-ului.
-        let currentLang = localStorage.getItem('siteLangV2') || 'ro';
+        // Гость всегда начинает с языка по умолчанию: настройки интерфейса
+        // сохраняются только в профиле авторизованного пользователя.
+        let currentLang = 'ro';
         let languageObserver = null;
 
         function tr(value) {
@@ -429,7 +430,6 @@
 
         function applyLanguage(lang) {
             currentLang = lang;
-            localStorage.setItem('siteLangV2', lang);
             document.documentElement.lang = (lang === 'ro') ? 'ro' : 'ru';
 
             document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -472,6 +472,7 @@
 
         function toggleLang() {
             applyLanguage(currentLang === 'ro' ? 'ru' : 'ro');
+            scheduleSaveUserPreferences();
         }
 
         // Стартовый путь для гостя: язык → выбор района → каталог.
@@ -606,7 +607,7 @@
         <div class="absolute bottom-[-10%] left-[20%] w-[20rem] sm:w-[40rem] h-[20rem] sm:h-[40rem] bg-slate-600 dark:bg-slate-300 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[80px] sm:blur-[120px] opacity-10 dark:opacity-[0.1] animate-blob animation-delay-4000"></div>
     </div>
 
-   <div id="language-screen" class="hidden fixed inset-0 z-[200] bg-slate-50/95 dark:bg-slate-950/95 backdrop-blur-3xl flex items-center justify-center p-4 sm:p-6 transition-opacity duration-300" style="display: none; position: fixed; inset: 0; z-index: 2147483647; background: #f8fafc; align-items: center; justify-content: center;">
+   <div id="language-screen" class="hidden fixed inset-0 z-[200] bg-slate-50/95 dark:bg-slate-950/95 backdrop-blur-3xl flex items-center justify-center p-4 sm:p-6 transition-opacity duration-300" style="display: none; position: fixed; inset: 0; z-index: 2147483647; align-items: center; justify-content: center;">
         <div id="language-panel" class="w-full max-w-md rounded-[2rem] glass border border-white/60 dark:border-white/10 p-7 sm:p-9 text-center shadow-2xl">
             <div class="w-16 h-16 mx-auto mb-5 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-600 text-white flex items-center justify-center text-2xl shadow-lg">
                 <i class="fa-solid fa-language"></i>
@@ -917,7 +918,7 @@
                 </div>
                 
                 <div class="hidden md:flex flex-1 max-w-xl mx-6 relative group">
-                    <input type="text" id="search-input" onkeyup="applyFilters()" placeholder="Найти место, например: Мясо, Вино, Zaxi..." 
+                    <input type="text" id="search-input" onkeyup="setSearchQuery(this.value)" placeholder="Найти место, например: Мясо, Вино, Zaxi..." 
                            class="w-full bg-white/60 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200 dark:border-slate-700 rounded-2xl py-3.5 px-6 pl-14 focus:outline-none focus:ring-2 focus:ring-slate-800 focus:border-transparent transition-all dark:text-white placeholder-slate-400 font-medium">
                     <i class="fa-solid fa-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-slate-800 dark:group-focus-within:text-slate-200 transition-colors"></i>
                 </div>
@@ -953,7 +954,7 @@
                     </div>
 
                     <div class="md:hidden relative group">
-                        <input type="text" id="search-input-mobile" onkeyup="document.getElementById('search-input').value = this.value; applyFilters()" placeholder="Поиск мест..." 
+                        <input type="text" id="search-input-mobile" onkeyup="setSearchQuery(this.value)" placeholder="Поиск мест..." 
                                class="w-full bg-white/60 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 rounded-xl py-3 px-4 pl-11 focus:outline-none focus:ring-2 focus:ring-slate-800 transition-all dark:text-white font-medium text-sm">
                         <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
                     </div>
@@ -1131,6 +1132,7 @@
 
         let isRegisterMode = false;
         let currentSession = null;
+        let userPreferencesSaveTimer = null;
         let userFavorites = [];
         let userVisited = [];
         let userVisitedDates = {}; // placeId -> ISO-дата отметки (если известна)
@@ -1141,6 +1143,11 @@
         // Ключи localStorage для "последней просмотренной локации"
         const LAST_VIEWED_KEY = 'cv_last_viewed_place';
         const LAST_VIEWED_DISMISSED_KEY = 'cv_last_viewed_dismissed';
+
+        function getAccountStorageKey(baseKey) {
+            const userId = currentSession?.user?.id;
+            return userId ? `${baseKey}:${userId}` : null;
+        }
 
         // ===== Toast-уведомления =====
         // type: 'success' | 'error' | 'warn' | 'info'
@@ -1568,21 +1575,27 @@
 
         // Вызывается каждый раз при открытии карточки места — запоминаем её как "последнюю просмотренную"
         function rememberLastViewedPlace(p) {
+            const lastViewedKey = getAccountStorageKey(LAST_VIEWED_KEY);
+            const dismissedKey = getAccountStorageKey(LAST_VIEWED_DISMISSED_KEY);
+            if (!lastViewedKey || !dismissedKey) return;
             try {
-                localStorage.setItem(LAST_VIEWED_KEY, JSON.stringify({ id: p.id, name: p.name, ts: Date.now() }));
+                localStorage.setItem(lastViewedKey, JSON.stringify({ id: p.id, name: p.name, ts: Date.now() }));
                 // Раз человек снова открыл карточку, старое "отклонение" баннера для этого места больше не актуально
-                const dismissedId = localStorage.getItem(LAST_VIEWED_DISMISSED_KEY);
+                const dismissedId = localStorage.getItem(dismissedKey);
                 if (dismissedId === p.id) {
-                    localStorage.removeItem(LAST_VIEWED_DISMISSED_KEY);
+                    localStorage.removeItem(dismissedKey);
                 }
             } catch (e) { /* localStorage недоступен — просто игнорируем */ }
         }
 
         // Проверяем при загрузке сайта: смотрел ли человек в прошлый раз какое-то место и стоит ли спросить "вы там были?"
         function checkVisitPrompt() {
+            const lastViewedKey = getAccountStorageKey(LAST_VIEWED_KEY);
+            const dismissedKey = getAccountStorageKey(LAST_VIEWED_DISMISSED_KEY);
+            if (!lastViewedKey || !dismissedKey) return;
             let last;
             try {
-                last = JSON.parse(localStorage.getItem(LAST_VIEWED_KEY) || 'null');
+                last = JSON.parse(localStorage.getItem(lastViewedKey) || 'null');
             } catch (e) {
                 last = null;
             }
@@ -1590,12 +1603,12 @@
 
             // Уже отмечено как посещённое — можно почистить и не спрашивать
             if (userVisited.includes(last.id)) {
-                localStorage.removeItem(LAST_VIEWED_KEY);
+                localStorage.removeItem(lastViewedKey);
                 return;
             }
 
             // Пользователь уже сказал "нет" по этому месту — не спрашиваем повторно
-            const dismissedId = localStorage.getItem(LAST_VIEWED_DISMISSED_KEY);
+            const dismissedId = localStorage.getItem(dismissedKey);
             if (dismissedId === last.id) return;
 
             const p = places.find(pl => pl.id === last.id);
@@ -1611,6 +1624,8 @@
         async function answerVisitPrompt(wasVisited) {
             const banner = document.getElementById('visit-prompt-banner');
             const placeId = banner.dataset.placeId;
+            const lastViewedKey = getAccountStorageKey(LAST_VIEWED_KEY);
+            const dismissedKey = getAccountStorageKey(LAST_VIEWED_DISMISSED_KEY);
             if (!placeId) { banner.classList.add('hidden'); return; }
 
             if (wasVisited) {
@@ -1623,9 +1638,9 @@
                 if (!userVisited.includes(placeId)) {
                     await toggleVisited(placeId);
                 }
-                localStorage.removeItem(LAST_VIEWED_KEY);
+                if (lastViewedKey) localStorage.removeItem(lastViewedKey);
             } else {
-                localStorage.setItem(LAST_VIEWED_DISMISSED_KEY, placeId);
+                if (dismissedKey) localStorage.setItem(dismissedKey, placeId);
             }
             banner.classList.add('hidden');
         }
@@ -1633,7 +1648,8 @@
         function dismissVisitPrompt() {
             const banner = document.getElementById('visit-prompt-banner');
             const placeId = banner.dataset.placeId;
-            if (placeId) localStorage.setItem(LAST_VIEWED_DISMISSED_KEY, placeId);
+            const dismissedKey = getAccountStorageKey(LAST_VIEWED_DISMISSED_KEY);
+            if (placeId && dismissedKey) localStorage.setItem(dismissedKey, placeId);
             banner.classList.add('hidden');
         }
 
@@ -1703,6 +1719,62 @@
             });
         }
 
+        // Настройки привязаны к аккаунту, а не только к этому браузеру.
+        function buildUserPreferences(overrides = {}) {
+            const previous = { ...(currentSession?.user?.user_metadata?.ui_preferences || {}) };
+            delete previous.theme;
+            return {
+                ...previous,
+                language: currentLang,
+                district: state.district,
+                mainCat: state.mainCat,
+                category: state.category,
+                onlyOpen: state.onlyOpen,
+                search: state.search,
+                ...overrides
+            };
+        }
+
+        function scheduleSaveUserPreferences() {
+            if (!currentSession?.user || typeof state === 'undefined') return;
+            clearTimeout(userPreferencesSaveTimer);
+            userPreferencesSaveTimer = setTimeout(async () => {
+                try {
+                    const { data, error } = await supabaseClient.auth.updateUser({
+                        data: {
+                            home_district: currentSession.user.user_metadata?.home_district || 'all',
+                            ui_preferences: buildUserPreferences()
+                        }
+                    });
+                    if (error) throw error;
+                    if (data?.user) currentSession.user = data.user;
+                } catch (err) {
+                    console.warn('Не удалось сохранить настройки пользователя:', err);
+                }
+            }, 450);
+        }
+
+        function restoreUserPreferences() {
+            if (!currentSession?.user) return {};
+            const prefs = currentSession.user.user_metadata?.ui_preferences || {};
+
+            if (prefs.language === 'ru' || prefs.language === 'ro') applyLanguage(prefs.language);
+
+            if (['relax', 'edu', 'bank'].includes(prefs.mainCat)) setMainCategory(prefs.mainCat);
+            if (typeof prefs.category === 'string' && document.getElementById(`btn-cat-${prefs.category}`)) setCategory(prefs.category);
+            if (prefs.onlyOpen === true && !state.onlyOpen) toggleOnlyOpen();
+            if (typeof prefs.search === 'string') {
+                const search = prefs.search.trim();
+                state.search = search.toLowerCase();
+                const searchDesktop = document.getElementById('search-input');
+                const searchMobile = document.getElementById('search-input-mobile');
+                if (searchDesktop) searchDesktop.value = search;
+                if (searchMobile) searchMobile.value = search;
+            }
+
+            return prefs;
+        }
+
         // Клик по плитке района — сразу подсвечивает выбор и сохраняет в Supabase
         async function selectHomeDistrict(value, event) {
             if (!currentSession || !currentSession.user) return;
@@ -1713,7 +1785,12 @@
 
             const badge = document.getElementById('home-district-saved-badge');
             try {
-                const { data, error } = await supabaseClient.auth.updateUser({ data: { home_district: value } });
+                const { data, error } = await supabaseClient.auth.updateUser({
+                    data: {
+                        home_district: value,
+                        ui_preferences: buildUserPreferences({ district: value })
+                    }
+                });
                 if (error) throw error;
                 if (data && data.user) {
                     currentSession.user = data.user;
@@ -1751,13 +1828,14 @@
             setInterval(applyAutoTheme, 60000);
 
             await checkUserSession();
+            const restoredPreferences = currentSession?.user ? restoreUserPreferences() : {};
             const bootGate = document.getElementById('boot-gate-style');
             if (bootGate) bootGate.remove();
 
             if (currentSession && currentSession.user) {
                 // Вопрос о последнем просмотренном месте доступен только вошедшему пользователю.
                 checkVisitPrompt();
-                const homeDistrict = currentSession.user.user_metadata?.home_district || 'all';
+                const homeDistrict = restoredPreferences.district || currentSession.user.user_metadata?.home_district || 'all';
                 startApp(homeDistrict, true);
                 document.body.style.visibility = 'visible';
             } else {
@@ -2605,22 +2683,20 @@
             });
         }
 
-        function toggleTheme() {
+        function setThemeMode(mode) {
             try {
                 const html = document.documentElement;
                 const icon = document.getElementById('theme-icon');
-                const isDark = html.classList.contains('dark');
+                const useDark = mode === 'dark';
+                const didChange = html.classList.contains('dark') !== useDark;
 
-                if (isDark) {
-                    html.classList.remove('dark');
-                    html.classList.add('light');
-                    if (icon) icon.className = 'fa-solid fa-moon text-lg text-slate-600';
-                } else {
-                    html.classList.remove('light');
-                    html.classList.add('dark');
-                    if (icon) icon.className = 'fa-solid fa-sun text-lg text-amber-400';
-                }
+                html.classList.toggle('dark', useDark);
+                html.classList.toggle('light', !useDark);
+                if (icon) icon.className = useDark
+                    ? 'fa-solid fa-sun text-lg text-amber-400'
+                    : 'fa-solid fa-moon text-lg text-slate-600';
 
+                if (!didChange) return;
                 forceThemeRepaint();
 
                 const mapEl = document.getElementById('map');
@@ -2632,31 +2708,19 @@
             }
         }
 
+        function toggleTheme() {
+            const nextTheme = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
+            setThemeMode(nextTheme);
+        }
+
         // Автоматическая смена темы по времени в Кишиневе:
         // с 06:00 до 19:59 — светлая, с 20:00 до 05:59 — тёмная.
+        // Выбор кнопкой действует только до следующей автоматической проверки.
         function applyAutoTheme() {
             try {
                 const info = getChisinauInfo();
                 const shouldBeDark = (info.hours >= 20 || info.hours < 6);
-                const html = document.documentElement;
-                const icon = document.getElementById('theme-icon');
-                const isDark = html.classList.contains('dark');
-
-                if (shouldBeDark !== isDark) {
-                    html.classList.remove(shouldBeDark ? 'light' : 'dark');
-                    html.classList.add(shouldBeDark ? 'dark' : 'light');
-                    forceThemeRepaint();
-                    if (map && document.getElementById('map') && document.getElementById('map').offsetParent !== null) {
-                        setTimeout(() => { if (map) map.invalidateSize(); }, 350);
-                    }
-                }
-
-                // Иконка всегда синхронизируется с фактическим состоянием темы
-                if (icon) {
-                    icon.className = shouldBeDark
-                        ? 'fa-solid fa-sun text-lg text-amber-400'
-                        : 'fa-solid fa-moon text-lg text-slate-600';
-                }
+                setThemeMode(shouldBeDark ? 'dark' : 'light');
             } catch (e) {
                 // не даём авто-теме уронить остальной скрипт
             }
@@ -3002,6 +3066,7 @@
             document.getElementById('grid-title').textContent = dist === 'all' ? tr('Все заведения') : (currentLang === 'ro' ? `Locații: ${tr(dist)}` : `Заведения: ${dist}`);
 
             applyFilters();
+            scheduleSaveUserPreferences();
         }
 
         function setMainCategory(mainCat) {
@@ -3021,6 +3086,7 @@
             if (targetSubcats) targetSubcats.classList.remove('hidden');
 
             applyFilters();
+            scheduleSaveUserPreferences();
         }
 
         function setCategory(cat) {
@@ -3032,6 +3098,18 @@
             if (activeBtn) activeBtn.classList.add('cat-btn-active');
 
             applyFilters();
+            scheduleSaveUserPreferences();
+        }
+
+        function setSearchQuery(value) {
+            const search = String(value || '');
+            const searchDesktop = document.getElementById('search-input');
+            const searchMobile = document.getElementById('search-input-mobile');
+            if (searchDesktop && searchDesktop.value !== search) searchDesktop.value = search;
+            if (searchMobile && searchMobile.value !== search) searchMobile.value = search;
+            state.search = search.toLowerCase().trim();
+            applyFilters();
+            scheduleSaveUserPreferences();
         }
 
         function toggleOnlyOpen() {
@@ -3045,6 +3123,7 @@
                 btn.classList.add('bg-white/60', 'dark:bg-slate-800/60', 'text-slate-600', 'dark:text-slate-300');
             }
             applyFilters();
+            scheduleSaveUserPreferences();
         }
 
         function getRandomPlace() {
