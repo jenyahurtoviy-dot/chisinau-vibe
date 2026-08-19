@@ -277,7 +277,7 @@
 </head>
 <body class="text-slate-900 dark:text-slate-100 min-h-screen relative overflow-x-hidden" id="body">
     <script>
-    document.write('<style id="boot-gate-style">#welcome-screen{display:none !important;}#main-app{display:none !important;}</style>');
+    document.write('<style id="boot-gate-style">#language-screen,#welcome-screen{display:none !important;}#main-app{display:none !important;}</style>');
     </script>
 
     <script>
@@ -475,6 +475,38 @@
             applyLanguage(currentLang === 'ro' ? 'ru' : 'ro');
         }
 
+        // Стартовый путь для гостя: язык → выбор района → каталог.
+        function showLanguageScreen() {
+            const screen = document.getElementById('language-screen');
+            if (!screen) return;
+            screen.classList.remove('hidden');
+            screen.style.opacity = '0';
+            requestAnimationFrame(() => { screen.style.opacity = '1'; });
+        }
+
+        function showWelcomeScreen() {
+            const welcome = document.getElementById('welcome-screen');
+            if (!welcome) return;
+            welcome.style.display = '';
+            welcome.style.opacity = '0';
+            requestAnimationFrame(() => {
+                welcome.style.transition = 'opacity 0.4s ease';
+                welcome.style.opacity = '1';
+            });
+        }
+
+        function chooseInitialLanguage(lang) {
+            applyLanguage(lang);
+            const screen = document.getElementById('language-screen');
+            if (!screen) { showWelcomeScreen(); return; }
+            screen.style.opacity = '0';
+            setTimeout(() => {
+                screen.classList.add('hidden');
+                screen.style.opacity = '';
+                showWelcomeScreen();
+            }, 220);
+        }
+
         // После переключения перерисовываем динамические карточки, не трогая сами данные мест и карту.
         function onLanguageChanged() {
             if (typeof state !== 'undefined') {
@@ -544,6 +576,20 @@
         <div class="absolute top-[-10%] left-[-10%] w-[20rem] sm:w-[40rem] h-[20rem] sm:h-[40rem] bg-slate-800 dark:bg-slate-500 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[80px] sm:blur-[120px] opacity-20 dark:opacity-[0.15] animate-blob"></div>
         <div class="absolute top-[20%] right-[-10%] w-[18rem] sm:w-[35rem] h-[18rem] sm:h-[35rem] bg-slate-700 dark:bg-slate-400 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[80px] sm:blur-[120px] opacity-20 dark:opacity-[0.12] animate-blob animation-delay-2000"></div>
         <div class="absolute bottom-[-10%] left-[20%] w-[20rem] sm:w-[40rem] h-[20rem] sm:h-[40rem] bg-slate-600 dark:bg-slate-300 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[80px] sm:blur-[120px] opacity-10 dark:opacity-[0.1] animate-blob animation-delay-4000"></div>
+    </div>
+
+   <div id="language-screen" class="hidden fixed inset-0 z-[200] bg-slate-50/95 dark:bg-slate-950/95 backdrop-blur-3xl flex items-center justify-center p-4 sm:p-6 transition-opacity duration-300">
+        <div class="w-full max-w-md rounded-[2rem] glass border border-white/60 dark:border-white/10 p-7 sm:p-9 text-center shadow-2xl">
+            <div class="w-16 h-16 mx-auto mb-5 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-600 text-white flex items-center justify-center text-2xl shadow-lg">
+                <i class="fa-solid fa-language"></i>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">Alege limba</h1>
+            <p class="mt-2 text-sm text-slate-500 dark:text-slate-400 font-medium">Выберите язык сайта</p>
+            <div class="grid grid-cols-2 gap-3 mt-7">
+                <button type="button" onclick="chooseInitialLanguage('ro')" class="py-4 rounded-2xl bg-slate-800 hover:bg-black text-white font-black text-sm shadow-lg transition-all hover:scale-[1.03] active:scale-[0.98]">Română</button>
+                <button type="button" onclick="chooseInitialLanguage('ru')" class="py-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white font-black text-sm shadow-sm transition-all hover:scale-[1.03] active:scale-[0.98]">Русский</button>
+            </div>
+        </div>
     </div>
 
    <div id="welcome-screen" class="fixed inset-0 z-[100] bg-white/90 dark:bg-slate-950/90 backdrop-blur-3xl flex flex-col items-center justify-start pt-8 sm:justify-center sm:pt-0 transition-all duration-700 overflow-y-auto py-10 px-4">
@@ -1687,13 +1733,7 @@
                 const homeDistrict = currentSession.user.user_metadata?.home_district || 'all';
                 startApp(homeDistrict, true);
             } else {
-                const welcome = document.getElementById('welcome-screen');
-                welcome.style.display = '';
-                welcome.style.opacity = '0';
-                requestAnimationFrame(() => {
-                    welcome.style.transition = 'opacity 0.4s ease';
-                    welcome.style.opacity = '1';
-                });
+                showLanguageScreen();
             }
         });
 
