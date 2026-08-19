@@ -87,23 +87,67 @@
             background-image: radial-gradient(ellipse 120% 80% at 50% -10%, rgba(30, 41, 59, 0.55) 0%, rgba(2, 6, 23, 0) 60%);
         }
         #lang-toggle.lang-ro-active .lang-toggle-thumb { transform: translateX(100%); }
+        /* Переключатель языка: выбранная сторона читается одинаково хорошо в обеих темах. */
+        #lang-toggle {
+            background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+            border-color: #cbd5e1;
+            color: #64748b;
+            box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.12), 0 4px 12px rgba(15, 23, 42, 0.08);
+        }
+        #lang-toggle .lang-toggle-thumb {
+            background: linear-gradient(135deg, #ffffff, #f1f5f9);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 2px 7px rgba(15, 23, 42, 0.18);
+        }
+        #lang-toggle .lang-label { color: #64748b; transition: color 0.2s ease; }
+        #lang-toggle:not(.lang-ro-active) .lang-label-ru,
+        #lang-toggle.lang-ro-active .lang-label-ro { color: #0f172a; }
+        .dark #lang-toggle {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            border-color: #334155;
+            color: #64748b;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5), 0 4px 14px rgba(0, 0, 0, 0.28);
+        }
+        .dark #lang-toggle .lang-toggle-thumb {
+            background: linear-gradient(135deg, #475569, #334155);
+            border-color: #64748b;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.42);
+        }
+        .dark #lang-toggle .lang-label { color: #94a3b8; }
+        .dark #lang-toggle:not(.lang-ro-active) .lang-label-ru,
+        .dark #lang-toggle.lang-ro-active .lang-label-ro { color: #e2e8f0; }
+
+        /* Вошедший пользователь открывает профиль по компактной кнопке-иконке. */
+        #nav-auth-btn.is-account-button {
+            width: 2.75rem;
+            height: 2.75rem;
+            padding: 0;
+            justify-content: center;
+            border-radius: 9999px;
+        }
+
         /* Узкие телефоны: компактная шапка без горизонтального скролла. */
         @media (max-width: 420px) {
             #main-app nav > div {
-                gap: 0.5rem;
-                padding-left: 0.75rem;
-                padding-right: 0.75rem;
+                gap: 0.25rem;
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
             }
             #main-app nav > div > div:first-child {
-                min-width: 0;
-                max-width: 92px;
-                gap: 0.4rem;
+                min-width: max-content;
+                max-width: none;
+                gap: 0.35rem;
+                flex-shrink: 0;
             }
-            #main-app nav h1 { font-size: 0.9rem; }
-            #current-district-display { max-width: 78px; padding-left: 0.35rem; padding-right: 0.35rem; }
-            #nav-auth-btn { max-width: 76px; padding: 0.6rem 0.5rem; gap: 0.3rem; }
-            #nav-auth-text { max-width: 42px; }
-            #lang-toggle { width: 46px; height: 40px; padding-left: 0.25rem; padding-right: 0.25rem; font-size: 9px; }
+            #main-app nav > div > div:first-child > div:first-child { width: 2.15rem; height: 2.15rem; font-size: 1rem; }
+            #main-app nav h1 { font-size: 0.82rem; white-space: nowrap; overflow: visible; }
+            #current-district-display { max-width: none; padding-left: 0.3rem; padding-right: 0.3rem; white-space: nowrap; overflow: visible; text-overflow: clip; letter-spacing: 0.07em; }
+            #main-app nav > div > div:last-child { gap: 0.4rem; }
+            #nav-auth-btn { max-width: none; padding: 0.5rem 0.45rem; gap: 0.25rem; }
+            #nav-auth-text { max-width: none; }
+            #nav-auth-btn.is-account-button { width: 2.25rem; height: 2.25rem; padding: 0; }
+            #theme-toggle-btn { width: 2.25rem; height: 2.25rem; }
+            #lang-toggle { width: 43px; height: 36px; padding-left: 0.2rem; padding-right: 0.2rem; font-size: 9px; }
             #lang-toggle .lang-toggle-thumb { left: 0.25rem; top: 0.25rem; bottom: 0.25rem; width: calc(50% - 0.25rem); }
         }
         
@@ -902,10 +946,10 @@
                         <i class="fa-solid fa-location-dot"></i>
                     </div>
                     <div class="min-w-0">
-                        <h1 class="text-base sm:text-2xl font-black tracking-tight leading-none text-slate-900 dark:text-white truncate">
+                        <h1 class="text-base sm:text-2xl font-black tracking-tight leading-none text-slate-900 dark:text-white whitespace-nowrap">
                             Chisinau<span class="text-slate-800 dark:text-slate-300">.Vibe</span>
                         </h1>
-                        <span id="current-district-display" class="text-[9px] sm:text-[10px] font-bold text-black dark:text-slate-300 uppercase tracking-widest bg-slate-800/10 px-2 py-0.5 rounded-md mt-1 inline-block truncate max-w-[120px] sm:max-w-none">Весь город</span>
+                        <span id="current-district-display" class="text-[9px] sm:text-[10px] font-bold text-black dark:text-slate-300 uppercase tracking-widest bg-slate-800/10 px-2 py-0.5 rounded-md mt-1 inline-block whitespace-nowrap sm:max-w-none">Весь город</span>
                     </div>
                 </div>
 
@@ -926,14 +970,14 @@
                 <div class="flex items-center gap-2 sm:gap-3">
                     <!-- Кнопка Входа/Кабинета -->
                     <button id="nav-auth-btn" onclick="handleNavAuthClick()" class="px-3 sm:px-4 py-2.5 rounded-xl bg-slate-800 dark:ring-1 dark:ring-white/15 text-white font-bold text-xs sm:text-sm shadow-md hover:bg-black transition-all flex items-center gap-2 max-w-[110px] sm:max-w-none truncate">
-                        <i class="fa-solid fa-user"></i> <span id="nav-auth-text" class="truncate">Войти</span>
+                        <i id="nav-auth-icon" class="fa-solid fa-right-to-bracket"></i> <span id="nav-auth-text" class="truncate">Войти</span>
                     </button>
-                    <button onclick="toggleTheme()" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:scale-105 hover:bg-white dark:hover:bg-slate-800 transition-all shadow-sm text-slate-600 dark:text-slate-300 shrink-0">
+                    <button id="theme-toggle-btn" onclick="toggleTheme()" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:scale-105 hover:bg-white dark:hover:bg-slate-800 transition-all shadow-sm text-slate-600 dark:text-slate-300 shrink-0">
                         <i id="theme-icon" class="fa-solid fa-moon text-lg"></i>
                     </button>
                     <button id="lang-toggle" onclick="toggleLang()" type="button" role="switch" aria-checked="true" aria-label="Schimbă limba între română și rusă" title="Română / Русский" class="relative w-[58px] h-10 sm:w-[66px] sm:h-12 rounded-xl bg-slate-800 dark:bg-slate-100 border border-slate-700 dark:border-white/20 flex items-center justify-between px-1.5 shadow-sm transition-all shrink-0 font-black text-[10px] sm:text-[11px] text-white dark:text-slate-900">
-                        <span class="relative z-10 w-1/2 text-center">RU</span>
-                        <span class="relative z-10 w-1/2 text-center">RO</span>
+                        <span class="lang-label lang-label-ru relative z-10 w-1/2 text-center">RU</span>
+                        <span class="lang-label lang-label-ro relative z-10 w-1/2 text-center">RO</span>
                         <span class="lang-toggle-thumb absolute top-1 bottom-1 left-1 w-[calc(50%-0.25rem)] rounded-lg bg-white dark:bg-slate-800 shadow-md transition-transform duration-200"></span>
                     </button>
                 </div>
@@ -1810,14 +1854,25 @@
             if (!supabaseClient) return;
             const { data: { session } } = await supabaseClient.auth.getSession();
             currentSession = session;
-            const btnText = document.getElementById('nav-auth-btn');
+            const authButton = document.getElementById('nav-auth-btn');
+            const authIcon = document.getElementById('nav-auth-icon');
+            const authText = document.getElementById('nav-auth-text');
 
             if (session && session.user) {
-                btnText.textContent = session.user.email.split('@')[0];
+                authButton.classList.add('is-account-button');
+                authButton.setAttribute('aria-label', 'Мой аккаунт');
+                authButton.setAttribute('title', 'Мой аккаунт');
+                authIcon.className = 'fa-solid fa-user';
+                authText.classList.add('hidden');
                 await loadUserFavorites();
                 await loadUserVisited();
             } else {
-                btnText.textContent = 'Войти';
+                authButton.classList.remove('is-account-button');
+                authButton.setAttribute('aria-label', 'Войти');
+                authButton.setAttribute('title', 'Войти');
+                authIcon.className = 'fa-solid fa-right-to-bracket';
+                authText.textContent = 'Войти';
+                authText.classList.remove('hidden');
                 userFavorites = [];
                 userVisited = [];
             }
