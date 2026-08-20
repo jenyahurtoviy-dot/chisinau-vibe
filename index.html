@@ -3210,8 +3210,9 @@
             if (!ok) throw new Error('execCommand copy failed');
         }
 
-        // Делится ссылкой на конкретное открытое место: на телефоне — через системное меню "Поделиться",
-        // на десктопе (или если Web Share недоступен/сломан) — копирует ссылку в буфер обмена.
+        // Делится ссылкой на конкретное место: всегда копирует ссылку в буфер обмена
+        // и показывает тост "Ссылка на место скопирована" — одинаково на всех устройствах,
+        // без системного меню "Поделиться", чтобы поведение было предсказуемым.
         // Вся логика максимально защищена от исключений, чтобы клик по кнопке никогда не ронял страницу.
         async function sharePlace(id, event) {
             if (event) event.stopPropagation();
@@ -3224,23 +3225,6 @@
             } catch (e) {
                 showToast(tr('Не удалось создать ссылку'), 'error');
                 return;
-            }
-
-            // Web Share API требует http(s) и защищённый контекст — иначе некоторые
-            // обёртки (WebView, file://) падают с системной ошибкой при попытке вызова.
-            const isHttpUrl = /^https?:\/\//i.test(shareUrl);
-            const canUseWebShare = isHttpUrl && window.isSecureContext && typeof navigator.share === 'function';
-
-            if (canUseWebShare) {
-                try {
-                    const p = places.find(pl => pl.id === id);
-                    await navigator.share({ title: p ? p.name : 'Chisinau Vibe', url: shareUrl });
-                    return;
-                } catch (err) {
-                    // Пользователь отменил системное окно — просто ничего не делаем.
-                    if (err && err.name === 'AbortError') return;
-                    // Любая другая ошибка Web Share — тихо откатываемся на копирование ниже.
-                }
             }
 
             try {
