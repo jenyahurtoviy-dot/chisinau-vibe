@@ -383,6 +383,14 @@
             border: 2px solid white;
             border-radius: 50%;
         }
+        /* Точка геолокации контрастна с активной темой: чёрная днём, белая ночью. */
+        .dark .user-location-ping::before {
+            background-color: #ffffff;
+        }
+        .dark .user-location-ping::after {
+            background-color: #ffffff;
+            border-color: #0f172a;
+        }
     </style>
 
 
@@ -3074,7 +3082,7 @@
             markersLayer = L.layerGroup().addTo(map);
         }
 
-        // Плавно ведёт карту к центру выбранного района, не меняя текущий масштаб.
+        // Плавно ведёт карту к району и каждый раз возвращает удобный масштаб.
         function panMapToDistrict(district) {
             if (!map || !Array.isArray(places)) return;
             const districtPlaces = places.filter(place => district === 'all' || place.district === district);
@@ -3085,9 +3093,12 @@
                 lng: sum.lng + place.lng
             }), { lat: 0, lng: 0 });
 
-            map.panTo([center.lat / districtPlaces.length, center.lng / districtPlaces.length], {
+            const centerPoint = [center.lat / districtPlaces.length, center.lng / districtPlaces.length];
+            const districtZoom = district === 'all' ? 13 : 14;
+
+            map.flyTo(centerPoint, districtZoom, {
                 animate: true,
-                duration: 0.8,
+                duration: 0.9,
                 easeLinearity: 0.25
             });
         }
