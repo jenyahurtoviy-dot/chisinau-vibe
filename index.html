@@ -2607,7 +2607,7 @@
     desc: "Молдавский государственный университет, главный корпус.",
     entertainment: "Учеба, библиотека, сквер, столовая.",
     priceRange: "Учеба",
-    mapUrl: "https://maps.app.goo.gl/xxx",
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=47.017778,28.824167",
     lat: 47.017778,
     lng: 28.824167,
     gradient: "from-blue-600 to-slate-900",
@@ -2626,7 +2626,7 @@
     desc: "Национальная библиотека Республики Молдова.",
     entertainment: "Читальный зал, архивы, тихая атмосфера.",
     priceRange: "Бесплатно",
-    mapUrl: "https://maps.app.goo.gl/xxx",
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=Biblioteca+Nationala&query_place_id=ChIJJbUtrzN8yUARBMUVQ3KcG9g",
     lat: 47.0227,
     lng: 28.8315,
     gradient: "from-sky-600 to-slate-900",
@@ -2645,7 +2645,7 @@
     desc: "Главный филиал Moldova Agroindbank.",
     entertainment: "Кредиты, переводы, обслуживание бизнеса.",
     priceRange: "Комиссии банка",
-    mapUrl: "https://maps.app.goo.gl/xxx",
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=47.0245,28.8322",
     lat: 47.0245,
     lng: 28.8322,
     gradient: "from-emerald-600 to-slate-900",
@@ -2664,7 +2664,7 @@
     desc: "Круглосуточный банкомат Moldindconbank.",
     entertainment: "Снятие наличных, пополнение счета.",
     priceRange: "Без комиссий (свои)",
-    mapUrl: "https://maps.app.goo.gl/xxx",
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=47.0450,28.8600",
     lat: 47.0450,
     lng: 28.8600,
     gradient: "from-emerald-500 to-emerald-800",
@@ -2673,6 +2673,94 @@
     isPermanentlyClosed: false
 }
         ];
+
+        // Актуальные точки сети Librarius в Кишинёве. Это книжные магазины,
+        // поэтому они показываются в «Образование → Библиотеки» вместе с библиотеками.
+        // Ссылка каждой карточки открывает именно точку магазина в Google Maps.
+        const librariusSchedule = (weekdays, sunday = weekdays) => ({
+            0: sunday, 1: weekdays, 2: weekdays, 3: weekdays,
+            4: weekdays, 5: weekdays, 6: weekdays
+        });
+        const LIBRARIUS_STORES = [
+            { no: 401, address: 'ул. Николая Зелинского, 11/1', district: 'Ботаника', lat: 46.992645, lng: 28.859720, hours: ['09:00-20:00', '10:00-17:00'] },
+            { no: 403, address: 'ул. Пушкина, 22', district: 'Центр', lat: 47.021882, lng: 28.831714, hours: ['09:00-21:30', '10:00-19:00'] },
+            { no: 404, address: 'ТЦ UNIC, б-р Штефана чел Маре, 8', district: 'Центр', lat: 47.017086, lng: 28.846076, hours: ['08:30-20:00', '09:00-19:00'] },
+            { no: 405, address: 'б-р Мирча чел Бэтрын, 10', district: 'Чеканы', lat: 47.041893, lng: 28.891006, hours: ['09:00-20:00', '10:00-18:00'] },
+            { no: 406, address: 'ул. Николая Зелинского, 7', district: 'Ботаника', lat: 46.992250, lng: 28.864863, hours: ['09:00-20:00', '10:00-17:00'] },
+            { no: 407, address: 'ул. Иона Крянгэ, 78', district: 'Буюканы', lat: 47.027802, lng: 28.794352, hours: ['09:00-20:00', '10:00-18:00'] },
+            { no: 408, address: 'б-р Дачия, 47/6', district: 'Ботаника', lat: 46.979458, lng: 28.867746, hours: ['09:00-20:00', '10:00-19:00'] },
+            { no: 409, address: 'ул. Льва Толстого, 24/1', district: 'Центр', lat: 47.010814, lng: 28.842184, hours: ['09:00-21:00'] },
+            { no: 410, address: 'б-р Мирча чел Бэтрын, 24/6', district: 'Чеканы', lat: 47.049689, lng: 28.891530, hours: ['09:00-21:00'] },
+            { no: 412, address: 'б-р Московский, 1/1', district: 'Рышкановка', lat: 47.045177, lng: 28.861135, hours: ['09:00-21:30', '10:00-20:00'] },
+            { no: 416, address: 'ТЦ Atrium, ул. Албишоара, 4', district: 'Рышкановка', lat: 47.014945, lng: 28.856133, hours: ['09:00-21:00'] },
+            { no: 417, address: 'ул. Каля Ешилор, 5', district: 'Буюканы', lat: 47.037712, lng: 28.809743, hours: ['09:00-20:00', '10:00-17:00'] },
+            { no: 418, address: 'б-р Московский, 9/5', district: 'Рышкановка', lat: 47.050222, lng: 28.862499, hours: ['09:00-21:30'] },
+            { no: 419, address: 'ул. Константина Тэнасе, 6', district: 'Рышкановка', lat: 47.029641, lng: 28.837307, hours: ['08:00-19:00', '09:00-17:00'] },
+            { no: 420, address: 'ул. Василе Докучаева, 13', district: 'Центр', lat: 47.002393, lng: 28.817922, hours: ['09:00-20:00', '10:00-17:00'] },
+            { no: 421, address: 'ул. Чеукарь, 2/6', district: 'Рышкановка', lat: 47.058850, lng: 28.847878, hours: ['09:00-20:00', '10:00-17:00'] },
+            { no: 422, address: 'Пьяца Унирий Принчипателор, 3', district: 'Буюканы', lat: 47.027091, lng: 28.794656, hours: ['09:00-21:00', '10:00-19:00'] },
+            { no: 423, address: 'б-р Штефана чел Маре, 6', district: 'Центр', lat: 47.014739, lng: 28.847927, hours: ['09:00-21:00', '10:00-19:00'] },
+            { no: 424, address: 'ул. Тирасполь, 5, ТЦ UNO', district: 'Центр', lat: 47.013803, lng: 28.856249, hours: ['10:00-21:00'] },
+            { no: 425, address: 'ул. Алеку Руссо, 59/8', district: 'Чеканы', lat: 47.038386, lng: 28.884773, hours: ['09:00-20:00', '10:00-18:00'] },
+            { no: 429, address: 'б-р Дачия, 30/1', district: 'Ботаника', lat: 46.983392, lng: 28.860255, hours: ['09:00-20:00', '10:00-18:00'] },
+            { no: 433, address: 'ул. Николая Костина, 56', district: 'Буюканы', lat: 47.043370, lng: 28.770720, hours: ['08:00-21:00', '09:00-19:00'] },
+            { no: 434, address: 'б-р Штефана чел Маре, 64', district: 'Центр', lat: 47.018782, lng: 28.841598, hours: ['09:00-21:00', '10:00-19:00'] },
+            { no: 440, address: 'Librarius Cafe, ул. Митрополита Варлаама, 75', district: 'Центр', lat: 47.023803, lng: 28.837536, hours: ['09:00-21:30', '10:00-19:00'], cafe: true },
+            { no: 444, address: 'Oasis Mall, ул. Богдана Воеводы, 1', district: 'Рышкановка', lat: 47.043199, lng: 28.857288, hours: ['10:00-21:00'] },
+            { no: 445, address: 'Shopping MallDova, ул. Арборилор, 21, 4-й этаж', district: 'Центр', lat: 47.004518, lng: 28.840941, hours: ['10:00-22:00'] },
+            { no: 446, address: 'б-р Дачия, 16/1', district: 'Ботаника', lat: 46.989485, lng: 28.851653, hours: ['09:00-20:00', '10:00-18:00'] },
+            { no: 448, address: 'б-р Мирча чел Бэтрын, 1', district: 'Чеканы', lat: 47.037974, lng: 28.888857, hours: ['09:00-21:00', '10:00-19:00'] }
+        ];
+        // Place ID каждого магазина в Google Maps (сверены вручную по адресу
+        // и координатам). Именно query_place_id заставляет Google Maps
+        // открыть КАРТОЧКУ ОРГАНИЗАЦИИ (с отзывами и часами), а не просто
+        // поставить булавку на координатах или на случайном похожем месте.
+        // Магазин 448 (Чеканы, б-р Мирча чел Бэтрын, 1) пока не найден как
+        // отдельная карточка в Google Maps — для него используем координаты.
+        const LIBRARIUS_PLACE_IDS = Object.freeze({
+            401: 'ChIJcR5YGK1-yUAR75CdqCJFcYM', 403: 'ChIJ6S7M0jN8yUAR6vi5zNJCcqs',
+            404: 'ChIJsU-BI619yUARgynuRCxWeyE', 405: 'ChIJw7o-hY58yUARFMKb6yqGqOI',
+            406: 'ChIJO4pqIAB5yUARxLI16VbF2E4', 407: 'ChIJ4VYgfCh9yUAR2M9-fcq5d_k',
+            408: 'ChIJs73ynV95yUARru989XfZGOg', 409: 'ChIJAzVbeSF8yUARutozCe7bnkY',
+            410: 'ChIJ6YpEQ5N8yUARf4eWZQVNYxs', 412: 'ChIJa6kW5Ph8yUAR5xX25gFFDYw',
+            416: 'ChIJr7GjBxd8yUARFTEnm_hIapg', 417: 'ChIJDwt9ub99yUARBUTWjSABuNk',
+            418: 'ChIJcc02vgF9yUAR6OFGEOCHQEM', 419: 'ChIJS6uRjEd9yUARAwin3tEkQP4',
+            420: 'ChIJWSs6aIV-yUARvkKIIbatqfg', 421: 'ChIJV-wBnBp9yUARs2LDQHyIg_g',
+            422: 'ChIJFbI_ft19yUARzG2-rt4ASiI', 423: 'ChIJ68Ncifx9yUAR8ZcFxpsQuRI',
+            424: 'ChIJzyoq0mF9yUARvcgjxFSpgJQ', 425: 'ChIJT7fzrTZ9yUARzdeaNRGsk2U',
+            429: 'ChIJyygC30t5yUARfbDp2ttNPjY', 433: 'ChIJ4c3OMwDXy0ARu_YsSrq_l90',
+            434: 'ChIJiXj8Psp9yUARKM6r6Jg1WfE', 440: 'ChIJRWNO2Pd9yUAR2VRtJlM6f9s',
+            444: 'ChIJwWUDPq99yUARvWF_Frwec5U', 445: 'ChIJG6dDJKB-yUARZQp45EXvsqE',
+            446: 'ChIJlSEBYwB_yUARX8uichzkXE0'
+        });
+        const getLibrariusGoogleMapsUrl = (store) => {
+            const placeId = LIBRARIUS_PLACE_IDS[store.no];
+            const label = encodeURIComponent(store.cafe ? 'Librarius Cafe' : `Librarius ${store.no}`);
+            return placeId
+                ? `https://www.google.com/maps/search/?api=1&query=${label}&query_place_id=${placeId}`
+                : `https://www.google.com/maps/search/?api=1&query=${store.lat},${store.lng}`;
+        };
+
+        places.push(...LIBRARIUS_STORES.map(store => ({
+            id: `librarius_${store.no}`,
+            name: store.cafe ? 'Librarius Cafe' : `Librarius ${store.no}`,
+            type: 'library',
+            mainCat: 'edu',
+            district: store.district,
+            tags: ['Книжный магазин', 'Книги', 'Librarius', 'Канцтовары'],
+            price: 'Книги',
+            rating: null,
+            desc: `Книжный магазин Librarius — ${store.address}.`,
+            entertainment: store.cafe ? 'Книги, кофе и десерты в книжном кафе.' : 'Книги на румынском, русском и других языках, канцтовары и подарки.',
+            priceRange: 'Книги и канцтовары',
+            mapUrl: getLibrariusGoogleMapsUrl(store),
+            lat: store.lat,
+            lng: store.lng,
+            gradient: store.cafe ? 'from-amber-500 to-rose-600' : 'from-sky-600 to-indigo-700',
+            icon: store.cafe ? "<i class='fa-solid fa-mug-hot text-white'></i>" : "<i class='fa-solid fa-book-open text-white'></i>",
+            schedule: librariusSchedule(store.hours[0], store.hours[1]),
+            isPermanentlyClosed: false
+        })));
 
         places.forEach((p, i) => { p.id = p.id || ('place_' + i); });
 
@@ -3255,9 +3343,10 @@
                                     <button onclick="toggleFavorite('${p.id}', event)" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800/80 flex items-center justify-center text-base ${isFav ? 'text-rose-500' : 'text-slate-400 dark:text-slate-500'} hover:scale-110 transition-transform">
                                         <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
                                     </button>
+                                    ${Number.isFinite(p.rating) ? `
                                     <span class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 font-black text-xs text-slate-700 dark:text-slate-300 shadow-sm flex items-center gap-1">
                                         <i class="fa-solid fa-star text-amber-400 text-[10px]"></i> ${p.rating}
-                                    </span>
+                                    </span>` : ''}
                                 </div>
                             </div>
                             
