@@ -2029,25 +2029,16 @@
             const bootGate = document.getElementById('boot-gate-style');
             if (bootGate) bootGate.remove();
 
-            let hasSharedPlaceLink = false;
-            try {
-                hasSharedPlaceLink = !!new URLSearchParams(window.location.search).get('place');
-            } catch (e) {
-                hasSharedPlaceLink = false;
-            }
-
             if (currentSession && currentSession.user) {
                 // Вопрос о последнем просмотренном месте доступен только вошедшему пользователю.
                 checkVisitPrompt();
                 const homeDistrict = restoredPreferences.district || currentSession.user.user_metadata?.home_district || 'all';
                 startApp(homeDistrict, true);
                 document.body.style.visibility = 'visible';
-            } else if (hasSharedPlaceLink) {
-                // Открыто по прямой ссылке на конкретное место — сразу входим в приложение,
-                // минуя выбор языка и района, чтобы карточка открылась без лишних шагов.
-                startApp('all', true);
-                document.body.style.visibility = 'visible';
             } else {
+                // Незарегистрированный пользователь всегда проходит обычный путь:
+                // выбор языка → выбор района. Если ссылка вела на конкретное место,
+                // оно откроется само уже после того, как приложение запустится (см. startApp).
                 showLanguageScreen();
             }
         });
@@ -3268,7 +3259,21 @@
                 if (!id) return;
                 const p = places.find(pl => pl.id === id);
                 if (!p) return;
-                setTimeout(() => showPlaceModalById(id), 500);
+
+                // Ведём себя точно так же, как при клике по карточке в каталоге:
+                // сначала подлетаем к точке на карте, и только потом открываем карточку места.
+                setTimeout(() => {
+                    const mapEl = document.getElementById('map');
+                    if (!mapEl) {
+                        showPlaceModal(p);
+                        return;
+                    }
+                    mapEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    setTimeout(() => {
+                        focusPlaceOnMap(p);
+                        setTimeout(() => showPlaceModal(p, false), 900);
+                    }, 300);
+                }, 600);
             } catch (e) {
                 // Если разбор адреса не удался — просто открываем приложение как обычно.
             }
