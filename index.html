@@ -1309,6 +1309,7 @@
         let userVisited = [];
         let userVisitedDates = {}; // placeId -> ISO-дата отметки (если известна)
         let visitedInFlight = new Set(); // placeId, по которым сейчас идёт запрос — защита от двойного клика
+        let favoritesInFlight = new Set(); // то же самое для избранного
         let visitedLoadError = false; // true, если последняя загрузка посещённых мест реально упала с ошибкой (а не "их просто нет")
         let favoritesLoadError = false; // то же самое для избранного
 
@@ -1520,6 +1521,10 @@
                 return;
             }
 
+            // Защита от двойного клика/гонки запросов, пока предыдущий ещё не завершился
+            if (favoritesInFlight.has(placeId)) return;
+            favoritesInFlight.add(placeId);
+
             const userId = currentSession.user.id;
             const isFav = userFavorites.includes(placeId);
             const place = places.find(pl => pl.id === placeId);
@@ -1547,9 +1552,14 @@
                 if (!document.getElementById('profile-modal').classList.contains('hidden')) {
                     renderFavoritesList();
                 }
+                if (!document.getElementById('random-modal').classList.contains('hidden')) {
+                    showPlaceModalById(placeId, false);
+                }
             } catch (err) {
                 console.error(err);
                 showToast('Не удалось сохранить изменение в избранном — попробуйте ещё раз', 'error');
+            } finally {
+                favoritesInFlight.delete(placeId);
             }
         }
 
@@ -1650,6 +1660,9 @@
                 applyFilters();
                 if (!document.getElementById('profile-modal').classList.contains('hidden')) {
                     renderVisitedList();
+                }
+                if (!document.getElementById('random-modal').classList.contains('hidden')) {
+                    showPlaceModalById(placeId, false);
                 }
             } catch (err) {
                 console.error(err);
@@ -2627,8 +2640,8 @@
     entertainment: "Читальный зал, архивы, тихая атмосфера.",
     priceRange: "Бесплатно",
     mapUrl: "https://www.google.com/maps/search/?api=1&query=Biblioteca+Nationala&query_place_id=ChIJJbUtrzN8yUARBMUVQ3KcG9g",
-    lat: 47.0227,
-    lng: 28.8315,
+    lat: 47.022718092823965, 
+    lng: 28.8298956957616,
     gradient: "from-sky-600 to-slate-900",
     icon: "<i class='fa-solid fa-book-open text-white'></i>",
     schedule: stdSched("09:00-19:00"),
@@ -3056,10 +3069,10 @@
             }
         }
 
-        function showPlaceModalById(id) {
+        function showPlaceModalById(id, shouldFocusMap = true) {
             const p = places.find(pl => pl.id === id);
             if (!p) return;
-            showPlaceModal(p);
+            showPlaceModal(p, shouldFocusMap);
         }
 
         // Клик по карточке внизу страницы: сначала показываем её точку на карте,
@@ -3109,7 +3122,7 @@
                         <h4 class="text-xl sm:text-2xl font-black break-words leading-tight">${p.name}</h4>
                     </div>
                     <div class="flex items-center gap-2">
-                        <button onclick="toggleFavorite('${p.id}', event); showPlaceModalById('${p.id}');" class="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-lg ${isFav ? 'text-rose-400' : 'text-white'} hover:scale-110 transition-transform">
+                        <button onclick="toggleFavorite('${p.id}', event);" class="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-lg ${isFav ? 'text-rose-400' : 'text-white'} hover:scale-110 transition-transform">
                             <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
                         </button>
                         <div class="text-4xl opacity-90 shrink-0">${p.icon}</div>
@@ -3120,7 +3133,7 @@
                         <span class="mt-0.5">${status.dot}</span>
                         <span>${status.statusText}</span>
                     </div>
-                    <button onclick="toggleVisited('${p.id}', event); showPlaceModalById('${p.id}');" class="flex items-center gap-2 text-xs font-bold px-3.5 py-2 rounded-xl border shadow-sm transition-colors ${isVisited ? 'bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/20 text-emerald-600 dark:text-emerald-400' : 'bg-slate-100 dark:bg-slate-800/40 border-slate-200 dark:border-slate-800/40 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white'}">
+                    <button onclick="toggleVisited('${p.id}', event);" class="flex items-center gap-2 text-xs font-bold px-3.5 py-2 rounded-xl border shadow-sm transition-colors ${isVisited ? 'bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/20 text-emerald-600 dark:text-emerald-400' : 'bg-slate-100 dark:bg-slate-800/40 border-slate-200 dark:border-slate-800/40 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white'}">
                         <i class="fa-solid ${isVisited ? 'fa-circle-check' : 'fa-flag'}"></i>
                         <span>${isVisited ? 'Посетил(а)' : 'Отметить как посещённое'}</span>
                     </button>
