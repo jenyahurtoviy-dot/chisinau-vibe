@@ -2029,11 +2029,23 @@
             const bootGate = document.getElementById('boot-gate-style');
             if (bootGate) bootGate.remove();
 
+            let hasSharedPlaceLink = false;
+            try {
+                hasSharedPlaceLink = !!new URLSearchParams(window.location.search).get('place');
+            } catch (e) {
+                hasSharedPlaceLink = false;
+            }
+
             if (currentSession && currentSession.user) {
                 // Вопрос о последнем просмотренном месте доступен только вошедшему пользователю.
                 checkVisitPrompt();
                 const homeDistrict = restoredPreferences.district || currentSession.user.user_metadata?.home_district || 'all';
                 startApp(homeDistrict, true);
+                document.body.style.visibility = 'visible';
+            } else if (hasSharedPlaceLink) {
+                // Открыто по прямой ссылке на конкретное место — сразу входим в приложение,
+                // минуя выбор языка и района, чтобы карточка открылась без лишних шагов.
+                startApp('all', true);
                 document.body.style.visibility = 'visible';
             } else {
                 showLanguageScreen();
@@ -3122,6 +3134,9 @@
                         <h4 class="text-xl sm:text-2xl font-black break-words leading-tight">${p.name}</h4>
                     </div>
                     <div class="flex items-center gap-2">
+                        <button onclick="sharePlace('${p.id}', event);" title="${tr('Поделиться ссылкой на это место')}" class="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-lg text-white hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-share-nodes"></i>
+                        </button>
                         <button onclick="toggleFavorite('${p.id}', event);" class="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-lg ${isFav ? 'text-rose-400' : 'text-white'} hover:scale-110 transition-transform">
                             <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart"></i>
                         </button>
@@ -3166,6 +3181,97 @@
 
         function closeRandomModal() {
             document.getElementById('random-modal').classList.add('hidden');
+        }
+
+        // Строит прямую ссылку на карточку места (по её id) относительно текущего адреса страницы.
+        // Обёрнуто в try/catch: в некоторых обёртках (Android WebView, Telegram и т.п.)
+        // объект URL или window.location могут вести себя нестандартно и кидать исключение.
+        function buildPlaceShareUrl(id) {
+            try {
+                const base = window.location.href.split('#')[0].split('?')[0];
+                const url = new URL(base);
+                url.searchParams.set('place', id);
+                return url.toString();
+            } catch (e) {
+                // Максимально простой и безопасный фолбэк, если конструктор URL не сработал.
+                const base = window.location.href.split('#')[0].split('?')[0];
+                return base + '?place=' + encodeURIComponent(id);
+            }
+        }
+
+        // Копирует ссылку в буфер обмена с безопасным фолбэком на execCommand,
+        // на случай если Clipboard API недоступен (не https / старый webview).
+        async function copyTextToClipboard(text) {
+            if (navigator.clipboard && navigator.clipboard.writeText && window.isSecureContext) {
+                await navigator.clipboard.writeText(text);
+                return;
+            }
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.top = '-1000px';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+            const ok = document.execCommand('copy');
+            document.body.removeChild(textarea);
+            if (!ok) throw new Error('execCommand copy failed');
+        }
+
+        // Делится ссылкой на конкретное открытое место: на телефоне — через системное меню "Поделиться",
+        // на десктопе (или если Web Share недоступен/сломан) — копирует ссылку в буфер обмена.
+        // Вся логика максимально защищена от исключений, чтобы клик по кнопке никогда не ронял страницу.
+        async function sharePlace(id, event) {
+            if (event) event.stopPropagation();
+
+            let shareUrl;
+            try {
+                const p = places.find(pl => pl.id === id);
+                if (!p) return;
+                shareUrl = buildPlaceShareUrl(id);
+            } catch (e) {
+                showToast(tr('Не удалось создать ссылку'), 'error');
+                return;
+            }
+
+            // Web Share API требует http(s) и защищённый контекст — иначе некоторые
+            // обёртки (WebView, file://) падают с системной ошибкой при попытке вызова.
+            const isHttpUrl = /^https?:\/\//i.test(shareUrl);
+            const canUseWebShare = isHttpUrl && window.isSecureContext && typeof navigator.share === 'function';
+
+            if (canUseWebShare) {
+                try {
+                    const p = places.find(pl => pl.id === id);
+                    await navigator.share({ title: p ? p.name : 'Chisinau Vibe', url: shareUrl });
+                    return;
+                } catch (err) {
+                    // Пользователь отменил системное окно — просто ничего не делаем.
+                    if (err && err.name === 'AbortError') return;
+                    // Любая другая ошибка Web Share — тихо откатываемся на копирование ниже.
+                }
+            }
+
+            try {
+                await copyTextToClipboard(shareUrl);
+                showToast(tr('Ссылка на место скопирована'), 'success');
+            } catch (err) {
+                showToast(tr('Не удалось скопировать ссылку'), 'error');
+            }
+        }
+
+        // Если страница открыта по прямой ссылке вида ?place=ID — сразу показываем нужную карточку.
+        function openSharedPlaceFromUrl() {
+            try {
+                const params = new URLSearchParams(window.location.search);
+                const id = params.get('place');
+                if (!id) return;
+                const p = places.find(pl => pl.id === id);
+                if (!p) return;
+                setTimeout(() => showPlaceModalById(id), 500);
+            } catch (e) {
+                // Если разбор адреса не удался — просто открываем приложение как обычно.
+            }
         }
 
         function initMap() {
@@ -3530,6 +3636,7 @@
         applyFilters();
         setInterval(updateClockUI, 1000);
         updateClockUI();
+        openSharedPlaceFromUrl();
         return;
     }
 
@@ -3550,6 +3657,7 @@
             applyFilters();
             setInterval(updateClockUI, 1000);
             updateClockUI();
+            openSharedPlaceFromUrl();
         }, 50);
     }, 600);
 }
