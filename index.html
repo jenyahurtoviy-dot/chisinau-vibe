@@ -1166,8 +1166,11 @@
                     <div>
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-[11px] font-black uppercase text-slate-400 tracking-[0.2em]">Категории</h3>
-                            <button onclick="toggleOnlyOpen()" id="btn-only-open" class="text-[10px] font-bold px-3 py-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 transition-all flex items-center gap-1.5 text-slate-600 dark:text-slate-300">
-                                <i class="fa-solid fa-circle text-[8px] opacity-70"></i> Открытые
+                            <button onclick="toggleOnlyOpen()" id="btn-only-open" class="group flex items-center gap-2 cursor-pointer select-none">
+                                <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200 transition-colors">Открытые</span>
+                                <span id="only-open-track" class="relative inline-flex h-5 w-9 items-center rounded-full bg-slate-300 dark:bg-slate-600 transition-colors duration-200 shrink-0">
+                                    <span id="only-open-thumb" class="inline-block h-3.5 w-3.5 translate-x-1 rounded-full bg-white shadow transition-transform duration-200"></span>
+                                </span>
                             </button>
                         </div>
                         
@@ -1189,23 +1192,23 @@
 
                         <!-- ПОДКАТЕГОРИИ ОТДЫХ -->
                         <div id="subcats-relax" class="grid grid-cols-2 gap-3 subcats-group">
-                            <button onclick="setCategory('all')" id="btn-cat-all" class="cat-btn cat-btn-active flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 text-slate-600 dark:text-slate-300">
+                            <button onclick="setCategory('all')" data-cat="all" id="btn-cat-all" class="cat-btn cat-btn-active flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 text-slate-600 dark:text-slate-300">
                                 <i class="fa-solid fa-layer-group text-xl sm:text-2xl text-slate-800 dark:text-slate-300 opacity-90"></i>
                                 <span class="text-[11px] sm:text-xs font-extrabold uppercase tracking-normal text-slate-800 dark:text-white w-full min-w-0 break-words text-center px-0.5">Все</span>
                             </button>
-                            <button onclick="setCategory('food')" id="btn-cat-food" class="cat-btn flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 text-slate-600 dark:text-slate-300">
+                            <button onclick="setCategory('food')" data-cat="food" id="btn-cat-food" class="cat-btn flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 text-slate-600 dark:text-slate-300">
                                 <i class="fa-solid fa-utensils text-xl sm:text-2xl text-orange-500 opacity-90"></i>
                                 <span class="text-[11px] sm:text-xs font-extrabold uppercase tracking-normal text-slate-800 dark:text-white w-full min-w-0 break-words text-center px-0.5">Еда</span>
                             </button>
-                            <button onclick="setCategory('night')" id="btn-cat-night" class="cat-btn flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 text-slate-600 dark:text-slate-300">
+                            <button onclick="setCategory('night')" data-cat="night" id="btn-cat-night" class="cat-btn flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 text-slate-600 dark:text-slate-300">
                                 <i class="fa-solid fa-champagne-glasses text-xl sm:text-2xl text-slate-600 dark:text-slate-300 opacity-90"></i>
                                 <span class="text-[11px] sm:text-xs font-extrabold uppercase tracking-normal text-slate-800 dark:text-white w-full min-w-0 break-words text-center px-0.5">Бары</span>
                             </button>
-                            <button onclick="setCategory('coffee')" id="btn-cat-coffee" class="cat-btn flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 text-slate-600 dark:text-slate-300">
+                            <button onclick="setCategory('coffee')" data-cat="coffee" id="btn-cat-coffee" class="cat-btn flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 text-slate-600 dark:text-slate-300">
                                 <i class="fa-solid fa-mug-hot text-xl sm:text-2xl text-amber-600 opacity-90"></i>
                                 <span class="text-[11px] sm:text-xs font-extrabold uppercase tracking-normal text-slate-800 dark:text-white w-full min-w-0 break-words text-center px-0.5">Кофе</span>
                             </button>
-                            <button onclick="setCategory('shopping')" id="btn-cat-shopping" class="cat-btn flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 text-slate-600 dark:text-slate-300 col-span-2">
+                            <button onclick="setCategory('shopping')" data-cat="shopping" id="btn-cat-shopping" class="cat-btn flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 text-slate-600 dark:text-slate-300 col-span-2">
                                 <i class="fa-solid fa-bag-shopping text-xl sm:text-2xl text-blue-500 opacity-90"></i>
                                 <span class="text-[11px] sm:text-xs font-extrabold uppercase tracking-normal text-slate-800 dark:text-white w-full min-w-0 break-words text-center px-0.5">Моллы и Шоппинг</span>
                             </button>
@@ -1213,11 +1216,15 @@
 
                         <!-- ПОДКАТЕГОРИИ ОБРАЗОВАНИЕ -->
                         <div id="subcats-edu" class="hidden grid grid-cols-2 gap-3 subcats-group">
-                            <button onclick="setCategory('university')" id="btn-cat-university" class="cat-btn flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 text-slate-600 dark:text-slate-300">
+                            <button onclick="setCategory('all')" data-cat="all" id="btn-cat-all-edu" class="cat-btn flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 text-slate-600 dark:text-slate-300 col-span-2">
+                                <i class="fa-solid fa-layer-group text-xl sm:text-2xl text-slate-800 dark:text-slate-300 opacity-90"></i>
+                                <span class="text-[11px] sm:text-xs font-extrabold uppercase tracking-normal text-slate-800 dark:text-white w-full min-w-0 break-words text-center px-0.5">Все</span>
+                            </button>
+                            <button onclick="setCategory('university')" data-cat="university" id="btn-cat-university" class="cat-btn flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 text-slate-600 dark:text-slate-300">
                                 <i class="fa-solid fa-building-columns text-xl sm:text-2xl text-blue-500 opacity-90"></i>
                                 <span class="text-[11px] sm:text-xs font-extrabold uppercase tracking-normal text-slate-800 dark:text-white w-full min-w-0 break-words text-center px-0.5">Универы</span>
                             </button>
-                            <button onclick="setCategory('library')" id="btn-cat-library" class="cat-btn flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 text-slate-600 dark:text-slate-300">
+                            <button onclick="setCategory('library')" data-cat="library" id="btn-cat-library" class="cat-btn flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 text-slate-600 dark:text-slate-300">
                                 <i class="fa-solid fa-book-open text-xl sm:text-2xl text-sky-500 opacity-90"></i>
                                 <span class="text-[11px] sm:text-xs font-extrabold uppercase tracking-normal text-slate-800 dark:text-white w-full min-w-0 break-words text-center px-0.5">Библиотеки</span>
                             </button>
@@ -1225,15 +1232,16 @@
 
                         <!-- ПОДКАТЕГОРИИ БАНКИ -->
                         <div id="subcats-bank" class="hidden grid grid-cols-2 gap-3 subcats-group">
-                            <button onclick="setCategory('bank_branch')" id="btn-cat-bank_branch" class="cat-btn flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 text-slate-600 dark:text-slate-300">
+                            <button onclick="setCategory('bank_branch')" data-cat="bank_branch" id="btn-cat-bank_branch" class="cat-btn flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 text-slate-600 dark:text-slate-300">
                                 <i class="fa-solid fa-building-columns text-xl sm:text-2xl text-emerald-500 opacity-90"></i>
                                 <span class="text-[11px] sm:text-xs font-extrabold uppercase tracking-normal text-slate-800 dark:text-white w-full min-w-0 break-words text-center px-0.5">Отделения</span>
                             </button>
-                            <button onclick="setCategory('atm')" id="btn-cat-atm" class="cat-btn flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 text-slate-600 dark:text-slate-300">
+                            <button onclick="setCategory('atm')" data-cat="atm" id="btn-cat-atm" class="cat-btn flex flex-col items-center justify-center gap-2 p-4 rounded-2xl font-bold transition-all border border-slate-200 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:border-slate-300 text-slate-600 dark:text-slate-300">
                                 <i class="fa-solid fa-money-bill-wave text-xl sm:text-2xl text-emerald-400 opacity-90"></i>
                                 <span class="text-[11px] sm:text-xs font-extrabold uppercase tracking-normal text-slate-800 dark:text-white w-full min-w-0 break-words text-center px-0.5">Банкоматы</span>
                             </button>
                         </div>
+
 
                     </div>
                 </div>
@@ -3551,6 +3559,15 @@
             const targetSubcats = document.getElementById(`subcats-${mainCat}`);
             if (targetSubcats) targetSubcats.classList.remove('hidden');
 
+            // Автоматически подставляем подкатегорию "Все" при переключении главной
+            // категории — пользователь сразу видит все места, а дальше может
+            // уточнить выбор конкретной подкатегорией.
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.classList.remove('cat-btn-active');
+            });
+            const defaultSubBtn = targetSubcats ? targetSubcats.querySelector('[data-cat="all"]') : null;
+            if (defaultSubBtn) defaultSubBtn.classList.add('cat-btn-active');
+
             applyFilters();
             scheduleSaveUserPreferences();
         }
@@ -3560,7 +3577,11 @@
             document.querySelectorAll('.cat-btn').forEach(btn => {
                 btn.classList.remove('cat-btn-active');
             });
-            const activeBtn = document.getElementById(`btn-cat-${cat}`);
+            // Ищем кнопку именно в текущей видимой группе подкатегорий, чтобы не
+            // перепутать одинаковые значения ('all') между разными категориями.
+            const activeGroup = document.querySelector('.subcats-group:not(.hidden)');
+            let activeBtn = activeGroup ? activeGroup.querySelector(`[data-cat="${cat}"]`) : null;
+            if (!activeBtn) activeBtn = document.getElementById(`btn-cat-${cat}`);
             if (activeBtn) activeBtn.classList.add('cat-btn-active');
 
             applyFilters();
@@ -3580,13 +3601,18 @@
 
         function toggleOnlyOpen() {
             state.onlyOpen = !state.onlyOpen;
-            const btn = document.getElementById('btn-only-open');
+            const track = document.getElementById('only-open-track');
+            const thumb = document.getElementById('only-open-thumb');
             if (state.onlyOpen) {
-                btn.classList.add('bg-emerald-500', 'text-white', 'border-transparent');
-                btn.classList.remove('bg-white/60', 'dark:bg-slate-800/60', 'text-slate-600', 'dark:text-slate-300');
+                track.classList.add('bg-emerald-500');
+                track.classList.remove('bg-slate-300', 'dark:bg-slate-600');
+                thumb.classList.add('translate-x-4');
+                thumb.classList.remove('translate-x-1');
             } else {
-                btn.classList.remove('bg-emerald-500', 'text-white', 'border-transparent');
-                btn.classList.add('bg-white/60', 'dark:bg-slate-800/60', 'text-slate-600', 'dark:text-slate-300');
+                track.classList.remove('bg-emerald-500');
+                track.classList.add('bg-slate-300', 'dark:bg-slate-600');
+                thumb.classList.remove('translate-x-4');
+                thumb.classList.add('translate-x-1');
             }
             applyFilters();
             scheduleSaveUserPreferences();
