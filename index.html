@@ -3580,7 +3580,7 @@
             try {
                 const { count, error } = await supabaseClient
                     .from('map_clicks')
-                    .select('*', { count: 'exact', head: true })
+                    .select('id', { count: 'exact', head: true })
                     .eq('place_id', placeId)
                     .gte('created_at', getChisinauDayStartISO());
                 if (error) throw error;
