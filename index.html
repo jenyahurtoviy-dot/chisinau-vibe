@@ -479,6 +479,7 @@
             "results_found": "Am găsit",
             "results_topplaces": "locuri de top pentru tine",
             "map_title": "Harta interactivă a Chișinăului",
+            "place_clicks_today": "vizualizări pe hartă azi",
             "my_location": "Locația mea",
             "support_title": "Suport și colaborare",
             "support_q": "Mai ai întrebări sau sugestii?",
@@ -493,7 +494,7 @@
             "modal_ok": "Got it", "modal_map": "View on map", "auth_login_title": "Sign in", "auth_login_subtitle": "Sign in to save your favourite places", "auth_email_label": "Email", "auth_password_label": "Password", "auth_login_btn": "Sign in", "auth_no_account": "No account? Sign up", "auth_email_gmail_error": "Registration is only available with a @gmail.com address", "auth_email_format_error": "Please enter a valid email address using Latin letters", "auth_email_cyrillic_error": "Email must be written in Latin letters (English)", "auth_email_empty_error": "Please enter an email address", "auth_password_min_error": "Password should be at least 6 characters", "auth_password_empty_error": "Please enter a password",
             "profile_title": "My account", "profile_manage": "Manage your account and saved places", "profile_vip": "VIP Vibe-er", "logout_title": "Sign out", "stat_favorites": "Favourites", "stat_visited": "Visited", "stat_active": "Active", "stat_status": "Status",
             "home_district_title": "Your district", "home_district_saved": "Saved", "home_district_note": "This district will open first when you sign in. You can always browse and choose any other district on the site.", "fav_places_title": "Saved places", "visited_places_title": "Visited places", "visited_progress_title": "Your city progress", "profile_back_btn": "Back to the site",
-            "search_ph": "Find a place, e.g. Meat, Wine, Zaxi...", "time_md": "Time in MD:", "searching_places": "Searching for places...", "im_lucky": "I'm feeling lucky!", "district_choice": "Choose a district", "categories_title": "Categories", "open_now": "Open now", "cat_relax": "Leisure", "cat_education": "Education", "cat_banks": "Banks", "sub_all": "All", "sub_food": "Food", "sub_bars": "Bars", "sub_coffee": "Coffee", "sub_malls": "Malls & shopping", "sub_unis": "Universities", "sub_libraries": "Libraries", "sub_branches": "Branches", "sub_atms": "ATMs", "results_title": "All places", "results_found": "We found", "results_topplaces": "top places for you", "map_title": "Interactive map of Chișinău", "my_location": "My location", "support_title": "Support and collaboration", "support_q": "Have questions or suggestions?", "support_desc": "Want to add your venue to the guide or spotted an inaccuracy? Message me on Telegram — I'm online!", "support_btn": "Message @font1zadm"
+            "search_ph": "Find a place, e.g. Meat, Wine, Zaxi...", "time_md": "Time in MD:", "searching_places": "Searching for places...", "im_lucky": "I'm feeling lucky!", "district_choice": "Choose a district", "categories_title": "Categories", "open_now": "Open now", "cat_relax": "Leisure", "cat_education": "Education", "cat_banks": "Banks", "sub_all": "All", "sub_food": "Food", "sub_bars": "Bars", "sub_coffee": "Coffee", "sub_malls": "Malls & shopping", "sub_unis": "Universities", "sub_libraries": "Libraries", "sub_branches": "Branches", "sub_atms": "ATMs", "results_title": "All places", "results_found": "We found", "results_topplaces": "top places for you", "map_title": "Interactive map of Chișinău", "place_clicks_today": "map opens today", "my_location": "My location", "support_title": "Support and collaboration", "support_q": "Have questions or suggestions?", "support_desc": "Want to add your venue to the guide or spotted an inaccuracy? Message me on Telegram — I'm online!", "support_btn": "Message @font1zadm"
         };
         // Переводы текста, который создаётся скриптом (карточки, модальные окна и сообщения).
         // Данные мест, координаты и ссылки на карту не меняются: отображается только перевод.
@@ -874,13 +875,22 @@
                 <i class="fa-solid fa-xmark"></i>
             </button>
             <div id="modal-content" class="space-y-4"></div>
-            <div class="mt-6 flex gap-3">
+            <div class="mt-6 flex gap-3 items-end">
                 <button id="modal-action-btn" onclick="closeRandomModal()" class="flex-1 py-3.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold rounded-xl text-center shadow-lg hover:scale-[1.02] transition-transform flex justify-center items-center gap-2 text-sm">
                     <span data-i18n="modal_ok">Понятно</span> <i class="fa-solid fa-check ml-1"></i>
                 </button>
-                <a id="modal-map-btn" href="#" target="_blank" class="flex-1 py-3.5 bg-gradient-to-r from-slate-800 to-slate-700 text-white font-bold rounded-xl shadow-lg hover:shadow-slate-800/30 transition-all flex justify-center items-center gap-2 text-sm">
-                    <span data-i18n="modal_map">На карту</span> <i class="fa-solid fa-location-arrow ml-1"></i>
-                </a>
+                <div class="flex-1 flex flex-col items-center gap-1.5">
+                    <div id="modal-place-clicks" class="flex items-center gap-1.5 text-[10px] font-bold text-emerald-700 dark:text-emerald-300 tracking-wide bg-emerald-500/10 dark:bg-emerald-400/10 backdrop-blur-md border border-emerald-500/25 dark:border-emerald-400/25 rounded-full px-3 py-1 shadow-sm">
+                        <span class="relative flex h-1.5 w-1.5">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+                        </span>
+                        <span id="modal-place-clicks-count">0</span> <span data-i18n="place_clicks_today">переходов сегодня</span>
+                    </div>
+                    <a id="modal-map-btn" href="#" target="_blank" class="w-full py-3.5 bg-gradient-to-r from-slate-800 to-slate-700 text-white font-bold rounded-xl shadow-lg hover:shadow-slate-800/30 transition-all flex justify-center items-center gap-2 text-sm">
+                        <span data-i18n="modal_map">На карту</span> <i class="fa-solid fa-location-arrow ml-1"></i>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -2400,7 +2410,7 @@
     desc: "Элегантный бар с богатым выбором виски и благородной атмосферой.",
     entertainment: "Элитный алкоголь, стильный интерьер, приятная музыка.",
     priceRange: "300 - 800 леев",
-    mapUrl: "https://maps.app.goo.gl/avQJjCRn65EQ1dWs5",
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=Strada+Mitropolit+Gavriil+Banulescu-Bodoni+22+Chisinau",
     lat: 47.02806766971394,
     lng: 28.83475835401326,
     gradient: "from-amber-900 to-slate-900",
@@ -3366,9 +3376,11 @@
                 </div>
             `;
             mapBtn.href = p.mapUrl;
+                mapBtn.onclick = function() { trackMapClick(p.id); };
                 actionBtn.onclick = function() { closeRandomModal(); };
                 modal.classList.remove('hidden');
                 translatePageText(content);
+                loadPlaceMapClicksToday(p.id);
 
                 // Запоминаем последнюю просмотренную локацию, чтобы на следующий заход спросить "вы там были?"
                 rememberLastViewedPlace(p);
@@ -3439,7 +3451,56 @@
             }
         }
 
-        // Если страница открыта по прямой ссылке вида ?place=ID — сразу показываем нужную карточку.
+        // ============ Счётчик переходов "На карту" для конкретного места ============
+        // Каждый клик по кнопке "На карту" пишется в таблицу map_clicks в Supabase с указанием place_id.
+        // В карточке места показывается, сколько раз именно на ЭТО место переходили на карту сегодня.
+        let currentModalPlaceId = null;
+
+        async function trackMapClick(placeId) {
+            try {
+                await supabaseClient.from('map_clicks').insert([{ place_id: placeId }]);
+            } catch (e) {
+                console.error('Не удалось записать клик по карте:', e);
+            }
+            // Если карточка этого же места всё ещё открыта — сразу прибавляем к счётчику на экране,
+            // не дожидаясь отдельного запроса.
+            if (currentModalPlaceId === placeId) {
+                const el = document.getElementById('modal-place-clicks-count');
+                if (el) el.textContent = (parseInt(el.textContent, 10) || 0) + 1;
+            }
+        }
+
+        // Начало текущих суток по времени Кишинева, в виде ISO-строки для запроса к Supabase.
+        function getChisinauDayStartISO() {
+            const chStr = new Date().toLocaleString('en-US', { timeZone: 'Europe/Chisinau' });
+            const chNow = new Date(chStr);
+            const dayStart = new Date(chNow.getFullYear(), chNow.getMonth(), chNow.getDate());
+            // Разница между локальным временем браузера и временем Кишинева, чтобы получить корректный UTC-момент.
+            const offsetMs = new Date().getTime() - chNow.getTime();
+            return new Date(dayStart.getTime() + offsetMs).toISOString();
+        }
+
+        // Загружает и показывает, сколько раз конкретное место открывали "На карту" сегодня.
+        async function loadPlaceMapClicksToday(placeId) {
+            currentModalPlaceId = placeId;
+            const el = document.getElementById('modal-place-clicks-count');
+            if (el) el.textContent = '…';
+            try {
+                const { count, error } = await supabaseClient
+                    .from('map_clicks')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('place_id', placeId)
+                    .gte('created_at', getChisinauDayStartISO());
+                if (error) throw error;
+                // Модалка могла успеть закрыться/смениться, пока запрос летел — не перетираем чужой счётчик.
+                if (currentModalPlaceId === placeId && el) el.textContent = count || 0;
+            } catch (e) {
+                console.error('Не удалось загрузить счётчик переходов на карту:', e);
+                if (currentModalPlaceId === placeId && el) el.textContent = '0';
+            }
+        }
+
+
         function openSharedPlaceFromUrl() {
             try {
                 const params = new URLSearchParams(window.location.search);
