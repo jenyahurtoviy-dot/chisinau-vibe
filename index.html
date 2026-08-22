@@ -685,6 +685,22 @@
             });
         }
 
+        // Тихий запрос доступа к геолокации: карта ещё не инициализирована на этом
+        // шаге, поэтому просто просим разрешение и, если пользователь согласится,
+        // сохраняем координаты — они пригодятся сразу, как только откроется карта.
+        function requestLocationPermission() {
+            if (!navigator.geolocation) return;
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    userLocation = { lat: position.coords.latitude, lng: position.coords.longitude };
+                },
+                () => {
+                    // Отказ или ошибка — просто продолжаем без геолокации, без алертов.
+                },
+                { enableHighAccuracy: true, timeout: 8000 }
+            );
+        }
+
         function showWelcomeScreen() {
             const welcome = document.getElementById('welcome-screen');
             if (!welcome) return;
@@ -692,6 +708,9 @@
             welcome.style.display = 'flex';
             welcome.style.opacity = '0';
             welcome.style.transform = 'none';
+            // Запрашиваем геолокацию сразу, как только показывается экран выбора района —
+            // ещё до того, как пользователь выберет район или откроет карту.
+            requestLocationPermission();
             requestAnimationFrame(() => {
                 welcome.style.transition = 'opacity 0.4s ease';
                 welcome.style.opacity = '1';
@@ -869,8 +888,8 @@
 </div>
 
     <!-- Модальное окно для выбора наугад / деталей локации -->
-    <div id="random-modal" class="fixed inset-0 z-[150] bg-slate-900/60 backdrop-blur-md hidden flex items-center justify-center p-4 transition-all">
-        <div class="glass max-w-md w-full p-6 sm:p-8 rounded-[2rem] border border-white/20 shadow-2xl relative animate-fade-in-up max-h-[90vh] overflow-y-auto no-scrollbar">
+    <div id="random-modal" class="fixed inset-0 z-[150] bg-slate-900/60 backdrop-blur-md hidden flex items-start sm:items-center justify-center p-3 sm:p-4 overflow-y-auto transition-all">
+        <div class="glass max-w-md w-full my-6 sm:my-auto p-5 sm:p-8 rounded-[1.75rem] sm:rounded-[2rem] border border-white/20 shadow-2xl relative animate-fade-in-up max-h-[calc(100dvh-3rem)] sm:max-h-[90vh] overflow-y-auto no-scrollbar">
             <button onclick="closeRandomModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white flex items-center justify-center transition-colors z-10">
                 <i class="fa-solid fa-xmark"></i>
             </button>
