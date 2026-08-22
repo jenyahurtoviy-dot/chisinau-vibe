@@ -1371,8 +1371,22 @@
                 theme: isDark ? 'dark' : 'light',
                 appearance: 'interaction-only',
                 callback: onTurnstileSuccess,
-                'expired-callback': onTurnstileExpired
+                'expired-callback': onTurnstileExpired,
+                'error-callback': onTurnstileError
             });
+        }
+
+        function onTurnstileError(errorCode) {
+            // Раньше при ошибке Turnstile (например, домен сайта не разрешён для этого
+            // sitekey в настройках Cloudflare) turnstileToken просто навсегда оставался null,
+            // и человек видел "подождите секунду" бесконечно, не понимая в чём дело.
+            turnstileToken = null;
+            console.error('Turnstile error-callback, код ошибки:', errorCode);
+            const errEl = document.getElementById('auth-error');
+            if (errEl) {
+                errEl.textContent = tr('Проверка безопасности не загрузилась (код ') + errorCode + '). ' + tr('Обновите страницу и попробуйте снова.');
+                errEl.classList.remove('hidden');
+            }
         }
 
         function resetTurnstile() {
@@ -1658,6 +1672,7 @@
             { match: /email not confirmed/i, ru: 'Почта не подтверждена. Проверьте письмо для подтверждения.', ro: 'Emailul nu a fost confirmat. Verifică mesajul de confirmare.', en: 'Email not confirmed. Please check your inbox.' },
             { match: /rate limit|too many requests/i, ru: 'Слишком много попыток. Попробуйте немного позже.', ro: 'Prea multe încercări. Încearcă din nou mai târziu.', en: 'Too many attempts. Please try again later.' },
             { match: /unable to validate email address|invalid email/i, ru: 'Введите корректный email адрес.', ro: 'Introdu o adresă de email validă.', en: 'Please enter a valid email address.' },
+            { match: /captcha/i, ru: 'Проверка безопасности не прошла. Обновите страницу и попробуйте снова.', ro: 'Verificarea de securitate a eșuat. Reîmprospătează pagina și încearcă din nou.', en: 'Security check failed. Please refresh the page and try again.' },
         ];
 
         function translateSupabaseError(message) {
@@ -1715,6 +1730,7 @@
                     }, 1000);
                 }
             } catch (err) {
+                console.error('Supabase auth error (сырое сообщение):', err.message);
                 errEl.textContent = translateSupabaseError(err.message);
                 errEl.classList.remove('hidden');
             } finally {
