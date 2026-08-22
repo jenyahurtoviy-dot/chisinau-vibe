@@ -779,7 +779,7 @@
           <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
         </div>
         <div class="font-bold text-xs sm:text-sm tracking-wide flex items-center gap-2">
-            <span id="online-count" class="text-emerald-600 dark:text-emerald-400 text-sm sm:text-lg transition-all duration-300">58</span> 
+            <span id="online-count" class="text-emerald-600 dark:text-emerald-400 text-sm sm:text-lg transition-all duration-300">…</span> 
             <span class="hidden sm:inline text-slate-500 dark:text-slate-400" data-i18n="online_now">онлайн</span>
         </div>
     </div>
@@ -3228,61 +3228,46 @@
             if (dateEl) dateEl.textContent = `${info.dateStr}, ${info.dayShort}`;
         }
 
-        // Плавная симуляция активности: обычно небольшой поток, иногда — заметный всплеск.
-        let onlinePeopleCount = 58;
-        let onlinePeopleTarget = 58;
+        // Реальный счётчик "людей онлайн" через Supabase Realtime Presence.
+        // Каждая открытая вкладка сайта регистрируется в канале 'online-users' —
+        // число участников канала и есть реальное число живых сессий на сайте прямо сейчас.
+        // Ключ presence — случайный, генерируется заново при каждой загрузке страницы
+        // (не берём постоянный client_token, чтобы каждая вкладка/сессия считалась отдельно).
+        let onlineChannel = null;
         let onlineCounterStarted = false;
-
-        const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
-
-        function chooseNextOnlineTarget() {
-            const isInHighActivity = onlinePeopleCount > 100 || onlinePeopleTarget > 100;
-            const startSurge = !isInHighActivity && Math.random() < 0.16;
-
-            if (startSurge) {
-                onlinePeopleTarget = randomInt(260, 400);
-            } else if (isInHighActivity) {
-                onlinePeopleTarget = randomInt(32, 70);
-            } else {
-                onlinePeopleTarget = randomInt(30, 70);
-            }
-
-            const nextChangeIn = (startSurge || isInHighActivity)
-                ? randomInt(50000, 80000)
-                : randomInt(12000, 24000);
-            setTimeout(chooseNextOnlineTarget, nextChangeIn);
-        }
-
-        function updateOnlineCounter() {
-            const countEl = document.getElementById('online-count');
-            if (!countEl) return;
-
-            const difference = onlinePeopleTarget - onlinePeopleCount;
-            let movement;
-
-            if (Math.abs(difference) <= 5) {
-                // У цели число немного "дышит", а не застывает на одном значении.
-                movement = randomInt(-4, 4);
-            } else {
-                const maxStep = Math.abs(difference) > 100 ? 4 : (Math.abs(difference) > 30 ? 3 : 2);
-                const step = randomInt(1, maxStep);
-                // Примерно треть обновлений идёт в обратную сторону — как у живого потока людей.
-                movement = Math.random() < 0.32
-                    ? -Math.sign(difference) * randomInt(1, Math.min(3, step + 1))
-                    : Math.sign(difference) * step;
-            }
-
-            onlinePeopleCount = Math.max(30, Math.min(400, onlinePeopleCount + movement));
-            countEl.textContent = onlinePeopleCount;
-        }
+        const presenceKey = (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`);
 
         function startOnlineCounter() {
             if (onlineCounterStarted) return;
             onlineCounterStarted = true;
+
             const countEl = document.getElementById('online-count');
-            if (countEl) countEl.textContent = onlinePeopleCount;
-            setInterval(updateOnlineCounter, 650);
-            setTimeout(chooseNextOnlineTarget, randomInt(7000, 15000));
+
+            onlineChannel = supabaseClient.channel('online-users', {
+                config: { presence: { key: presenceKey } }
+            });
+
+            onlineChannel
+                .on('presence', { event: 'sync' }, () => {
+                    const state = onlineChannel.presenceState();
+                    const count = Object.keys(state).length;
+                    if (countEl) countEl.textContent = count;
+                })
+                .subscribe(async (status) => {
+                    if (status === 'SUBSCRIBED') {
+                        try {
+                            await onlineChannel.track({ online_at: new Date().toISOString() });
+                        } catch (e) {
+                            console.error('Не удалось зарегистрироваться в счётчике онлайн:', e);
+                        }
+                    }
+                });
+
+            // Явно уходим из канала при закрытии/уходе со страницы, чтобы счётчик
+            // не "залипал" на людях, которые уже закрыли вкладку.
+            window.addEventListener('beforeunload', () => {
+                if (onlineChannel) onlineChannel.unsubscribe();
+            });
         }
 
         const isMobile = () => window.innerWidth < 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
