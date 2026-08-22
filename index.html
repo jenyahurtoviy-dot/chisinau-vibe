@@ -685,22 +685,6 @@
             });
         }
 
-        // Тихий запрос доступа к геолокации: карта ещё не инициализирована на этом
-        // шаге, поэтому просто просим разрешение и, если пользователь согласится,
-        // сохраняем координаты — они пригодятся сразу, как только откроется карта.
-        function requestLocationPermission() {
-            if (!navigator.geolocation) return;
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    userLocation = { lat: position.coords.latitude, lng: position.coords.longitude };
-                },
-                () => {
-                    // Отказ или ошибка — просто продолжаем без геолокации, без алертов.
-                },
-                { enableHighAccuracy: true, timeout: 8000 }
-            );
-        }
-
         function showWelcomeScreen() {
             const welcome = document.getElementById('welcome-screen');
             if (!welcome) return;
@@ -708,9 +692,6 @@
             welcome.style.display = 'flex';
             welcome.style.opacity = '0';
             welcome.style.transform = 'none';
-            // Запрашиваем геолокацию сразу, как только показывается экран выбора района —
-            // ещё до того, как пользователь выберет район или откроет карту.
-            requestLocationPermission();
             requestAnimationFrame(() => {
                 welcome.style.transition = 'opacity 0.4s ease';
                 welcome.style.opacity = '1';
@@ -3582,6 +3563,40 @@
             });
         }
 
+        // Автоматический запрос геолокации ПОСЛЕ того как пользователь выбрал район
+        // (карта к этому моменту уже создана). В отличие от ручной кнопки "Моё
+        // местоположение", здесь нет alert() при отказе — тихо продолжаем без него.
+        function autoLocateOnStart() {
+            if (!navigator.geolocation || !map) return;
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+
+                    if (userMarker) map.removeLayer(userMarker);
+
+                    const userIcon = L.divIcon({
+                        className: 'custom-user-pin',
+                        html: '<div class="user-location-ping"></div>',
+                        iconSize: [20, 20],
+                        iconAnchor: [10, 10]
+                    });
+
+                    userMarker = L.marker([lat, lng], { icon: userIcon }).addTo(map);
+                    userMarker.bindPopup("<div class='font-bold text-xs'>" + tr("Вы здесь!") + "</div>");
+
+                    userLocation = { lat, lng };
+                    realWalkDistances = {};
+                    applyFilters();
+                    fetchWalkingDistances(lat, lng);
+                },
+                () => {
+                    // Отказ или ошибка геолокации — просто продолжаем без неё, без алертов.
+                },
+                { enableHighAccuracy: true, timeout: 8000 }
+            );
+        }
+
         function getUserLocation() {
             if (!navigator.geolocation) {
                 alert(tr("Геолокация не поддерживается вашим браузером"));
@@ -3927,6 +3942,8 @@
         initMap();
         panMapToDistrict(state.district);
         applyFilters();
+        // Район уже выбран и карта готова — теперь спрашиваем геолокацию.
+        autoLocateOnStart();
         setInterval(updateClockUI, 1000);
         updateClockUI();
         openSharedPlaceFromUrl();
@@ -3948,6 +3965,8 @@
             panMapToDistrict(state.district);
             
             applyFilters();
+            // Район уже выбран и карта готова — теперь спрашиваем геолокацию.
+            autoLocateOnStart();
             setInterval(updateClockUI, 1000);
             updateClockUI();
             openSharedPlaceFromUrl();
