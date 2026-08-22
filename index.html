@@ -1369,6 +1369,7 @@
             turnstileWidgetId = turnstile.render(container, {
                 sitekey: '0x4AAAAAAEYbAylsizOamlnk',
                 theme: isDark ? 'dark' : 'light',
+                appearance: 'interaction-only',
                 callback: onTurnstileSuccess,
                 'expired-callback': onTurnstileExpired
             });
@@ -1681,7 +1682,7 @@
             if (!emailOk || !passwordOk) return;
 
             if (!turnstileToken) {
-                errEl.textContent = tr('Подтвердите, что вы не робот');
+                errEl.textContent = tr('Проверка безопасности ещё не завершена — подождите секунду и попробуйте снова');
                 errEl.classList.remove('hidden');
                 return;
             }
