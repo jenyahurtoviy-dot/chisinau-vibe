@@ -3003,7 +3003,6 @@
         let userLocation = null; // { lat, lng } — заполняется после getUserLocation()
 
         // Ключ OpenRouteService — реальные пешие маршруты по улицам (как в Google Maps)
-        const ORS_API_KEY = 'eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjkxNTQ1ZjVhOTZiODRhNjk5M2FkNjY0YTI4ZmFmNGYzIiwiaCI6Im11cm11cjY0In0=';
         // Кэш реальных маршрутов от текущей геопозиции: { [placeId]: { meters, seconds } }
         let realWalkDistances = {};
         let isFetchingWalkDistances = false;
@@ -3064,10 +3063,9 @@
                     const locations = [[lng, lat], ...chunk.map(p => [p.lng, p.lat])];
                     const destinations = chunk.map((_, idx) => idx + 1);
 
-                    const res = await fetch('https://api.openrouteservice.org/v2/matrix/foot-walking', {
+                    const res = await fetch('https://kcozrtfnjtnlpiaqtfaw.supabase.co/functions/v1/ors-proxy', {
                         method: 'POST',
                         headers: {
-                            'Authorization': ORS_API_KEY,
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
@@ -3460,9 +3458,27 @@
         // В карточке места показывается, сколько раз именно на ЭТО место переходили на карту сегодня.
         let currentModalPlaceId = null;
 
+        // Анонимный "токен браузера": случайная строка, создаётся один раз и хранится в
+        // localStorage. Не содержит личных данных, нужен только чтобы Supabase мог
+        // ограничивать частоту кликов от одного и того же браузера (см. rate-limit триггер).
+        function getClientToken() {
+            const KEY = 'chisinau_vibe_client_token';
+            try {
+                let token = localStorage.getItem(KEY);
+                if (!token) {
+                    token = (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`);
+                    localStorage.setItem(KEY, token);
+                }
+                return token;
+            } catch (e) {
+                // Приватный режим браузера может блокировать localStorage — тогда просто не шлём токен.
+                return null;
+            }
+        }
+
         async function trackMapClick(placeId) {
             try {
-                await supabaseClient.from('map_clicks').insert([{ place_id: placeId }]);
+                await supabaseClient.from('map_clicks').insert([{ place_id: placeId, client_token: getClientToken() }]);
             } catch (e) {
                 console.error('Не удалось записать клик по карте:', e);
             }
