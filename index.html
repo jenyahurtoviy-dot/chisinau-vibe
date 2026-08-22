@@ -3550,7 +3550,23 @@
 
         async function trackMapClick(placeId) {
             try {
-                await supabaseClient.from('map_clicks').insert([{ place_id: placeId, client_token: getClientToken() }]);
+                // Важно: используем "сырой" fetch с keepalive: true, а не supabaseClient.insert().
+                // Кнопка "На карту" сразу открывает переход (в т.ч. на телефонах во встроенных
+                // браузерах типа Instagram/Telegram), и обычный fetch supabase-js в этот момент
+                // может быть оборван браузером до того, как запрос дойдёт до сервера — из-за
+                // этого клик не успевал сохраниться. keepalive гарантирует, что запрос
+                // "переживёт" уход со страницы (аналог navigator.sendBeacon).
+                await fetch(`${SUPABASE_URL}/rest/v1/map_clicks`, {
+                    method: 'POST',
+                    keepalive: true,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`,
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify({ place_id: placeId, client_token: getClientToken() })
+                });
             } catch (e) {
                 console.error('Не удалось записать клик по карте:', e);
             }
