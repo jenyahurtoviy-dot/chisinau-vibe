@@ -874,23 +874,22 @@
             <button onclick="closeRandomModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white flex items-center justify-center transition-colors z-10">
                 <i class="fa-solid fa-xmark"></i>
             </button>
-            <div id="modal-content" class="space-y-4"></div>
-            <div class="mt-6 flex gap-3 items-end">
+            <div id="modal-place-clicks" class="absolute top-5 left-5 flex items-center gap-1.5 text-[9px] font-semibold text-emerald-700/90 dark:text-emerald-300/90 tracking-wide bg-emerald-500/10 dark:bg-emerald-400/10 border border-emerald-500/20 dark:border-emerald-400/20 rounded-full px-2.5 py-1 z-10">
+                <span class="relative flex h-1.5 w-1.5">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+                </span>
+                <span id="modal-place-clicks-count">0</span> <span data-i18n="place_clicks_today">переходов сегодня</span>
+            </div>
+            <div id="modal-content" class="space-y-4 mt-6"></div>
+            <div class="mt-4 flex gap-3">
                 <button id="modal-action-btn" onclick="closeRandomModal()" class="flex-1 py-3.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold rounded-xl text-center shadow-lg hover:scale-[1.02] transition-transform flex justify-center items-center gap-2 text-sm">
                     <span data-i18n="modal_ok">Понятно</span> <i class="fa-solid fa-check ml-1"></i>
                 </button>
-                <div class="flex-1 flex flex-col items-center gap-1.5">
-                    <div id="modal-place-clicks" class="flex items-center gap-1.5 text-[10px] font-bold text-emerald-700 dark:text-emerald-300 tracking-wide bg-emerald-500/10 dark:bg-emerald-400/10 backdrop-blur-md border border-emerald-500/25 dark:border-emerald-400/25 rounded-full px-3 py-1 shadow-sm">
-                        <span class="relative flex h-1.5 w-1.5">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
-                        </span>
-                        <span id="modal-place-clicks-count">0</span> <span data-i18n="place_clicks_today">переходов сегодня</span>
-                    </div>
-                    <a id="modal-map-btn" href="#" target="_blank" class="w-full py-3.5 bg-gradient-to-r from-slate-800 to-slate-700 text-white font-bold rounded-xl shadow-lg hover:shadow-slate-800/30 transition-all flex justify-center items-center gap-2 text-sm">
-                        <span data-i18n="modal_map">На карту</span> <i class="fa-solid fa-location-arrow ml-1"></i>
-                    </a>
-                </div>
+                <a id="modal-map-btn" href="#" target="_blank" class="group relative flex-1 py-3.5 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-700 dark:from-white dark:via-slate-100 dark:to-white text-white dark:text-slate-900 font-bold rounded-xl shadow-lg shadow-slate-900/25 dark:shadow-black/20 hover:shadow-xl hover:shadow-slate-900/35 dark:hover:shadow-black/30 hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-300 flex justify-center items-center gap-2 text-sm overflow-hidden">
+                    <span class="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out bg-gradient-to-r from-transparent via-white/20 dark:via-slate-900/10 to-transparent"></span>
+                    <span data-i18n="modal_map" class="relative">На карту</span> <i class="fa-solid fa-location-arrow ml-1 relative"></i>
+                </a>
             </div>
         </div>
     </div>
