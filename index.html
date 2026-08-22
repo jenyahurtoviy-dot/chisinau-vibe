@@ -3589,19 +3589,18 @@
         }
 
         // Загружает и показывает, сколько раз конкретное место открывали "На карту" сегодня.
+        // Использует RPC-функцию get_place_clicks_today (см. setup_security.sql) — она отдаёт
+        // только count, без прямого доступа к таблице map_clicks (RLS закрывает публичный select).
         async function loadPlaceMapClicksToday(placeId) {
             currentModalPlaceId = placeId;
             const el = document.getElementById('modal-place-clicks-count');
             if (el) el.textContent = '…';
             try {
-                const { count, error } = await supabaseClient
-                    .from('map_clicks')
-                    .select('id', { count: 'exact', head: true })
-                    .eq('place_id', placeId)
-                    .gte('created_at', getChisinauDayStartISO());
+                const { data, error } = await supabaseClient
+                    .rpc('get_place_clicks_today', { p_place_id: placeId });
                 if (error) throw error;
                 // Модалка могла успеть закрыться/смениться, пока запрос летел — не перетираем чужой счётчик.
-                if (currentModalPlaceId === placeId && el) el.textContent = count || 0;
+                if (currentModalPlaceId === placeId && el) el.textContent = data || 0;
             } catch (e) {
                 console.error('Не удалось загрузить счётчик переходов на карту:', e);
                 if (currentModalPlaceId === placeId && el) el.textContent = '0';
