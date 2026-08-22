@@ -27,7 +27,7 @@
     <!-- Подключаем Supabase JS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- Подключаем Cloudflare Turnstile (капча против ботов при регистрации/входе) -->
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -933,7 +933,7 @@
                     </p>
                 </div>
                 <div class="flex justify-center">
-                    <div id="auth-turnstile-widget" class="cf-turnstile" data-sitekey="0x4AAAAAAEYbAylsizOamlnk" data-callback="onTurnstileSuccess" data-expired-callback="onTurnstileExpired"></div>
+                    <div id="auth-turnstile-widget"></div>
                 </div>
                 <button type="submit" id="auth-submit-btn" class="w-full py-3.5 bg-gradient-to-r from-slate-800 to-slate-700 text-white font-bold rounded-xl shadow-lg hover:shadow-slate-800/30 transition-all flex items-center justify-center gap-2 text-sm">
                     <span data-i18n="auth_login_btn">Войти</span>
@@ -1345,12 +1345,39 @@
 
         // ===== Turnstile (капча) для формы входа/регистрации =====
         let turnstileToken = null;
+        let turnstileWidgetId = null;
         function onTurnstileSuccess(token) { turnstileToken = token; }
         function onTurnstileExpired() { turnstileToken = null; }
+
+        // Рендерим виджет вручную (а не автоматически), чтобы:
+        // 1) не показывать его до открытия формы входа;
+        // 2) подобрать тему (светлая/тёмная) под текущую тему сайта.
+        function renderTurnstileWidget() {
+            if (!window.turnstile) {
+                // Скрипт Turnstile ещё не подгрузился — пробуем ещё раз чуть позже.
+                setTimeout(renderTurnstileWidget, 200);
+                return;
+            }
+            const container = document.getElementById('auth-turnstile-widget');
+            if (!container) return;
+            if (turnstileWidgetId !== null) {
+                turnstile.reset(turnstileWidgetId);
+                turnstileToken = null;
+                return;
+            }
+            const isDark = document.documentElement.classList.contains('dark');
+            turnstileWidgetId = turnstile.render(container, {
+                sitekey: '0x4AAAAAAEYbAylsizOamlnk',
+                theme: isDark ? 'dark' : 'light',
+                callback: onTurnstileSuccess,
+                'expired-callback': onTurnstileExpired
+            });
+        }
+
         function resetTurnstile() {
             turnstileToken = null;
-            if (window.turnstile) {
-                try { turnstile.reset('#auth-turnstile-widget'); } catch (e) { /* виджет ещё не отрисован — игнорируем */ }
+            if (window.turnstile && turnstileWidgetId !== null) {
+                try { turnstile.reset(turnstileWidgetId); } catch (e) { /* виджет ещё не отрисован — игнорируем */ }
             }
         }
 
@@ -1434,7 +1461,7 @@
             document.getElementById('auth-email-error').classList.add('hidden');
             document.getElementById('auth-password-error').classList.add('hidden');
             document.getElementById('auth-form').reset();
-            resetTurnstile();
+            renderTurnstileWidget();
         }
 
         function closeAuthModal() {
@@ -3291,6 +3318,16 @@
 
                 if (!didChange) return;
                 forceThemeRepaint();
+
+                // Перерисовываем виджет капчи в новой теме, если он уже открыт.
+                if (turnstileWidgetId !== null && window.turnstile) {
+                    turnstile.remove(turnstileWidgetId);
+                    turnstileWidgetId = null;
+                    turnstileToken = null;
+                    if (!document.getElementById('auth-modal').classList.contains('hidden')) {
+                        renderTurnstileWidget();
+                    }
+                }
 
                 const mapEl = document.getElementById('map');
                 if (map && mapEl && mapEl.offsetParent !== null) {
